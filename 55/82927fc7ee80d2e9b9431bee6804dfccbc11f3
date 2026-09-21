@@ -1,0 +1,19 @@
+pnpm-workspace.yaml
+  s_c828e34f1426a1::t_41259ca4675b59 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "5582927fc7ee80d2e9b9431bee6804dfccbc11f3",
+  "prompts": {},
+  "sessions": {
+    "s_c828e34f1426a1": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1034070e-34bd-41bd-8eae-cae5c9496a65",
+        "model": "gpt-5.3-codex"
+      },
+      "human_author": "Richard Marsot <richard.marsot@pega.com>"
+    }
+  }
+}
