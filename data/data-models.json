@@ -1,0 +1,62 @@
+[
+  {
+    "id": "vehicle",
+    "name": "Vehicle",
+    "industry": "Transportation & Logistics",
+    "description": "Marketplace inventory and fleet assets"
+  },
+  {
+    "id": "phone",
+    "name": "Phone",
+    "industry": "Communications",
+    "description": "Device catalog for communications teams"
+  },
+  {
+    "id": "organization",
+    "name": "Organization",
+    "industry": "Cross Industry",
+    "description": "Sales automation account directory"
+  },
+  {
+    "id": "sales-person",
+    "name": "Sales person",
+    "industry": "Consumer Services",
+    "description": "Revenue team directory and territories"
+  },
+  {
+    "id": "building",
+    "name": "Building",
+    "industry": "Energy & Utilities",
+    "description": "Property and infrastructure portfolio"
+  },
+  {
+    "id": "account",
+    "name": "Bank account",
+    "industry": "Banking",
+    "description": "Customer accounts and financial products"
+  },
+  {
+    "id": "case",
+    "name": "Service case",
+    "industry": "Government",
+    "description": "Constituent and public service cases"
+  },
+  {
+    "id": "patient",
+    "name": "Patient",
+    "industry": "Healthcare",
+    "description": "Care directory and patient records"
+  },
+  {
+    "id": "policy",
+    "name": "Insurance policy",
+    "industry": "Insurance",
+    "description": "Policy portfolio and renewals"
+  },
+  {
+    "id": "plant",
+    "name": "Manufacturing plant",
+    "industry": "Manufacturing",
+    "description": "Operational facilities and plants"
+  }
+]

@@ -1,0 +1,160 @@
+{
+  "name": "Service case",
+  "description": "A public service model for requests, programs, and case progress.",
+  "fields": [
+    {
+      "name": "title",
+      "label": "Case title",
+      "type": "text",
+      "semanticRole": "title",
+      "rank": 1
+    },
+    {
+      "name": "caseType",
+      "label": "Case type",
+      "type": "text",
+      "semanticRole": "subtitle",
+      "rank": 1
+    },
+    {
+      "name": "priorityScore",
+      "label": "Priority score",
+      "type": "number",
+      "semanticRole": "metric",
+      "rank": 1
+    },
+    {
+      "name": "openedDate",
+      "label": "Opened date",
+      "type": "date",
+      "semanticRole": "highlight",
+      "rank": 1
+    },
+    {
+      "name": "district",
+      "label": "District",
+      "type": "text",
+      "semanticRole": "highlight",
+      "rank": 2
+    },
+    {
+      "name": "programs",
+      "label": "Programs",
+      "type": "tags",
+      "semanticRole": "tags",
+      "rank": 1
+    },
+    {
+      "name": "summary",
+      "label": "Summary",
+      "type": "long-text",
+      "semanticRole": "description",
+      "rank": 1
+    },
+    {
+      "name": "image",
+      "label": "Case image",
+      "type": "image",
+      "semanticRole": "media",
+      "rank": 1
+    },
+    {
+      "name": "status",
+      "label": "Case status",
+      "type": "select",
+      "semanticRole": "status",
+      "rank": 1
+    },
+    {
+      "name": "referenceCode",
+      "label": "Reference code",
+      "type": "text",
+      "semanticRole": "identifier",
+      "rank": 1
+    },
+    {
+      "name": "overdue",
+      "label": "Overdue",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 1
+    },
+    {
+      "name": "locked",
+      "label": "Locked",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 2
+    },
+    {
+      "name": "escalated",
+      "label": "Escalated",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 3
+    },
+    {
+      "name": "confidential",
+      "label": "Confidential",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 4
+    },
+    {
+      "name": "new",
+      "label": "New",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 5
+    },
+    {
+      "name": "updatedAt",
+      "label": "Last updated",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 1
+    },
+    {
+      "name": "createdAt",
+      "label": "Created",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 2
+    },
+    {
+      "name": "owner",
+      "label": "Owner",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 1
+    },
+    {
+      "name": "reviewer",
+      "label": "Reviewer",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 2
+    },
+    {
+      "name": "relatedRecord",
+      "label": "Related record",
+      "type": "text",
+      "semanticRole": "relation",
+      "rank": 1
+    },
+    {
+      "name": "nextAction",
+      "label": "Next action",
+      "type": "text",
+      "semanticRole": "action",
+      "rank": 1
+    },
+    {
+      "name": "secondaryAction",
+      "label": "Secondary action",
+      "type": "text",
+      "semanticRole": "action",
+      "rank": 2
+    }
+  ]
+}

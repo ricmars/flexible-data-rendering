@@ -1,0 +1,167 @@
+{
+  "name": "Manufacturing plant",
+  "description": "A manufacturing model for facilities, capacity, and operations.",
+  "fields": [
+    {
+      "name": "name",
+      "label": "Plant name",
+      "type": "text",
+      "semanticRole": "title",
+      "rank": 1
+    },
+    {
+      "name": "plantType",
+      "label": "Plant type",
+      "type": "text",
+      "semanticRole": "subtitle",
+      "rank": 1
+    },
+    {
+      "name": "capacity",
+      "label": "Annual capacity",
+      "type": "number",
+      "semanticRole": "metric",
+      "rank": 1
+    },
+    {
+      "name": "utilization",
+      "label": "Utilization",
+      "type": "number",
+      "semanticRole": "highlight",
+      "rank": 1
+    },
+    {
+      "name": "commissioned",
+      "label": "Commissioned",
+      "type": "number",
+      "semanticRole": "highlight",
+      "rank": 2
+    },
+    {
+      "name": "location",
+      "label": "Location",
+      "type": "text",
+      "semanticRole": "highlight",
+      "rank": 3
+    },
+    {
+      "name": "capabilities",
+      "label": "Capabilities",
+      "type": "tags",
+      "semanticRole": "tags",
+      "rank": 1
+    },
+    {
+      "name": "overview",
+      "label": "Overview",
+      "type": "long-text",
+      "semanticRole": "description",
+      "rank": 1
+    },
+    {
+      "name": "image",
+      "label": "Plant image",
+      "type": "image",
+      "semanticRole": "media",
+      "rank": 1
+    },
+    {
+      "name": "status",
+      "label": "Operations",
+      "type": "select",
+      "semanticRole": "status",
+      "rank": 1
+    },
+    {
+      "name": "referenceCode",
+      "label": "Reference code",
+      "type": "text",
+      "semanticRole": "identifier",
+      "rank": 1
+    },
+    {
+      "name": "overdue",
+      "label": "Overdue",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 1
+    },
+    {
+      "name": "locked",
+      "label": "Locked",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 2
+    },
+    {
+      "name": "escalated",
+      "label": "Escalated",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 3
+    },
+    {
+      "name": "confidential",
+      "label": "Confidential",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 4
+    },
+    {
+      "name": "new",
+      "label": "New",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 5
+    },
+    {
+      "name": "updatedAt",
+      "label": "Last updated",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 1
+    },
+    {
+      "name": "createdAt",
+      "label": "Created",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 2
+    },
+    {
+      "name": "owner",
+      "label": "Owner",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 1
+    },
+    {
+      "name": "reviewer",
+      "label": "Reviewer",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 2
+    },
+    {
+      "name": "relatedRecord",
+      "label": "Related record",
+      "type": "text",
+      "semanticRole": "relation",
+      "rank": 1
+    },
+    {
+      "name": "nextAction",
+      "label": "Next action",
+      "type": "text",
+      "semanticRole": "action",
+      "rank": 1
+    },
+    {
+      "name": "secondaryAction",
+      "label": "Secondary action",
+      "type": "text",
+      "semanticRole": "action",
+      "rank": 2
+    }
+  ]
+}

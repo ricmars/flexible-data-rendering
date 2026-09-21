@@ -1,0 +1,167 @@
+{
+  "name": "Insurance policy",
+  "description": "An insurance model for policyholders, coverage, and renewals.",
+  "fields": [
+    {
+      "name": "policyHolder",
+      "label": "Policy holder",
+      "type": "text",
+      "semanticRole": "title",
+      "rank": 1
+    },
+    {
+      "name": "policyType",
+      "label": "Policy type",
+      "type": "text",
+      "semanticRole": "subtitle",
+      "rank": 1
+    },
+    {
+      "name": "coverageValue",
+      "label": "Coverage value",
+      "type": "currency",
+      "semanticRole": "metric",
+      "rank": 1
+    },
+    {
+      "name": "annualPremium",
+      "label": "Annual premium",
+      "type": "currency",
+      "semanticRole": "metric",
+      "rank": 2
+    },
+    {
+      "name": "renewalDate",
+      "label": "Renewal date",
+      "type": "date",
+      "semanticRole": "highlight",
+      "rank": 1
+    },
+    {
+      "name": "region",
+      "label": "Region",
+      "type": "text",
+      "semanticRole": "highlight",
+      "rank": 2
+    },
+    {
+      "name": "coverage",
+      "label": "Coverage",
+      "type": "tags",
+      "semanticRole": "tags",
+      "rank": 1
+    },
+    {
+      "name": "notes",
+      "label": "Policy notes",
+      "type": "long-text",
+      "semanticRole": "description",
+      "rank": 1
+    },
+    {
+      "name": "image",
+      "label": "Profile image",
+      "type": "image",
+      "semanticRole": "media",
+      "rank": 1
+    },
+    {
+      "name": "status",
+      "label": "Policy status",
+      "type": "select",
+      "semanticRole": "status",
+      "rank": 1
+    },
+    {
+      "name": "referenceCode",
+      "label": "Reference code",
+      "type": "text",
+      "semanticRole": "identifier",
+      "rank": 1
+    },
+    {
+      "name": "overdue",
+      "label": "Overdue",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 1
+    },
+    {
+      "name": "locked",
+      "label": "Locked",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 2
+    },
+    {
+      "name": "escalated",
+      "label": "Escalated",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 3
+    },
+    {
+      "name": "confidential",
+      "label": "Confidential",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 4
+    },
+    {
+      "name": "new",
+      "label": "New",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 5
+    },
+    {
+      "name": "updatedAt",
+      "label": "Last updated",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 1
+    },
+    {
+      "name": "createdAt",
+      "label": "Created",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 2
+    },
+    {
+      "name": "owner",
+      "label": "Owner",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 1
+    },
+    {
+      "name": "reviewer",
+      "label": "Reviewer",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 2
+    },
+    {
+      "name": "relatedRecord",
+      "label": "Related record",
+      "type": "text",
+      "semanticRole": "relation",
+      "rank": 1
+    },
+    {
+      "name": "nextAction",
+      "label": "Next action",
+      "type": "text",
+      "semanticRole": "action",
+      "rank": 1
+    },
+    {
+      "name": "secondaryAction",
+      "label": "Secondary action",
+      "type": "text",
+      "semanticRole": "action",
+      "rank": 2
+    }
+  ]
+}
