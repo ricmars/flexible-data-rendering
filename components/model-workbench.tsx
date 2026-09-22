@@ -25,12 +25,16 @@ import vehicleModel from '@/data/vehicle-model.json'
 import vehicles from '@/data/vehicles.json'
 import {
   AlertTriangle,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ClockAlert,
+  Eye,
+  EyeOff,
   Info,
   Layers3,
   LockKeyhole,
+  Pencil,
   ShieldAlert,
   Sparkles,
   X,
@@ -430,7 +434,7 @@ function FlagIndicator({
     <span
       title={`${label}: ${description}`}
       aria-label={`${label}: ${description}`}
-      className={`inline-flex items-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-medium text-amber-900 ${dense ? 'px-1.5' : ''}`}
+      className={`inline-flex items-center gap-1.5 rounded-md border border-border bg-muted px-2 py-1 text-xs font-medium text-foreground ${dense ? 'px-1.5' : ''}`}
     >
       <Icon aria-hidden="true" className="size-3.5 shrink-0" />
       <span className={dense ? 'sr-only' : undefined}>{label}</span>
@@ -450,12 +454,12 @@ function Detail({
   const metric = model.fields.find((field) => field.semanticRole === 'metric')
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/35 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-label={`${model.name} details`}
     >
-      <div className="w-full max-w-lg overflow-hidden rounded-2xl border bg-white shadow-2xl">
+      <div className="w-full max-w-lg overflow-hidden rounded-2xl border bg-card shadow-2xl">
         <div className="relative aspect-[2/1] bg-muted">
           <SafeImage
             src={item.image}
@@ -467,7 +471,7 @@ function Detail({
           <button
             onClick={onClose}
             aria-label="Close details"
-            className="absolute right-3 top-3 rounded-full bg-white/90 p-2 shadow"
+            className="absolute right-3 top-3 rounded-full bg-card/90 p-2 shadow"
           >
             <X className="size-4" />
           </button>
@@ -534,7 +538,7 @@ function OperatorPopover({
   return (
     <div className="fixed inset-0 z-40" onClick={onClose}>
       <div
-        className="absolute left-1/2 top-1/2 w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-white p-4 text-left shadow-2xl"
+        className="absolute left-1/2 top-1/2 w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-card p-4 text-left shadow-2xl"
         role="dialog"
         aria-label={`${name} operator details`}
         onClick={(event) => event.stopPropagation()}
@@ -579,65 +583,344 @@ function OperatorPopover({
   )
 }
 
-function RoleTooltip({
+function TemplateInspector({
+  template,
+  editingRole,
+}: {
+  template: Template
+  editingRole?: SemanticRole
+}) {
+  const definition = templates.find((entry) => entry.value === template)!
+  return (
+    <div className="text-xs text-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <span className="font-semibold">
+          {definition.label} · {definition.density} density
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="mr-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Render order
+          </span>
+          {definition.supportedRoles.map((role, index) => (
+            <span key={role} className="flex items-center">
+              <span
+                className={`semantic-region-${role} flex size-5 items-center justify-center rounded-full border text-[10px] font-bold`}
+                style={{
+                  backgroundColor: 'oklch(55% 0.16 var(--region-hue) / 0.25)',
+                }}
+              >
+                {role.charAt(0).toUpperCase()}
+              </span>
+              {index < definition.supportedRoles.length - 1 && (
+                <ChevronRight className="size-3 text-muted-foreground/40" />
+              )}
+            </span>
+          ))}
+        </span>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {definition.supportedRoles.map((role) => (
+          <RoleChipTag
+            key={role}
+            role={role}
+            editing={role === editingRole}
+            suffix={`: ${definition.slots[role] === 'all' ? 'all' : (definition.slots[role] ?? 0)}`}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function RoleChipTag({
   role,
-  children,
-  onHoverRole,
+  suffix,
+  editing,
 }: {
   role: SemanticRole
-  children: React.ReactNode
-  onHoverRole?: (role: SemanticRole | null) => void
+  suffix?: string
+  editing?: boolean
 }) {
-  const definition = contractRoleDefinitions[role]
   return (
     <span
-      className="group/role relative inline-flex"
-      onMouseEnter={() => onHoverRole?.(role)}
-      onMouseLeave={() => onHoverRole?.(null)}
+      className={`role-chip semantic-region-${role} inline-flex items-stretch overflow-hidden rounded-md border text-[11px] font-medium ${editing ? 'role-chip-editing' : ''}`}
     >
-      {children}
-      <span className="pointer-events-none invisible absolute bottom-full right-0 z-30 mb-2 w-64 rounded-xl bg-slate-950 p-3 text-left text-white opacity-0 shadow-xl transition group-hover/role:visible group-hover/role:opacity-100">
-        <span className="block text-xs font-semibold">{definition.label}</span>
-        <span className="mt-1 block text-[11px] leading-relaxed text-white/75">
-          {definition.definition}
-        </span>
-        <span className="mt-2 block text-[10px] text-white/55">
-          {definition.representation}
-        </span>
+      <span
+        className="flex w-5 shrink-0 items-center justify-center border-r border-current/25 font-bold"
+        style={{ backgroundColor: 'oklch(55% 0.16 var(--region-hue) / 0.3)' }}
+      >
+        {role.charAt(0).toUpperCase()}
+      </span>
+      <span className="px-2 py-1">
+        {contractRoleDefinitions[role].label}
+        {suffix}
       </span>
     </span>
   )
 }
 
-function TemplateInspector({
+function RoleChipDot({ role }: { role: SemanticRole }) {
+  return (
+    <span
+      className={`role-chip semantic-region-${role} flex size-full items-center justify-center rounded-full text-[11px] font-bold`}
+    >
+      {role.charAt(0).toUpperCase()}
+    </span>
+  )
+}
+
+function TemplateSample({
   template,
-  onHoverRole,
+  fields,
 }: {
   template: Template
-  onHoverRole: (role: SemanticRole | null) => void
+  fields: Field[]
 }) {
   const definition = templates.find((entry) => entry.value === template)!
-  return (
-    <div className="mb-4 rounded-xl border border-dashed border-cyan-300 bg-cyan-50/70 p-3 text-xs text-cyan-950">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="font-semibold">
-          {definition.label} · {definition.density} density
-        </span>
-        <span className="text-cyan-800/75">
-          {definition.regions.join(' · ')}
-        </span>
+  const usedRoles = new Set(fields.map((field) => field.semanticRole))
+  const supports = (role: SemanticRole) =>
+    definition.supportedRoles.includes(role) && usedRoles.has(role)
+
+  if (template === 'role-chip')
+    return (
+      <div className="inline-flex max-w-full items-center gap-2 rounded-full border bg-card px-3 py-2 text-sm shadow-sm">
+        {supports('media') && (
+          <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-muted">
+            <RoleChipDot role="media" />
+          </span>
+        )}
+        {supports('title') && (
+          <span className="min-w-0 truncate">
+            <RoleChipTag role="title" />
+          </span>
+        )}
+        {supports('status') && (
+          <span className="shrink-0">
+            <RoleChipTag role="status" />
+          </span>
+        )}
       </div>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {definition.supportedRoles.map((role) => (
-          <RoleTooltip key={role} role={role} onHoverRole={onHoverRole}>
-            <span className="rounded-full border border-cyan-200 bg-white px-2 py-1 font-medium text-cyan-900">
-              {contractRoleDefinitions[role].label}:{' '}
-              {definition.slots[role] === 'all'
-                ? 'all'
-                : (definition.slots[role] ?? 0)}
+    )
+
+  if (template === 'row')
+    return (
+      <div className="flex w-full items-center gap-3 rounded-xl border bg-card px-4 py-3">
+        {supports('media') && (
+          <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted">
+            <RoleChipDot role="media" />
+          </span>
+        )}
+        <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
+          {supports('title') && <RoleChipTag role="title" />}
+          {supports('subtitle') && <RoleChipTag role="subtitle" />}
+          {supports('identifier') && <RoleChipTag role="identifier" />}
+        </span>
+        {supports('status') && <RoleChipTag role="status" />}
+        {supports('flags') && <RoleChipTag role="flags" />}
+        {supports('metric') && <RoleChipTag role="metric" />}
+        {(supports('temporal') || supports('people')) && (
+          <span className="hidden flex-col items-end gap-1 sm:flex">
+            {supports('temporal') && <RoleChipTag role="temporal" />}
+            {supports('people') && <RoleChipTag role="people" />}
+          </span>
+        )}
+        {supports('action') && <RoleChipTag role="action" />}
+      </div>
+    )
+
+  if (template === 'summary')
+    return (
+      <div className="overflow-hidden rounded-xl border bg-card p-4 text-sm">
+        <div className="flex min-w-0 items-start gap-3">
+          {supports('media') && (
+            <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted">
+              <RoleChipDot role="media" />
             </span>
-          </RoleTooltip>
-        ))}
+          )}
+          <div className="min-w-0 flex-1 space-y-1">
+            {supports('title') && <RoleChipTag role="title" />}
+            <div className="flex flex-wrap gap-1.5">
+              {supports('subtitle') && <RoleChipTag role="subtitle" />}
+              {supports('identifier') && <RoleChipTag role="identifier" />}
+            </div>
+          </div>
+          <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+            {supports('status') && <RoleChipTag role="status" />}
+            {supports('priority') && <RoleChipTag role="priority" />}
+          </div>
+        </div>
+        {supports('flags') && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            <RoleChipTag role="flags" />
+          </div>
+        )}
+        {supports('highlight') && (
+          <div className="mt-3 grid gap-3 border-y py-3 sm:grid-cols-3">
+            <RoleChipTag role="highlight" />
+            <RoleChipTag role="highlight" />
+            <RoleChipTag role="highlight" />
+          </div>
+        )}
+        {supports('description') && (
+          <p className="mt-3">
+            <RoleChipTag role="description" />
+          </p>
+        )}
+        {(supports('temporal') ||
+          supports('people') ||
+          supports('relation')) && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {supports('temporal') && <RoleChipTag role="temporal" />}
+            {supports('people') && <RoleChipTag role="people" />}
+            {supports('relation') && <RoleChipTag role="relation" />}
+          </div>
+        )}
+        {supports('tags') && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            <RoleChipTag role="tags" />
+          </div>
+        )}
+        {supports('action') && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            <RoleChipTag role="action" />
+          </div>
+        )}
+      </div>
+    )
+
+  if (template === 'detail-header')
+    return (
+      <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
+        {supports('media') && (
+          <div className="flex h-44 w-full items-center justify-center bg-muted">
+            <RoleChipTag role="media" />
+          </div>
+        )}
+        <div className="flex flex-col gap-2 p-4">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Collection item
+          </p>
+          {supports('title') && (
+            <span className="text-xl">
+              <RoleChipTag role="title" />
+            </span>
+          )}
+          <div className="space-y-3">
+            {supports('identifier') && (
+              <div className="flex flex-wrap gap-1.5">
+                <RoleChipTag role="identifier" />
+              </div>
+            )}
+            {(supports('status') ||
+              supports('priority') ||
+              supports('flags')) && (
+              <div className="flex flex-wrap gap-1.5">
+                {supports('status') && <RoleChipTag role="status" />}
+                {supports('priority') && <RoleChipTag role="priority" />}
+                {supports('flags') && <RoleChipTag role="flags" />}
+              </div>
+            )}
+            {supports('tags') && (
+              <div className="flex flex-wrap gap-1.5">
+                <RoleChipTag role="tags" />
+              </div>
+            )}
+            {supports('progress') && (
+              <div className="rounded-md bg-muted/50 p-2 text-xs">
+                <RoleChipTag role="progress" />
+              </div>
+            )}
+          </div>
+          {supports('subtitle') && <RoleChipTag role="subtitle" />}
+          {supports('metric') && <RoleChipTag role="metric" />}
+          {supports('description') && <RoleChipTag role="description" />}
+          {supports('temporal') && (
+            <div className="flex flex-wrap gap-2">
+              <RoleChipTag role="temporal" />
+            </div>
+          )}
+          {supports('location') && <RoleChipTag role="location" />}
+          {supports('people') && (
+            <div className="flex flex-wrap gap-2">
+              <RoleChipTag role="people" />
+            </div>
+          )}
+          {supports('annotation') && <RoleChipTag role="annotation" />}
+          {supports('relation') && (
+            <div className="flex flex-wrap gap-2">
+              <RoleChipTag role="relation" />
+            </div>
+          )}
+          {supports('secondary') && (
+            <div className="grid gap-2 sm:grid-cols-2">
+              <div className="rounded-md bg-muted/50 p-2 text-xs">
+                <RoleChipTag role="secondary" />
+              </div>
+              <div className="rounded-md bg-muted/50 p-2 text-xs">
+                <RoleChipTag role="secondary" />
+              </div>
+            </div>
+          )}
+          {supports('action') && (
+            <div className="flex flex-wrap gap-2">
+              <RoleChipTag role="action" />
+            </div>
+          )}
+        </div>
+      </div>
+    )
+
+  // tile
+  return (
+    <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
+      {supports('media') && (
+        <div className="relative flex aspect-[16/9] w-full items-center justify-center bg-muted">
+          <RoleChipTag role="media" />
+          {supports('status') && (
+            <span className="absolute left-3 top-3">
+              <RoleChipTag role="status" />
+            </span>
+          )}
+        </div>
+      )}
+      <div className="flex flex-col gap-3 p-4">
+        <div className="flex flex-col items-start gap-1">
+          {supports('title') && <RoleChipTag role="title" />}
+          {supports('subtitle') && <RoleChipTag role="subtitle" />}
+        </div>
+        {supports('flags') && (
+          <div className="flex flex-wrap gap-1.5">
+            <RoleChipTag role="flags" />
+          </div>
+        )}
+        {supports('highlight') && (
+          <div className="grid gap-2 border-y py-3 sm:grid-cols-2">
+            <RoleChipTag role="highlight" />
+            <RoleChipTag role="highlight" />
+          </div>
+        )}
+        {supports('tags') && (
+          <div className="flex flex-wrap gap-1.5">
+            <RoleChipTag role="tags" />
+          </div>
+        )}
+        {supports('progress') && (
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <RoleChipTag role="progress" />
+              <span>72%</span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+              <div className="h-full w-2/3 rounded-full bg-cyan-600" />
+            </div>
+          </div>
+        )}
+        {supports('description') && <RoleChipTag role="description" />}
+        {supports('action') && (
+          <div className="flex flex-wrap gap-2 border-t pt-3">
+            <RoleChipTag role="action" />
+          </div>
+        )}
       </div>
     </div>
   )
@@ -656,17 +939,14 @@ export default function ModelWorkbench() {
   const [fields, setFields] = useState<Field[]>(
     canonicalizeFields(modelSources.vehicle.model.fields),
   )
-  const [selectedId, setSelectedId] = useState(
-    modelSources.vehicle.model.fields[0].name,
-  )
+  const [selectedId, setSelectedId] = useState('')
   const [template, setTemplate] = useState<Template>('tile')
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('All statuses')
   const [sort, setSort] = useState('Available first')
   const [page, setPage] = useState(1)
-  const [mode, setMode] = useState<'editor' | 'preview'>('editor')
+  const [isEditingModel, setIsEditingModel] = useState(false)
   const [highlightRegions, setHighlightRegions] = useState(false)
-  const [hoveredRole, setHoveredRole] = useState<SemanticRole | null>(null)
   const [detail, setDetail] = useState<RecordItem | null>(null)
   const [operator, setOperator] = useState<{
     name: string
@@ -676,7 +956,10 @@ export default function ModelWorkbench() {
     () => makeRecords(fields, modelSources[modelId].records),
     [fields, modelId],
   )
-  const selected = fields.find((field) => field.name === selectedId)
+  const editingRole = fields.find(
+    (field) => field.name === selectedId,
+  )?.semanticRole
+  const activeTemplateDef = templates.find((entry) => entry.value === template)!
   const visible = useMemo(() => {
     const result = records
       .filter((item) =>
@@ -723,15 +1006,15 @@ export default function ModelWorkbench() {
     const next = modelSources[id] ?? modelSources.vehicle
     setModelId(id)
     setFields(canonicalizeFields(next.model.fields))
-    setSelectedId(next.model.fields[0].name)
+    setSelectedId('')
     setPage(1)
     setQuery('')
     setDetail(null)
   }
   const renderItems = () => {
     const roleClass = (role: SemanticRole) =>
-      highlightRegions
-        ? `semantic-region semantic-region-${role}${hoveredRole === role ? ' semantic-region-hovered' : ''}`
+      isEditingModel && editingRole === role
+        ? `semantic-region semantic-region-${role} semantic-region-editing`
         : ''
     const slotSelectionFor = (item: RecordItem) => {
       const definition = templates.find((entry) => entry.value === template)
@@ -784,7 +1067,7 @@ export default function ModelWorkbench() {
           key={entry.field.name}
           role="button"
           tabIndex={0}
-          className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border bg-white px-2 py-1 text-xs font-medium text-foreground shadow-sm hover:border-cyan-400"
+          className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border bg-card px-2 py-1 text-xs font-medium text-foreground shadow-sm hover:border-cyan-400"
           onClick={(event) => {
             event.stopPropagation()
             setOperator({ name, fieldLabel: entry.field.label })
@@ -838,9 +1121,11 @@ export default function ModelWorkbench() {
               <button
                 key={item.id}
                 onClick={() => setDetail(item)}
-                className="inline-flex max-w-full items-center gap-2 rounded-full border bg-white px-3 py-2 text-left text-sm shadow-sm transition hover:border-cyan-400 hover:shadow-md"
+                className="inline-flex max-w-full items-center gap-2 rounded-full border bg-card px-3 py-2 text-left text-sm shadow-sm transition hover:border-cyan-400 hover:shadow-md"
               >
-                <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-cyan-100 text-[10px] font-semibold text-cyan-800">
+                <span
+                  className={`grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-cyan-100 text-[10px] font-semibold text-cyan-800 ${roleClass('media')}`}
+                >
                   <SafeImage
                     src={item.image}
                     alt=""
@@ -849,10 +1134,14 @@ export default function ModelWorkbench() {
                     className="size-full object-cover"
                   />
                 </span>
-                <span className="min-w-0 truncate font-medium">
+                <span
+                  className={`min-w-0 truncate font-medium ${roleClass('title')}`}
+                >
                   {String(title)}
                 </span>
-                <span className="shrink-0 text-xs text-muted-foreground">
+                <span
+                  className={`shrink-0 text-xs text-muted-foreground ${roleClass('status')}`}
+                >
                   {String(status)}
                 </span>
               </button>
@@ -862,14 +1151,16 @@ export default function ModelWorkbench() {
       )
     if (template === 'row')
       return (
-        <div className="overflow-hidden rounded-xl border bg-white">
+        <div className="overflow-hidden rounded-xl border bg-card">
           {pageItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setDetail(item)}
               className="flex w-full items-center gap-3 border-b px-4 py-3 text-left transition last:border-0 hover:bg-muted/40"
             >
-              <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-cyan-100 text-xs font-semibold text-cyan-800">
+              <span
+                className={`grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-cyan-100 text-xs font-semibold text-cyan-800 ${roleClass('media')}`}
+              >
                 <SafeImage
                   src={item.image}
                   alt=""
@@ -879,10 +1170,14 @@ export default function ModelWorkbench() {
                 />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium">
+                <span
+                  className={`block truncate text-sm font-medium ${roleClass('title')}`}
+                >
                   {item.name}
                 </span>
-                <span className="block truncate text-xs text-muted-foreground">
+                <span
+                  className={`block truncate text-xs text-muted-foreground ${roleClass('subtitle')}`}
+                >
                   {item.subtitle || item.location}
                 </span>
                 {selectedValuesFor(item, 'identifier').map((entry) => (
@@ -914,7 +1209,9 @@ export default function ModelWorkbench() {
                     ))}
                 </span>
               )}
-              <span className="shrink-0 text-right text-sm font-medium">
+              <span
+                className={`shrink-0 text-right text-sm font-medium ${roleClass('metric')}`}
+              >
                 {selectedMetricTextFor(item)}
               </span>
               <span className="hidden shrink-0 flex-col items-end gap-1 text-[11px] text-muted-foreground sm:flex">
@@ -934,7 +1231,7 @@ export default function ModelWorkbench() {
               </span>
               {selectedValuesFor(item, 'action').length > 0 && (
                 <span
-                  className={`hidden shrink-0 rounded-md bg-slate-950 px-2 py-1 text-xs font-medium text-white sm:block ${roleClass('action')}`}
+                  className={`hidden shrink-0 rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-foreground sm:block ${roleClass('action')}`}
                 >
                   {String(selectedValueFor(item, 'action'))}
                 </span>
@@ -953,14 +1250,14 @@ export default function ModelWorkbench() {
               data-resolved-roles={Object.keys(
                 slotSelectionFor(item).byRole,
               ).join(',')}
-              className="group overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition hover:shadow-md"
+              className="group overflow-hidden rounded-2xl border bg-card text-left shadow-sm transition hover:shadow-md"
             >
               <SafeImage
                 src={item.image}
                 alt={item.name}
                 width={1200}
                 height={400}
-                className="h-44 w-full object-cover"
+                className={`h-44 w-full object-cover ${roleClass('media')}`}
               />
               <div className="flex flex-col gap-2 p-4">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -987,7 +1284,7 @@ export default function ModelWorkbench() {
                       {selectedValuesFor(item, 'status').map((entry) => (
                         <span
                           key={entry.field.name}
-                          className={`rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-800 ${roleClass('status')}`}
+                          className={`rounded-full bg-muted px-2 py-1 text-xs text-foreground ${roleClass('status')}`}
                         >
                           {String(entry.displayValue)}
                         </span>
@@ -1123,7 +1420,7 @@ export default function ModelWorkbench() {
                         {selectedValuesFor(item, 'action').map((entry) => (
                           <span
                             key={entry.field.name}
-                            className="rounded-md bg-slate-950 px-2.5 py-1.5 text-xs font-medium text-white"
+                            className="rounded-md bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
                           >
                             {String(entry.displayValue)}
                           </span>
@@ -1281,7 +1578,7 @@ export default function ModelWorkbench() {
                   {selectedValuesFor(item, 'action').map((entry) => (
                     <span
                       key={entry.field.name}
-                      className="rounded-md bg-slate-950 px-2.5 py-1.5 text-xs font-medium text-white"
+                      className="rounded-md bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
                     >
                       {String(entry.displayValue)}
                     </span>
@@ -1313,7 +1610,7 @@ export default function ModelWorkbench() {
               />
               {selectedValuesFor(item, 'status').length > 0 && (
                 <span
-                  className={`absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider shadow-sm ${roleClass('status')}`}
+                  className={`absolute left-3 top-3 rounded-full bg-card/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider shadow-sm ${roleClass('status')}`}
                 >
                   {String(selectedValueFor(item, 'status'))}
                 </span>
@@ -1388,29 +1685,38 @@ export default function ModelWorkbench() {
                   )}
                 </div>
               )}
-              {template === 'tile' && (
-                <div className={`space-y-1.5 ${roleClass('progress')}`}>
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>
-                      {String(selectedValueFor(item, 'progress') ?? 'Progress')}
-                    </span>
-                    <span>{item.available ? '72%' : '42%'}</span>
-                  </div>
-                  <div
-                    className="h-2 overflow-hidden rounded-full bg-muted"
-                    aria-label="Progress"
-                    role="progressbar"
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuenow={item.available ? 72 : 42}
-                  >
-                    <div
-                      className="h-full rounded-full bg-cyan-600"
-                      style={{ width: item.available ? '72%' : '42%' }}
-                    />
-                  </div>
-                </div>
-              )}
+              {template === 'tile' &&
+                selectedValuesFor(item, 'progress').length > 0 &&
+                (() => {
+                  const entry = selectedValuesFor(item, 'progress')[0]
+                  const numeric = Number(entry.value)
+                  const percent = Number.isFinite(numeric)
+                    ? Math.max(0, Math.min(100, numeric))
+                    : item.available
+                      ? 72
+                      : 42
+                  return (
+                    <div className={`space-y-1.5 ${roleClass('progress')}`}>
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>{entry.field.label}</span>
+                        <span>{Math.round(percent)}%</span>
+                      </div>
+                      <div
+                        className="h-2 overflow-hidden rounded-full bg-muted"
+                        aria-label={entry.field.label}
+                        role="progressbar"
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={Math.round(percent)}
+                      >
+                        <div
+                          className="h-full rounded-full bg-cyan-600"
+                          style={{ width: `${percent}%` }}
+                        />
+                      </div>
+                    </div>
+                  )
+                })()}
               {selectedValuesFor(item, 'description').length > 0 && (
                 <p
                   className={`line-clamp-2 text-xs leading-relaxed text-muted-foreground ${roleClass('description')}`}
@@ -1425,7 +1731,7 @@ export default function ModelWorkbench() {
                   {selectedValuesFor(item, 'action').map((entry) => (
                     <span
                       key={entry.field.name}
-                      className="rounded-md bg-slate-950 px-2.5 py-1.5 text-xs font-medium text-white"
+                      className="rounded-md bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
                     >
                       {String(entry.displayValue)}
                     </span>
@@ -1439,7 +1745,7 @@ export default function ModelWorkbench() {
     )
   }
   return (
-    <main className="min-h-screen bg-[#f6f8fb] text-foreground">
+    <main className="min-h-screen bg-background text-foreground">
       {detail && (
         <Detail
           item={detail}
@@ -1455,34 +1761,13 @@ export default function ModelWorkbench() {
         />
       )}
       <div className="mx-auto max-w-[1500px] px-6 py-6">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              {activeModel.name} model
-            </h1>
-          </div>
-          <div className="flex items-center gap-1 rounded-xl border bg-white p-1 text-xs shadow-sm">
-            <button
-              onClick={() => setMode('editor')}
-              className={`rounded-lg px-3 py-2 font-medium ${mode === 'editor' ? 'bg-slate-950 text-white' : 'text-muted-foreground'}`}
-            >
-              Model editor
-            </button>
-            <button
-              onClick={() => setMode('preview')}
-              className={`rounded-lg px-3 py-2 font-medium ${mode === 'preview' ? 'bg-slate-950 text-white' : 'text-muted-foreground'}`}
-            >
-              Preview mode
-            </button>
-          </div>
-        </div>
         <div className="mb-5 flex flex-wrap items-center gap-3">
           <label className="flex items-center gap-2 text-sm font-medium">
             Data object{' '}
             <select
               value={modelId}
               onChange={(event) => switchModel(event.target.value)}
-              className="rounded-lg border bg-white px-3 py-2 text-sm shadow-sm"
+              className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm"
             >
               {models.map((entry) => (
                 <option key={entry.id} value={entry.id}>
@@ -1492,107 +1777,36 @@ export default function ModelWorkbench() {
             </select>
           </label>
         </div>
-        {mode === 'editor' ? (
-          <div className="grid gap-6 xl:grid-cols-[350px_minmax(0,1fr)]">
-            <aside className="overflow-hidden rounded-2xl border bg-white shadow-sm">
-              <div className="flex items-center justify-between border-b px-4 py-4">
-                <div>
-                  <p className="text-sm font-semibold">Data model</p>
-                  <p className="text-xs text-muted-foreground">
-                    {fields.length} fields · {activeModel.name}
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-1 p-2">
-                {fields.map((field) => (
-                  <button
-                    key={field.name}
-                    onClick={() => setSelectedId(field.name)}
-                    className={`flex items-center justify-between rounded-xl px-3 py-3 text-left ${selectedId === field.name ? 'bg-slate-950 text-white' : 'hover:bg-muted/60'}`}
-                  >
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-medium">
-                        {field.label}
-                      </span>
-                      <span
-                        className={`block truncate text-[11px] ${selectedId === field.name ? 'text-white/60' : 'text-muted-foreground'}`}
-                      >
-                        {field.name} · {field.type}
-                      </span>
-                    </span>
-                    <span className="flex shrink-0 items-center gap-1">
-                      <RoleTooltip role={field.semanticRole}>
-                        <span className="rounded-full border bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                          {semanticRoleLabels[field.semanticRole]}
-                        </span>
-                      </RoleTooltip>
-                      <span className="rounded-full border bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                        Rank {field.rank}
-                      </span>
-                    </span>
-                  </button>
-                ))}
-              </div>
-              {selected && (
-                <div className="border-t bg-muted/20 p-4">
-                  <div className="mb-3 flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Semantic role
-                      </p>
-                      <p className="mt-1 text-sm font-medium">
-                        {selected.label}
-                      </p>
-                    </div>
-                  </div>
-                  <select
-                    value={selected.semanticRole}
-                    onChange={(event) =>
-                      updateSemanticRole(event.target.value as SemanticRole)
-                    }
-                    className="w-full rounded-lg border bg-white px-3 py-2 text-sm"
-                  >
-                    {semanticRoles.map((semanticRole) => (
-                      <option key={semanticRole} value={semanticRole}>
-                        {semanticRoleLabels[semanticRole]}
-                      </option>
-                    ))}
-                  </select>
-                  <label className="mt-3 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Rank
-                    <input
-                      type="number"
-                      min={1}
-                      step={1}
-                      value={selected.rank}
-                      onChange={(event) =>
-                        updateRank(Number(event.target.value))
-                      }
-                      className="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm font-normal text-foreground"
-                    />
-                  </label>
-                  <div className="mt-3 rounded-lg border bg-white p-3 text-xs">
-                    <div className="flex items-center gap-2 font-semibold">
-                      <Info className="size-3.5 text-cyan-700" />
-                      {contractRoleDefinitions[selected.semanticRole].label}
-                    </div>
-                    <p className="mt-1 leading-relaxed text-muted-foreground">
-                      {
-                        contractRoleDefinitions[selected.semanticRole]
-                          .definition
-                      }
-                    </p>
-                    <p className="mt-2 text-[10px] text-muted-foreground">
-                      {
-                        contractRoleDefinitions[selected.semanticRole]
-                          .representation
-                      }
-                    </p>
-                  </div>
-                </div>
-              )}
-            </aside>
-            <section className="min-w-0">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {activeModel.name} model
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {fields.length} fields · {activeModel.description}
+            </p>
+          </div>
+          <Button
+            variant={isEditingModel ? 'default' : 'outline'}
+            onClick={() =>
+              setIsEditingModel((current) => {
+                const next = !current
+                setHighlightRegions(next)
+                return next
+              })
+            }
+          >
+            <Pencil className="size-3.5" />
+            {isEditingModel ? 'Done editing' : 'Edit data model'}
+          </Button>
+        </div>
+        {isEditingModel ? (
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_350px]">
+            <section className="min-w-0 rounded-2xl border-2 border-dashed border-primary/40 bg-primary/[0.03] p-4">
+              <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
+                <Sparkles className="size-3.5" />
+                Live preview
+              </p>
               {renderToolbar(
                 activeModel,
                 template,
@@ -1608,10 +1822,134 @@ export default function ModelWorkbench() {
                 visible.length,
                 highlightRegions,
                 setHighlightRegions,
-                setHoveredRole,
+                fields,
+                editingRole,
               )}
               {renderItems()}
+              <p className="mt-4 text-xs text-muted-foreground">
+                Showing {Math.min((page - 1) * 6 + 1, visible.length)}–
+                {Math.min(page * 6, visible.length)} of {visible.length} records
+              </p>
             </section>
+            <aside className="overflow-hidden rounded-2xl border bg-card shadow-sm">
+              <div className="border-b px-4 py-4">
+                <p className="text-sm font-semibold">Data model</p>
+                <p className="text-xs text-muted-foreground">
+                  {fields.length} fields · {activeModel.name}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1 p-2">
+                {fields.map((field) => {
+                  const isOpen = selectedId === field.name
+                  const isPresent = activeTemplateDef.supportedRoles.includes(
+                    field.semanticRole,
+                  )
+                  return (
+                    <div
+                      key={field.name}
+                      className={`overflow-hidden rounded-xl ${isOpen ? 'border border-primary/30' : ''}`}
+                    >
+                      <button
+                        onClick={() => setSelectedId(isOpen ? '' : field.name)}
+                        className={`flex w-full items-center gap-3 px-3 py-3 text-left ${isOpen ? 'bg-primary/10' : 'rounded-xl hover:bg-muted/60'}`}
+                      >
+                        <span
+                          className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${isOpen ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground'}`}
+                        >
+                          {field.rank}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-medium">
+                            {field.label}
+                          </span>
+                          <span className="block truncate text-[11px] text-muted-foreground">
+                            {field.name} ·{' '}
+                            <span className="font-mono">{field.type}</span>
+                          </span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-1.5">
+                          <RoleChipTag role={field.semanticRole} />
+                          <span
+                            title={
+                              isPresent
+                                ? `Shown in ${activeTemplateDef.label}`
+                                : `Not used by ${activeTemplateDef.label}`
+                            }
+                          >
+                            {isPresent ? (
+                              <Eye className="size-3.5 text-foreground" />
+                            ) : (
+                              <EyeOff className="size-3.5 text-muted-foreground/40" />
+                            )}
+                          </span>
+                          <ChevronDown
+                            className={`size-3.5 shrink-0 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                          />
+                        </span>
+                      </button>
+                      {isOpen && (
+                        <div className="border-t border-primary/20 bg-card p-4">
+                          <div className="mb-3">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                              Semantic role
+                            </p>
+                          </div>
+                          <select
+                            value={field.semanticRole}
+                            onChange={(event) =>
+                              updateSemanticRole(
+                                event.target.value as SemanticRole,
+                              )
+                            }
+                            className="w-full rounded-lg border bg-card px-3 py-2 text-sm"
+                          >
+                            {semanticRoles.map((semanticRole) => (
+                              <option key={semanticRole} value={semanticRole}>
+                                {semanticRoleLabels[semanticRole]}
+                              </option>
+                            ))}
+                          </select>
+                          <label className="mt-3 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                            Rank
+                            <input
+                              type="number"
+                              min={1}
+                              step={1}
+                              value={field.rank}
+                              onChange={(event) =>
+                                updateRank(Number(event.target.value))
+                              }
+                              className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal text-foreground"
+                            />
+                          </label>
+                          <div className="mt-3 rounded-lg border bg-card p-3 text-xs">
+                            <div className="flex items-center gap-2 font-semibold">
+                              <Info className="size-3.5 text-cyan-700" />
+                              {
+                                contractRoleDefinitions[field.semanticRole]
+                                  .label
+                              }
+                            </div>
+                            <p className="mt-1 leading-relaxed text-muted-foreground">
+                              {
+                                contractRoleDefinitions[field.semanticRole]
+                                  .definition
+                              }
+                            </p>
+                            <p className="mt-2 text-[10px] text-muted-foreground">
+                              {
+                                contractRoleDefinitions[field.semanticRole]
+                                  .representation
+                              }
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </aside>
           </div>
         ) : (
           <section>
@@ -1630,15 +1968,15 @@ export default function ModelWorkbench() {
               visible.length,
               highlightRegions,
               setHighlightRegions,
-              setHoveredRole,
+              fields,
             )}
             {renderItems()}
+            <p className="mt-4 text-xs text-muted-foreground">
+              Showing {Math.min((page - 1) * 6 + 1, visible.length)}–
+              {Math.min(page * 6, visible.length)} of {visible.length} records
+            </p>
           </section>
         )}
-        <p className="mt-4 text-xs text-muted-foreground">
-          Showing {Math.min((page - 1) * 6 + 1, visible.length)}–
-          {Math.min(page * 6, visible.length)} of {visible.length} records
-        </p>
       </div>
     </main>
   )
@@ -1659,58 +1997,80 @@ function renderToolbar(
   resultCount: number,
   highlightRegions: boolean,
   setHighlightRegions: (value: boolean) => void,
-  onHoverRole: (role: SemanticRole | null) => void,
+  fields: Field[],
+  editingRole?: SemanticRole,
 ) {
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-2">
-      <select
-        aria-label="Choose template"
-        value={template}
-        onChange={(event) => setTemplate(event.target.value as Template)}
-        className="rounded-lg border bg-white px-3 py-2.5 text-sm shadow-sm"
-      >
-        {templates.map((entry) => (
-          <option key={entry.value} value={entry.value}>
-            {entry.label} · {entry.density} · {entry.description}
-          </option>
-        ))}
-      </select>
-      <button
-        type="button"
-        aria-pressed={highlightRegions}
-        onClick={() => setHighlightRegions(!highlightRegions)}
-        className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm shadow-sm ${highlightRegions ? 'border-cyan-400 bg-cyan-50 text-cyan-950' : 'bg-white'}`}
-      >
-        <Layers3 className="size-4" />
-        Inspect structure
-      </button>
+    <div className="mb-4 flex flex-col gap-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <select
+          aria-label="Choose template"
+          value={template}
+          onChange={(event) => setTemplate(event.target.value as Template)}
+          className="rounded-lg border bg-card px-3 py-2.5 text-sm shadow-sm"
+        >
+          {templates.map((entry) => (
+            <option key={entry.value} value={entry.value}>
+              {entry.label} · {entry.density} · {entry.description}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          aria-pressed={highlightRegions}
+          onClick={() => setHighlightRegions(!highlightRegions)}
+          className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm shadow-sm ${highlightRegions ? 'border-border bg-muted text-foreground' : 'bg-card'}`}
+        >
+          <Layers3 className="size-4" />
+          {highlightRegions ? 'Hide' : 'Show'} template structure
+        </button>
+
+        {resultCount > 0 && (
+          <div className="ml-auto flex items-center gap-1 rounded-lg border bg-card p-1 text-xs shadow-sm">
+            <button
+              type="button"
+              aria-label="Previous page"
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            <span className="px-2 font-medium">
+              Page {page} of {Math.ceil(resultCount / 6)}
+            </span>
+            <button
+              type="button"
+              aria-label="Next page"
+              disabled={page >= Math.ceil(resultCount / 6)}
+              onClick={() => setPage(page + 1)}
+              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </div>
+        )}
+      </div>
 
       {highlightRegions && (
-        <TemplateInspector template={template} onHoverRole={onHoverRole} />
-      )}
-      {resultCount > 0 && (
-        <div className="ml-auto flex items-center gap-1 rounded-lg border bg-white p-1 text-xs shadow-sm">
-          <button
-            type="button"
-            aria-label="Previous page"
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
-          >
-            <ChevronLeft className="size-4" />
-          </button>
-          <span className="px-2 font-medium">
-            Page {page} of {Math.ceil(resultCount / 6)}
-          </span>
-          <button
-            type="button"
-            aria-label="Next page"
-            disabled={page >= Math.ceil(resultCount / 6)}
-            onClick={() => setPage(page + 1)}
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
-          >
-            <ChevronRight className="size-4" />
-          </button>
+        <div className="rounded-2xl border border-primary/30 shadow-sm">
+          <div className="rounded-t-2xl border-b border-dashed border-primary/20 bg-muted p-3">
+            <TemplateInspector template={template} editingRole={editingRole} />
+          </div>
+          <div className="rounded-b-2xl bg-muted/30 p-4">
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Isolated preview
+            </p>
+            <div
+              className={
+                template === 'tile' || template === 'detail-header'
+                  ? 'max-w-sm'
+                  : 'w-full'
+              }
+            >
+              <TemplateSample template={template} fields={fields} />
+            </div>
+          </div>
         </div>
       )}
     </div>
