@@ -430,7 +430,7 @@ function FlagIndicator({
     <span
       title={`${label}: ${description}`}
       aria-label={`${label}: ${description}`}
-      className={`inline-flex items-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-medium text-amber-900 ${dense ? 'px-1.5' : ''}`}
+      className={`inline-flex items-center gap-1.5 rounded-md border border-border bg-muted px-2 py-1 text-xs font-medium text-foreground ${dense ? 'px-1.5' : ''}`}
     >
       <Icon aria-hidden="true" className="size-3.5 shrink-0" />
       <span className={dense ? 'sr-only' : undefined}>{label}</span>
@@ -450,12 +450,12 @@ function Detail({
   const metric = model.fields.find((field) => field.semanticRole === 'metric')
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/35 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-label={`${model.name} details`}
     >
-      <div className="w-full max-w-lg overflow-hidden rounded-2xl border bg-white shadow-2xl">
+      <div className="w-full max-w-lg overflow-hidden rounded-2xl border bg-card shadow-2xl">
         <div className="relative aspect-[2/1] bg-muted">
           <SafeImage
             src={item.image}
@@ -467,7 +467,7 @@ function Detail({
           <button
             onClick={onClose}
             aria-label="Close details"
-            className="absolute right-3 top-3 rounded-full bg-white/90 p-2 shadow"
+            className="absolute right-3 top-3 rounded-full bg-card/90 p-2 shadow"
           >
             <X className="size-4" />
           </button>
@@ -534,7 +534,7 @@ function OperatorPopover({
   return (
     <div className="fixed inset-0 z-40" onClick={onClose}>
       <div
-        className="absolute left-1/2 top-1/2 w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-white p-4 text-left shadow-2xl"
+        className="absolute left-1/2 top-1/2 w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-card p-4 text-left shadow-2xl"
         role="dialog"
         aria-label={`${name} operator details`}
         onClick={(event) => event.stopPropagation()}
@@ -596,12 +596,12 @@ function RoleTooltip({
       onMouseLeave={() => onHoverRole?.(null)}
     >
       {children}
-      <span className="pointer-events-none invisible absolute bottom-full right-0 z-30 mb-2 w-64 rounded-xl bg-slate-950 p-3 text-left text-white opacity-0 shadow-xl transition group-hover/role:visible group-hover/role:opacity-100">
+      <span className="pointer-events-none invisible absolute bottom-full right-0 z-30 mb-2 w-64 rounded-xl bg-primary p-3 text-left text-primary-foreground opacity-0 shadow-xl transition group-hover/role:visible group-hover/role:opacity-100">
         <span className="block text-xs font-semibold">{definition.label}</span>
-        <span className="mt-1 block text-[11px] leading-relaxed text-white/75">
+        <span className="mt-1 block text-[11px] leading-relaxed text-primary-foreground/75">
           {definition.definition}
         </span>
-        <span className="mt-2 block text-[10px] text-white/55">
+        <span className="mt-2 block text-[10px] text-primary-foreground/55">
           {definition.representation}
         </span>
       </span>
@@ -618,7 +618,7 @@ function TemplateInspector({
 }) {
   const definition = templates.find((entry) => entry.value === template)!
   return (
-    <div className="mb-4 rounded-xl border border-dashed border-cyan-300 bg-cyan-50/70 p-3 text-xs text-cyan-950">
+    <div className="mb-4 rounded-xl border border-dashed border-border bg-muted p-3 text-xs text-foreground">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <span className="font-semibold">
           {definition.label} · {definition.density} density
@@ -630,7 +630,7 @@ function TemplateInspector({
       <div className="mt-3 flex flex-wrap gap-1.5">
         {definition.supportedRoles.map((role) => (
           <RoleTooltip key={role} role={role} onHoverRole={onHoverRole}>
-            <span className="rounded-full border border-cyan-200 bg-white px-2 py-1 font-medium text-cyan-900">
+            <span className="rounded-full border border-border bg-card px-2 py-1 font-medium text-foreground">
               {contractRoleDefinitions[role].label}:{' '}
               {definition.slots[role] === 'all'
                 ? 'all'
@@ -784,7 +784,7 @@ export default function ModelWorkbench() {
           key={entry.field.name}
           role="button"
           tabIndex={0}
-          className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border bg-white px-2 py-1 text-xs font-medium text-foreground shadow-sm hover:border-cyan-400"
+          className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border bg-card px-2 py-1 text-xs font-medium text-foreground shadow-sm hover:border-cyan-400"
           onClick={(event) => {
             event.stopPropagation()
             setOperator({ name, fieldLabel: entry.field.label })
@@ -838,7 +838,7 @@ export default function ModelWorkbench() {
               <button
                 key={item.id}
                 onClick={() => setDetail(item)}
-                className="inline-flex max-w-full items-center gap-2 rounded-full border bg-white px-3 py-2 text-left text-sm shadow-sm transition hover:border-cyan-400 hover:shadow-md"
+                className="inline-flex max-w-full items-center gap-2 rounded-full border bg-card px-3 py-2 text-left text-sm shadow-sm transition hover:border-cyan-400 hover:shadow-md"
               >
                 <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-cyan-100 text-[10px] font-semibold text-cyan-800">
                   <SafeImage
@@ -862,7 +862,7 @@ export default function ModelWorkbench() {
       )
     if (template === 'row')
       return (
-        <div className="overflow-hidden rounded-xl border bg-white">
+        <div className="overflow-hidden rounded-xl border bg-card">
           {pageItems.map((item) => (
             <button
               key={item.id}
@@ -934,7 +934,7 @@ export default function ModelWorkbench() {
               </span>
               {selectedValuesFor(item, 'action').length > 0 && (
                 <span
-                  className={`hidden shrink-0 rounded-md bg-slate-950 px-2 py-1 text-xs font-medium text-white sm:block ${roleClass('action')}`}
+                  className={`hidden shrink-0 rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-foreground sm:block ${roleClass('action')}`}
                 >
                   {String(selectedValueFor(item, 'action'))}
                 </span>
@@ -953,7 +953,7 @@ export default function ModelWorkbench() {
               data-resolved-roles={Object.keys(
                 slotSelectionFor(item).byRole,
               ).join(',')}
-              className="group overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition hover:shadow-md"
+              className="group overflow-hidden rounded-2xl border bg-card text-left shadow-sm transition hover:shadow-md"
             >
               <SafeImage
                 src={item.image}
@@ -987,7 +987,7 @@ export default function ModelWorkbench() {
                       {selectedValuesFor(item, 'status').map((entry) => (
                         <span
                           key={entry.field.name}
-                          className={`rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-800 ${roleClass('status')}`}
+                          className={`rounded-full bg-muted px-2 py-1 text-xs text-foreground ${roleClass('status')}`}
                         >
                           {String(entry.displayValue)}
                         </span>
@@ -1123,7 +1123,7 @@ export default function ModelWorkbench() {
                         {selectedValuesFor(item, 'action').map((entry) => (
                           <span
                             key={entry.field.name}
-                            className="rounded-md bg-slate-950 px-2.5 py-1.5 text-xs font-medium text-white"
+                            className="rounded-md bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
                           >
                             {String(entry.displayValue)}
                           </span>
@@ -1281,7 +1281,7 @@ export default function ModelWorkbench() {
                   {selectedValuesFor(item, 'action').map((entry) => (
                     <span
                       key={entry.field.name}
-                      className="rounded-md bg-slate-950 px-2.5 py-1.5 text-xs font-medium text-white"
+                      className="rounded-md bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
                     >
                       {String(entry.displayValue)}
                     </span>
@@ -1313,7 +1313,7 @@ export default function ModelWorkbench() {
               />
               {selectedValuesFor(item, 'status').length > 0 && (
                 <span
-                  className={`absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider shadow-sm ${roleClass('status')}`}
+                  className={`absolute left-3 top-3 rounded-full bg-card/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider shadow-sm ${roleClass('status')}`}
                 >
                   {String(selectedValueFor(item, 'status'))}
                 </span>
@@ -1425,7 +1425,7 @@ export default function ModelWorkbench() {
                   {selectedValuesFor(item, 'action').map((entry) => (
                     <span
                       key={entry.field.name}
-                      className="rounded-md bg-slate-950 px-2.5 py-1.5 text-xs font-medium text-white"
+                      className="rounded-md bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
                     >
                       {String(entry.displayValue)}
                     </span>
@@ -1439,7 +1439,7 @@ export default function ModelWorkbench() {
     )
   }
   return (
-    <main className="min-h-screen bg-[#f6f8fb] text-foreground">
+    <main className="min-h-screen bg-background text-foreground">
       {detail && (
         <Detail
           item={detail}
@@ -1461,16 +1461,16 @@ export default function ModelWorkbench() {
               {activeModel.name} model
             </h1>
           </div>
-          <div className="flex items-center gap-1 rounded-xl border bg-white p-1 text-xs shadow-sm">
+          <div className="flex items-center gap-1 rounded-xl border bg-card p-1 text-xs shadow-sm">
             <button
               onClick={() => setMode('editor')}
-              className={`rounded-lg px-3 py-2 font-medium ${mode === 'editor' ? 'bg-slate-950 text-white' : 'text-muted-foreground'}`}
+              className={`rounded-lg px-3 py-2 font-medium ${mode === 'editor' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
             >
               Model editor
             </button>
             <button
               onClick={() => setMode('preview')}
-              className={`rounded-lg px-3 py-2 font-medium ${mode === 'preview' ? 'bg-slate-950 text-white' : 'text-muted-foreground'}`}
+              className={`rounded-lg px-3 py-2 font-medium ${mode === 'preview' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
             >
               Preview mode
             </button>
@@ -1482,7 +1482,7 @@ export default function ModelWorkbench() {
             <select
               value={modelId}
               onChange={(event) => switchModel(event.target.value)}
-              className="rounded-lg border bg-white px-3 py-2 text-sm shadow-sm"
+              className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm"
             >
               {models.map((entry) => (
                 <option key={entry.id} value={entry.id}>
@@ -1494,7 +1494,7 @@ export default function ModelWorkbench() {
         </div>
         {mode === 'editor' ? (
           <div className="grid gap-6 xl:grid-cols-[350px_minmax(0,1fr)]">
-            <aside className="overflow-hidden rounded-2xl border bg-white shadow-sm">
+            <aside className="overflow-hidden rounded-2xl border bg-card shadow-sm">
               <div className="flex items-center justify-between border-b px-4 py-4">
                 <div>
                   <p className="text-sm font-semibold">Data model</p>
@@ -1508,14 +1508,14 @@ export default function ModelWorkbench() {
                   <button
                     key={field.name}
                     onClick={() => setSelectedId(field.name)}
-                    className={`flex items-center justify-between rounded-xl px-3 py-3 text-left ${selectedId === field.name ? 'bg-slate-950 text-white' : 'hover:bg-muted/60'}`}
+                    className={`flex items-center justify-between rounded-xl px-3 py-3 text-left ${selectedId === field.name ? 'bg-primary text-primary-foreground' : 'hover:bg-muted/60'}`}
                   >
                     <span className="min-w-0">
                       <span className="block truncate text-sm font-medium">
                         {field.label}
                       </span>
                       <span
-                        className={`block truncate text-[11px] ${selectedId === field.name ? 'text-white/60' : 'text-muted-foreground'}`}
+                        className={`block truncate text-[11px] ${selectedId === field.name ? 'text-primary-foreground/60' : 'text-muted-foreground'}`}
                       >
                         {field.name} · {field.type}
                       </span>
@@ -1550,7 +1550,7 @@ export default function ModelWorkbench() {
                     onChange={(event) =>
                       updateSemanticRole(event.target.value as SemanticRole)
                     }
-                    className="w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    className="w-full rounded-lg border bg-card px-3 py-2 text-sm"
                   >
                     {semanticRoles.map((semanticRole) => (
                       <option key={semanticRole} value={semanticRole}>
@@ -1568,10 +1568,10 @@ export default function ModelWorkbench() {
                       onChange={(event) =>
                         updateRank(Number(event.target.value))
                       }
-                      className="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm font-normal text-foreground"
+                      className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal text-foreground"
                     />
                   </label>
-                  <div className="mt-3 rounded-lg border bg-white p-3 text-xs">
+                  <div className="mt-3 rounded-lg border bg-card p-3 text-xs">
                     <div className="flex items-center gap-2 font-semibold">
                       <Info className="size-3.5 text-cyan-700" />
                       {contractRoleDefinitions[selected.semanticRole].label}
@@ -1667,7 +1667,7 @@ function renderToolbar(
         aria-label="Choose template"
         value={template}
         onChange={(event) => setTemplate(event.target.value as Template)}
-        className="rounded-lg border bg-white px-3 py-2.5 text-sm shadow-sm"
+        className="rounded-lg border bg-card px-3 py-2.5 text-sm shadow-sm"
       >
         {templates.map((entry) => (
           <option key={entry.value} value={entry.value}>
@@ -1679,7 +1679,7 @@ function renderToolbar(
         type="button"
         aria-pressed={highlightRegions}
         onClick={() => setHighlightRegions(!highlightRegions)}
-        className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm shadow-sm ${highlightRegions ? 'border-cyan-400 bg-cyan-50 text-cyan-950' : 'bg-white'}`}
+        className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm shadow-sm ${highlightRegions ? 'border-border bg-muted text-foreground' : 'bg-card'}`}
       >
         <Layers3 className="size-4" />
         Inspect structure
@@ -1689,7 +1689,7 @@ function renderToolbar(
         <TemplateInspector template={template} onHoverRole={onHoverRole} />
       )}
       {resultCount > 0 && (
-        <div className="ml-auto flex items-center gap-1 rounded-lg border bg-white p-1 text-xs shadow-sm">
+        <div className="ml-auto flex items-center gap-1 rounded-lg border bg-card p-1 text-xs shadow-sm">
           <button
             type="button"
             aria-label="Previous page"
