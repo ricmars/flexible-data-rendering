@@ -27,7 +27,7 @@
       "name": "utilization",
       "label": "Utilization",
       "type": "number",
-      "semanticRole": "highlight",
+      "semanticRole": "progress",
       "rank": 1
     },
     {

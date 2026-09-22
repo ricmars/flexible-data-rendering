@@ -27,7 +27,7 @@
       "name": "quotaAttainment",
       "label": "Quota attainment",
       "type": "number",
-      "semanticRole": "highlight",
+      "semanticRole": "progress",
       "rank": 1
     },
     {

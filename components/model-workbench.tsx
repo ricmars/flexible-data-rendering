@@ -25,16 +25,21 @@ import vehicleModel from '@/data/vehicle-model.json'
 import vehicles from '@/data/vehicles.json'
 import {
   AlertTriangle,
+  Braces,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ClockAlert,
   Eye,
   EyeOff,
-  Info,
   Layers3,
+  LayoutTemplate,
   LockKeyhole,
-  Pencil,
+  PanelRightClose,
+  PanelRightOpen,
+  Rows3,
+  Save,
+  Shapes,
   ShieldAlert,
   Sparkles,
   X,
@@ -115,6 +120,7 @@ const templates: {
       'flags',
       'metric',
       'highlight',
+      'progress',
       'temporal',
       'people',
       'action',
@@ -128,6 +134,7 @@ const templates: {
       flags: 'all',
       metric: 1,
       highlight: 0,
+      progress: 1,
       temporal: 1,
       people: 2,
       action: 1,
@@ -136,6 +143,7 @@ const templates: {
       'Identity',
       'Alert',
       'Metrics',
+      'Progress',
       'Description',
       'Key details',
       'Additional facts',
@@ -184,6 +192,7 @@ const templates: {
       'flags',
       'tags',
       'highlight',
+      'progress',
       'description',
       'temporal',
       'people',
@@ -200,6 +209,7 @@ const templates: {
       flags: 'all',
       tags: 3,
       highlight: 3,
+      progress: 1,
       description: 1,
       temporal: 1,
       people: 3,
@@ -211,6 +221,7 @@ const templates: {
       'Status and tags',
       'Primary metric',
       'Highlights',
+      'Progress',
       'Time and actor',
       'Actions',
     ],
@@ -266,6 +277,21 @@ const templates: {
   },
 ]
 const canonicalizeFields = (fields: Field[]) => fields
+const resolveTemplateSlots = (item: ResolvedRecord, template: Template) => {
+  const definition = templates.find((entry) => entry.value === template)
+  return selectSlots(item, {
+    id: template,
+    label: definition?.label ?? template,
+    description: definition?.description ?? '',
+    density: definition?.density ?? 'standard',
+    slots: Object.fromEntries(
+      (definition?.supportedRoles ?? []).map((role) => [
+        role,
+        definition?.slots[role] ?? 0,
+      ]),
+    ),
+  })
+}
 const formatNumber = (value: number) =>
   new Intl.NumberFormat('en-US').format(value)
 const formatMetric = (value: number, field: Field) =>
@@ -442,6 +468,103 @@ function FlagIndicator({
   )
 }
 
+// Progress values can exceed 100 (e.g. quota attainment); clamp for display only.
+function progressPercent(entry: ResolvedField, fallback: number) {
+  const numeric = Number(entry.value)
+  return Number.isFinite(numeric)
+    ? Math.max(0, Math.min(100, numeric))
+    : fallback
+}
+
+function ProgressBar({
+  label,
+  ariaLabel,
+  percent,
+  className = '',
+}: {
+  label: React.ReactNode
+  ariaLabel?: string
+  percent: number
+  className?: string
+}) {
+  return (
+    <div className={`space-y-1.5 ${className}`}>
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span>{label}</span>
+        <span>{Math.round(percent)}%</span>
+      </div>
+      <div
+        className="h-2 w-full overflow-hidden rounded-full bg-muted"
+        role="progressbar"
+        aria-label={
+          ariaLabel ?? (typeof label === 'string' ? label : 'Progress')
+        }
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(percent)}
+      >
+        <div
+          className="h-full rounded-full bg-cyan-600"
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+    </div>
+  )
+}
+
+// Compact radial indicator for dense rows where a labeled bar won't fit.
+function ProgressRing({
+  label,
+  percent,
+  size = 30,
+  className = '',
+}: {
+  label: string
+  percent: number
+  size?: number
+  className?: string
+}) {
+  const strokeWidth = 3
+  const radius = (size - strokeWidth) / 2
+  const circumference = 2 * Math.PI * radius
+  const offset = circumference * (1 - percent / 100)
+  return (
+    <span
+      className={`relative inline-flex shrink-0 items-center justify-center ${className}`}
+      style={{ width: size, height: size }}
+      role="progressbar"
+      aria-label={label}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(percent)}
+      title={`${label}: ${Math.round(percent)}%`}
+    >
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          strokeWidth={strokeWidth}
+          className="fill-none stroke-muted"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          className="fill-none stroke-cyan-600"
+        />
+      </svg>
+      <span className="absolute text-[9px] font-semibold text-foreground">
+        {Math.round(percent)}
+      </span>
+    </span>
+  )
+}
+
 function Detail({
   item,
   model,
@@ -583,6 +706,186 @@ function OperatorPopover({
   )
 }
 
+function HoverActions({
+  onViewJson,
+  onViewTemplate,
+  variant = 'overlay',
+}: {
+  onViewJson: () => void
+  onViewTemplate: () => void
+  variant?: 'overlay' | 'inline'
+}) {
+  return (
+    <span
+      className={`z-10 flex shrink-0 gap-1 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100 ${
+        variant === 'overlay' ? 'absolute right-2 top-2' : ''
+      }`}
+    >
+      <button
+        type="button"
+        title="View JSON"
+        aria-label="View JSON"
+        onClick={(event) => {
+          event.stopPropagation()
+          onViewJson()
+        }}
+        className="rounded-md border bg-card/95 p-1.5 text-muted-foreground shadow-sm backdrop-blur transition hover:border-cyan-400 hover:text-foreground"
+      >
+        <Braces className="size-3.5" />
+      </button>
+      <button
+        type="button"
+        title="View template"
+        aria-label="View template"
+        onClick={(event) => {
+          event.stopPropagation()
+          onViewTemplate()
+        }}
+        className="rounded-md border bg-card/95 p-1.5 text-muted-foreground shadow-sm backdrop-blur transition hover:border-cyan-400 hover:text-foreground"
+      >
+        <LayoutTemplate className="size-3.5" />
+      </button>
+    </span>
+  )
+}
+
+function JsonModal({
+  item,
+  model,
+  onClose,
+}: {
+  item: RecordItem
+  model: Model
+  onClose: () => void
+}) {
+  const raw = modelSources[model.id]?.records.find(
+    (record) => record.id === item.id,
+  )
+  return (
+    <div className="fixed inset-0 z-40" onClick={onClose}>
+      <div
+        className="absolute left-1/2 top-1/2 flex max-h-[80vh] w-[min(34rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-xl border bg-card shadow-2xl"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${item.name} JSON record`}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-center justify-between gap-4 border-b p-4">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {model.name} record
+            </p>
+            <h2 className="mt-1 truncate text-lg font-semibold">{item.name}</h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close JSON view"
+            className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+        <pre className="overflow-auto p-4 text-xs leading-relaxed">
+          <code>{JSON.stringify(raw ?? { id: item.id }, null, 2)}</code>
+        </pre>
+      </div>
+    </div>
+  )
+}
+
+function TemplateModal({
+  item,
+  template,
+  onClose,
+}: {
+  item: RecordItem
+  template: Template
+  onClose: () => void
+}) {
+  const definition = templates.find((entry) => entry.value === template)!
+  const selection = resolveTemplateSlots(item, template)
+  return (
+    <div className="fixed inset-0 z-40" onClick={onClose}>
+      <div
+        className="absolute left-1/2 top-1/2 flex max-h-[80vh] w-[min(32rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-xl border bg-card shadow-2xl"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${definition.label} template for ${item.name}`}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-4 border-b p-4">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {definition.density} density · {item.name}
+            </p>
+            <h2 className="mt-1 text-lg font-semibold">{definition.label}</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {definition.description}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close template details"
+            className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+        <div className="overflow-y-auto p-4">
+          <div className="flex flex-wrap gap-1.5">
+            {definition.supportedRoles.map((role) => (
+              <RoleChipTag key={role} role={role} />
+            ))}
+          </div>
+          <div className="mt-4 space-y-2">
+            {definition.supportedRoles.map((role) => {
+              const entries = selection.byRole[role] ?? []
+              return (
+                <div
+                  key={role}
+                  className={`semantic-region-${role} rounded-lg border bg-muted/40 p-3`}
+                >
+                  <p className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    <span>{contractRoleDefinitions[role].label}</span>
+                    <span>
+                      {entries.length > 0
+                        ? `${entries.length} value${entries.length === 1 ? '' : 's'}`
+                        : 'empty'}
+                    </span>
+                  </p>
+                  {entries.length > 0 ? (
+                    <ul className="mt-1.5 space-y-1 text-sm">
+                      {entries.map((entry) => (
+                        <li
+                          key={entry.field.name}
+                          className="flex justify-between gap-3"
+                        >
+                          <span className="text-muted-foreground">
+                            {entry.field.label}
+                          </span>
+                          <span className="max-w-[60%] truncate text-right font-medium">
+                            {String(entry.displayValue)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-1.5 text-xs text-muted-foreground/70">
+                      No field resolves to this slot for this record.
+                    </p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function TemplateInspector({
   template,
   editingRole,
@@ -636,22 +939,24 @@ function RoleChipTag({
   role,
   suffix,
   editing,
+  compact,
 }: {
   role: SemanticRole
   suffix?: string
   editing?: boolean
+  compact?: boolean
 }) {
   return (
     <span
       className={`role-chip semantic-region-${role} inline-flex items-stretch overflow-hidden rounded-md border text-[11px] font-medium ${editing ? 'role-chip-editing' : ''}`}
     >
       <span
-        className="flex w-5 shrink-0 items-center justify-center border-r border-current/25 font-bold"
+        className={`flex shrink-0 items-center justify-center border-r border-current/25 font-bold ${compact ? 'w-4' : 'w-5'}`}
         style={{ backgroundColor: 'oklch(55% 0.16 var(--region-hue) / 0.3)' }}
       >
         {role.charAt(0).toUpperCase()}
       </span>
-      <span className="px-2 py-1">
+      <span className={compact ? 'px-1.5 py-0.5' : 'px-2 py-1'}>
         {contractRoleDefinitions[role].label}
         {suffix}
       </span>
@@ -685,7 +990,7 @@ function TemplateSample({
     return (
       <div className="inline-flex max-w-full items-center gap-2 rounded-full border bg-card px-3 py-2 text-sm shadow-sm">
         {supports('media') && (
-          <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-muted">
+          <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-blue-50">
             <RoleChipDot role="media" />
           </span>
         )}
@@ -706,7 +1011,7 @@ function TemplateSample({
     return (
       <div className="flex w-full items-center gap-3 rounded-xl border bg-card px-4 py-3">
         {supports('media') && (
-          <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted">
+          <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-blue-50">
             <RoleChipDot role="media" />
           </span>
         )}
@@ -718,6 +1023,7 @@ function TemplateSample({
         {supports('status') && <RoleChipTag role="status" />}
         {supports('flags') && <RoleChipTag role="flags" />}
         {supports('metric') && <RoleChipTag role="metric" />}
+        {supports('progress') && <RoleChipTag role="progress" />}
         {(supports('temporal') || supports('people')) && (
           <span className="hidden flex-col items-end gap-1 sm:flex">
             {supports('temporal') && <RoleChipTag role="temporal" />}
@@ -733,7 +1039,7 @@ function TemplateSample({
       <div className="overflow-hidden rounded-xl border bg-card p-4 text-sm">
         <div className="flex min-w-0 items-start gap-3">
           {supports('media') && (
-            <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted">
+            <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-blue-50">
               <RoleChipDot role="media" />
             </span>
           )}
@@ -759,6 +1065,11 @@ function TemplateSample({
             <RoleChipTag role="highlight" />
             <RoleChipTag role="highlight" />
             <RoleChipTag role="highlight" />
+          </div>
+        )}
+        {supports('progress') && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            <RoleChipTag role="progress" />
           </div>
         )}
         {supports('description') && (
@@ -792,7 +1103,7 @@ function TemplateSample({
     return (
       <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
         {supports('media') && (
-          <div className="flex h-44 w-full items-center justify-center bg-muted">
+          <div className="flex h-44 w-full items-center justify-center bg-blue-50">
             <RoleChipTag role="media" />
           </div>
         )}
@@ -826,7 +1137,7 @@ function TemplateSample({
               </div>
             )}
             {supports('progress') && (
-              <div className="rounded-md bg-muted/50 p-2 text-xs">
+              <div className="flex flex-wrap gap-1.5">
                 <RoleChipTag role="progress" />
               </div>
             )}
@@ -874,7 +1185,7 @@ function TemplateSample({
   return (
     <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
       {supports('media') && (
-        <div className="relative flex aspect-[16/9] w-full items-center justify-center bg-muted">
+        <div className="relative flex aspect-[16/9] w-full items-center justify-center bg-blue-50">
           <RoleChipTag role="media" />
           {supports('status') && (
             <span className="absolute left-3 top-3">
@@ -904,17 +1215,7 @@ function TemplateSample({
             <RoleChipTag role="tags" />
           </div>
         )}
-        {supports('progress') && (
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <RoleChipTag role="progress" />
-              <span>72%</span>
-            </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-              <div className="h-full w-2/3 rounded-full bg-cyan-600" />
-            </div>
-          </div>
-        )}
+        {supports('progress') && <RoleChipTag role="progress" />}
         {supports('description') && <RoleChipTag role="description" />}
         {supports('action') && (
           <div className="flex flex-wrap gap-2 border-t pt-3">
@@ -926,8 +1227,127 @@ function TemplateSample({
   )
 }
 
+function TemplateReference({
+  fields,
+  modelName,
+}: {
+  fields: Field[]
+  modelName: string
+}) {
+  return (
+    <div>
+      <h2 className="text-lg font-semibold tracking-tight">UI templates</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Every rendering template, its semantic role slots, and a mock preview
+        based on the {modelName} model.
+      </p>
+      <div className="mt-5 grid gap-6 lg:grid-cols-2">
+        {templates.map((entry) => {
+          const fieldsShown = fields.filter((field) =>
+            entry.supportedRoles.includes(field.semanticRole),
+          ).length
+          return (
+            <div
+              key={entry.value}
+              className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-sm"
+            >
+              <div className="border-b p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-semibold">{entry.label}</h3>
+                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {entry.density}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {entry.description}
+                </p>
+              </div>
+              <div className="border-b bg-muted/30 p-4">
+                <TemplateInspector template={entry.value} />
+                <p className="mt-3 text-xs text-muted-foreground">
+                  {fieldsShown} of {fields.length} fields from {modelName}{' '}
+                  render in this template.
+                </p>
+              </div>
+              <div
+                className="flex-1 rounded-b-2xl p-4"
+                style={{
+                  backgroundImage:
+                    'conic-gradient(rgba(128,128,128,0.14) 25%, transparent 25% 50%, rgba(128,128,128,0.14) 50% 75%, transparent 75%)',
+                  backgroundSize: '16px 16px',
+                }}
+              >
+                <p className="mb-3 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                  <Eye className="size-3.5" />
+                  Mock preview
+                </p>
+                <div
+                  className={
+                    entry.value === 'tile' || entry.value === 'detail-header'
+                      ? 'max-w-sm'
+                      : 'w-full'
+                  }
+                >
+                  <TemplateSample template={entry.value} fields={fields} />
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function SemanticRoleReference({
+  fields,
+  modelName,
+}: {
+  fields: Field[]
+  modelName: string
+}) {
+  return (
+    <div>
+      <h2 className="text-lg font-semibold tracking-tight">Semantic roles</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Every semantic role available to a field, what it represents, and how
+        many {modelName} fields currently use it.
+      </p>
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {semanticRoles.map((role) => {
+          const info = contractRoleDefinitions[role]
+          const count = fields.filter(
+            (field) => field.semanticRole === role,
+          ).length
+          return (
+            <div key={role} className="rounded-xl border bg-card p-4">
+              <div className="flex items-center justify-between gap-2">
+                <RoleChipTag role={role} />
+                {info.singleton && (
+                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Singleton
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                {info.definition}
+              </p>
+              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                {info.representation}
+              </p>
+              <p className="mt-2 text-xs">
+                {count} field{count === 1 ? '' : 's'} in {modelName}
+              </p>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export default function ModelWorkbench() {
-  const [modelId, setModelId] = useState('vehicle')
+  const [modelId, setModelId] = useState('plant')
   const activeModel = useMemo<Model>(() => {
     const metadata = models.find((entry) => entry.id === modelId) ?? models[0]
     return {
@@ -937,7 +1357,7 @@ export default function ModelWorkbench() {
     }
   }, [modelId])
   const [fields, setFields] = useState<Field[]>(
-    canonicalizeFields(modelSources.vehicle.model.fields),
+    canonicalizeFields(modelSources.plant.model.fields),
   )
   const [selectedId, setSelectedId] = useState('')
   const [template, setTemplate] = useState<Template>('tile')
@@ -945,9 +1365,14 @@ export default function ModelWorkbench() {
   const [filter, setFilter] = useState('All statuses')
   const [sort, setSort] = useState('Available first')
   const [page, setPage] = useState(1)
-  const [isEditingModel, setIsEditingModel] = useState(false)
-  const [highlightRegions, setHighlightRegions] = useState(false)
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false)
+  const [showTemplateStructure, setShowTemplateStructure] = useState(false)
+  const [activeTab, setActiveTab] = useState<'records' | 'templates' | 'roles'>(
+    'records',
+  )
   const [detail, setDetail] = useState<RecordItem | null>(null)
+  const [jsonItem, setJsonItem] = useState<RecordItem | null>(null)
+  const [templateItem, setTemplateItem] = useState<RecordItem | null>(null)
   const [operator, setOperator] = useState<{
     name: string
     fieldLabel: string
@@ -988,22 +1413,22 @@ export default function ModelWorkbench() {
     setSort(value)
     setPage(1)
   }
-  const updateSemanticRole = (semanticRole: SemanticRole) =>
+  const updateSemanticRole = (fieldName: string, semanticRole: SemanticRole) =>
     setFields((current) =>
       current.map((field) =>
-        field.name === selectedId ? { ...field, semanticRole } : field,
+        field.name === fieldName ? { ...field, semanticRole } : field,
       ),
     )
-  const updateRank = (rank: number) =>
+  const updateRank = (fieldName: string, rank: number) =>
     setFields((current) =>
       current.map((field) =>
-        field.name === selectedId
+        field.name === fieldName
           ? { ...field, rank: Math.max(1, Math.floor(rank) || 1) }
           : field,
       ),
     )
   const switchModel = (id: string) => {
-    const next = modelSources[id] ?? modelSources.vehicle
+    const next = modelSources[id] ?? modelSources.plant
     setModelId(id)
     setFields(canonicalizeFields(next.model.fields))
     setSelectedId('')
@@ -1013,24 +1438,11 @@ export default function ModelWorkbench() {
   }
   const renderItems = () => {
     const roleClass = (role: SemanticRole) =>
-      isEditingModel && editingRole === role
+      editingRole === role
         ? `semantic-region semantic-region-${role} semantic-region-editing`
         : ''
-    const slotSelectionFor = (item: RecordItem) => {
-      const definition = templates.find((entry) => entry.value === template)
-      return selectSlots(item, {
-        id: template,
-        label: definition?.label ?? template,
-        description: definition?.description ?? '',
-        density: definition?.density ?? 'standard',
-        slots: Object.fromEntries(
-          (definition?.supportedRoles ?? []).map((role) => [
-            role,
-            definition?.slots[role] ?? 0,
-          ]),
-        ),
-      })
-    }
+    const slotSelectionFor = (item: RecordItem) =>
+      resolveTemplateSlots(item, template)
     const selectedValuesFor = (item: RecordItem, role: SemanticRole) =>
       slotSelectionFor(item).byRole[role] ?? []
     const selectedValueFor = (item: RecordItem, role: SemanticRole) =>
@@ -1118,10 +1530,18 @@ export default function ModelWorkbench() {
             const title = selectedValueFor(item, 'title')
             const status = selectedValueFor(item, 'status')
             return (
-              <button
+              <div
                 key={item.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => setDetail(item)}
-                className="inline-flex max-w-full items-center gap-2 rounded-full border bg-card px-3 py-2 text-left text-sm shadow-sm transition hover:border-cyan-400 hover:shadow-md"
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    setDetail(item)
+                  }
+                }}
+                className="group inline-flex max-w-full cursor-pointer items-center gap-2 rounded-full border bg-card px-3 py-2 text-left text-sm shadow-sm transition hover:border-cyan-400 hover:shadow-md"
               >
                 <span
                   className={`grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-cyan-100 text-[10px] font-semibold text-cyan-800 ${roleClass('media')}`}
@@ -1144,7 +1564,12 @@ export default function ModelWorkbench() {
                 >
                   {String(status)}
                 </span>
-              </button>
+                <HoverActions
+                  variant="inline"
+                  onViewJson={() => setJsonItem(item)}
+                  onViewTemplate={() => setTemplateItem(item)}
+                />
+              </div>
             )
           })}
         </div>
@@ -1153,11 +1578,23 @@ export default function ModelWorkbench() {
       return (
         <div className="overflow-hidden rounded-xl border bg-card">
           {pageItems.map((item) => (
-            <button
+            <div
               key={item.id}
+              role="button"
+              tabIndex={0}
               onClick={() => setDetail(item)}
-              className="flex w-full items-center gap-3 border-b px-4 py-3 text-left transition last:border-0 hover:bg-muted/40"
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  setDetail(item)
+                }
+              }}
+              className="group relative flex w-full cursor-pointer items-center gap-3 border-b px-4 py-3 text-left transition last:border-0 hover:bg-muted/40"
             >
+              <HoverActions
+                onViewJson={() => setJsonItem(item)}
+                onViewTemplate={() => setTemplateItem(item)}
+              />
               <span
                 className={`grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-cyan-100 text-xs font-semibold text-cyan-800 ${roleClass('media')}`}
               >
@@ -1214,6 +1651,20 @@ export default function ModelWorkbench() {
               >
                 {selectedMetricTextFor(item)}
               </span>
+              {selectedValuesFor(item, 'progress').length > 0 &&
+                (() => {
+                  const entry = selectedValuesFor(item, 'progress')[0]
+                  return (
+                    <span
+                      className={`hidden shrink-0 sm:block ${roleClass('progress')}`}
+                    >
+                      <ProgressRing
+                        label={entry.field.label}
+                        percent={progressPercent(entry, 65)}
+                      />
+                    </span>
+                  )
+                })()}
               <span className="hidden shrink-0 flex-col items-end gap-1 text-[11px] text-muted-foreground sm:flex">
                 {selectedTemporalFor(item).map((entry) => (
                   <time
@@ -1236,7 +1687,7 @@ export default function ModelWorkbench() {
                   {String(selectedValueFor(item, 'action'))}
                 </span>
               )}
-            </button>
+            </div>
           ))}
         </div>
       )
@@ -1244,14 +1695,26 @@ export default function ModelWorkbench() {
       return (
         <div className="grid gap-4 md:grid-cols-2">
           {pageItems.map((item) => (
-            <button
+            <div
               key={item.id}
+              role="button"
+              tabIndex={0}
               onClick={() => setDetail(item)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  setDetail(item)
+                }
+              }}
               data-resolved-roles={Object.keys(
                 slotSelectionFor(item).byRole,
               ).join(',')}
-              className="group overflow-hidden rounded-2xl border bg-card text-left shadow-sm transition hover:shadow-md"
+              className="group relative cursor-pointer overflow-hidden rounded-2xl border bg-card text-left shadow-sm transition hover:shadow-md"
             >
+              <HoverActions
+                onViewJson={() => setJsonItem(item)}
+                onViewTemplate={() => setTemplateItem(item)}
+              />
               <SafeImage
                 src={item.image}
                 alt={item.name}
@@ -1323,13 +1786,20 @@ export default function ModelWorkbench() {
                         ))}
                       </div>
                     )}
-                    {selectedValuesFor(item, 'progress').length > 0 && (
-                      <div
-                        className={`rounded-md bg-muted/50 p-2 text-xs ${roleClass('progress')}`}
-                      >
-                        Progress: {String(selectedValueFor(item, 'progress'))}
-                      </div>
-                    )}
+                    {selectedValuesFor(item, 'progress').length > 0 &&
+                      (() => {
+                        const entry = selectedValuesFor(item, 'progress')[0]
+                        return (
+                          <div
+                            className={`rounded-md bg-muted/50 p-2 ${roleClass('progress')}`}
+                          >
+                            <ProgressBar
+                              label={entry.field.label}
+                              percent={progressPercent(entry, 72)}
+                            />
+                          </div>
+                        )
+                      })()}
                   </div>
                 )}
                 <p
@@ -1430,7 +1900,7 @@ export default function ModelWorkbench() {
                   </>
                 )}
               </div>
-            </button>
+            </div>
           ))}
         </div>
       )
@@ -1447,9 +1917,21 @@ export default function ModelWorkbench() {
           {pageItems.map((item) => (
             <article
               key={item.id}
+              role="button"
+              tabIndex={0}
               onClick={() => setDetail(item)}
-              className="cursor-pointer border-b border-border/60 p-4 text-sm last:border-0 hover:bg-muted/30"
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  setDetail(item)
+                }
+              }}
+              className="group relative cursor-pointer border-b border-border/60 p-4 text-sm last:border-0 hover:bg-muted/30"
             >
+              <HoverActions
+                onViewJson={() => setJsonItem(item)}
+                onViewTemplate={() => setTemplateItem(item)}
+              />
               <div className="flex min-w-0 items-start gap-3">
                 <SafeImage
                   src={item.image}
@@ -1527,6 +2009,18 @@ export default function ModelWorkbench() {
                   ))}
                 </div>
               )}
+              {selectedValuesFor(item, 'progress').length > 0 &&
+                (() => {
+                  const entry = selectedValuesFor(item, 'progress')[0]
+                  return (
+                    <div className={`mt-3 ${roleClass('progress')}`}>
+                      <ProgressBar
+                        label={entry.field.label}
+                        percent={progressPercent(entry, 65)}
+                      />
+                    </div>
+                  )
+                })()}
               {selectedValuesFor(item, 'description').length > 0 && (
                 <p
                   className={`mt-3 line-clamp-2 text-muted-foreground ${roleClass('description')}`}
@@ -1592,14 +2086,26 @@ export default function ModelWorkbench() {
     return (
       <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
         {pageItems.map((item) => (
-          <button
+          <div
             key={item.id}
+            role="button"
+            tabIndex={0}
             onClick={() => setDetail(item)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                setDetail(item)
+              }
+            }}
             data-resolved-roles={Object.keys(
               slotSelectionFor(item).byRole,
             ).join(',')}
-            className="group overflow-hidden rounded-2xl border border-border/70 bg-card text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
+            className="group relative cursor-pointer overflow-hidden rounded-2xl border border-border/70 bg-card text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
           >
+            <HoverActions
+              onViewJson={() => setJsonItem(item)}
+              onViewTemplate={() => setTemplateItem(item)}
+            />
             <div className="relative aspect-[16/9] overflow-hidden bg-muted">
               <SafeImage
                 src={item.image}
@@ -1685,35 +2191,18 @@ export default function ModelWorkbench() {
                   )}
                 </div>
               )}
-              {template === 'tile' &&
-                selectedValuesFor(item, 'progress').length > 0 &&
+              {selectedValuesFor(item, 'progress').length > 0 &&
                 (() => {
                   const entry = selectedValuesFor(item, 'progress')[0]
-                  const numeric = Number(entry.value)
-                  const percent = Number.isFinite(numeric)
-                    ? Math.max(0, Math.min(100, numeric))
-                    : item.available
-                      ? 72
-                      : 42
                   return (
-                    <div className={`space-y-1.5 ${roleClass('progress')}`}>
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>{entry.field.label}</span>
-                        <span>{Math.round(percent)}%</span>
-                      </div>
-                      <div
-                        className="h-2 overflow-hidden rounded-full bg-muted"
-                        aria-label={entry.field.label}
-                        role="progressbar"
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                        aria-valuenow={Math.round(percent)}
-                      >
-                        <div
-                          className="h-full rounded-full bg-cyan-600"
-                          style={{ width: `${percent}%` }}
-                        />
-                      </div>
+                    <div className={roleClass('progress')}>
+                      <ProgressBar
+                        label={entry.field.label}
+                        percent={progressPercent(
+                          entry,
+                          item.available ? 72 : 42,
+                        )}
+                      />
                     </div>
                   )
                 })()}
@@ -1739,13 +2228,13 @@ export default function ModelWorkbench() {
                 </div>
               )}
             </div>
-          </button>
+          </div>
         ))}
       </div>
     )
   }
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="flex h-screen flex-col overflow-hidden bg-background text-foreground">
       {detail && (
         <Detail
           item={detail}
@@ -1760,14 +2249,28 @@ export default function ModelWorkbench() {
           onClose={() => setOperator(null)}
         />
       )}
-      <div className="mx-auto max-w-[1500px] px-6 py-6">
-        <div className="mb-5 flex flex-wrap items-center gap-3">
-          <label className="flex items-center gap-2 text-sm font-medium">
-            Data object{' '}
+      {jsonItem && (
+        <JsonModal
+          item={jsonItem}
+          model={activeModel}
+          onClose={() => setJsonItem(null)}
+        />
+      )}
+      {templateItem && (
+        <TemplateModal
+          item={templateItem}
+          template={template}
+          onClose={() => setTemplateItem(null)}
+        />
+      )}
+      <div className="shrink-0 border-b bg-muted/40 shadow-sm">
+        <div className="mx-auto flex max-w-[1500px] flex-wrap items-center justify-between gap-3 px-6 py-4">
+          <label className="flex items-center gap-2 text-sm">
+            <span className="font-bold">Data object</span>
             <select
               value={modelId}
               onChange={(event) => switchModel(event.target.value)}
-              className="rounded-lg border bg-card px-3 py-2 text-sm shadow-sm"
+              className="rounded-lg border bg-card px-3 py-2 text-sm font-normal shadow-sm"
             >
               {models.map((entry) => (
                 <option key={entry.id} value={entry.id}>
@@ -1776,207 +2279,293 @@ export default function ModelWorkbench() {
               ))}
             </select>
           </label>
-        </div>
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              {activeModel.name} model
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {fields.length} fields · {activeModel.description}
-            </p>
+          <div className="flex items-center gap-1 rounded-lg border bg-card p-1 shadow-sm">
+            {(
+              [
+                { id: 'records', label: 'Data Records', icon: Rows3 },
+                {
+                  id: 'templates',
+                  label: 'UI Templates',
+                  icon: LayoutTemplate,
+                },
+                { id: 'roles', label: 'Semantic Roles', icon: Shapes },
+              ] as const
+            ).map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                aria-pressed={activeTab === tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition ${
+                  activeTab === tab.id
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                <tab.icon className="size-3.5" />
+                {tab.label}
+              </button>
+            ))}
           </div>
-          <Button
-            variant={isEditingModel ? 'default' : 'outline'}
-            onClick={() =>
-              setIsEditingModel((current) => {
-                const next = !current
-                setHighlightRegions(next)
-                return next
-              })
-            }
-          >
-            <Pencil className="size-3.5" />
-            {isEditingModel ? 'Done editing' : 'Edit data model'}
-          </Button>
         </div>
-        {isEditingModel ? (
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_350px]">
-            <section className="min-w-0 rounded-2xl border-2 border-dashed border-primary/40 bg-primary/[0.03] p-4">
-              <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
-                <Sparkles className="size-3.5" />
-                Live preview
-              </p>
-              {renderToolbar(
-                activeModel,
-                template,
-                setTemplate,
-                query,
-                setQueryAndReset,
-                filter,
-                setFilterAndReset,
-                sort,
-                setSortAndReset,
-                page,
-                setPage,
-                visible.length,
-                highlightRegions,
-                setHighlightRegions,
-                fields,
-                editingRole,
-              )}
-              {renderItems()}
-              <p className="mt-4 text-xs text-muted-foreground">
-                Showing {Math.min((page - 1) * 6 + 1, visible.length)}–
-                {Math.min(page * 6, visible.length)} of {visible.length} records
-              </p>
-            </section>
-            <aside className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-              <div className="border-b px-4 py-4">
-                <p className="text-sm font-semibold">Data model</p>
-                <p className="text-xs text-muted-foreground">
-                  {fields.length} fields · {activeModel.name}
-                </p>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-[1500px] px-6 py-6">
+          {activeTab === 'templates' && (
+            <TemplateReference fields={fields} modelName={activeModel.name} />
+          )}
+          {activeTab === 'roles' && (
+            <SemanticRoleReference
+              fields={fields}
+              modelName={activeModel.name}
+            />
+          )}
+          {activeTab === 'records' && (
+            <>
+              <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-semibold tracking-tight">
+                    {activeModel.name} model
+                  </h1>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {fields.length} fields · {activeModel.description}
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col gap-1 p-2">
-                {fields.map((field) => {
-                  const isOpen = selectedId === field.name
-                  const isPresent = activeTemplateDef.supportedRoles.includes(
-                    field.semanticRole,
-                  )
-                  return (
-                    <div
-                      key={field.name}
-                      className={`overflow-hidden rounded-xl ${isOpen ? 'border border-primary/30' : ''}`}
+              <div
+                className={`grid gap-6 ${isPanelCollapsed ? 'xl:grid-cols-[minmax(0,1fr)_3.5rem]' : 'xl:grid-cols-[minmax(0,1fr)_350px]'}`}
+              >
+                <section className="min-w-0 rounded-2xl border-2 border-dashed border-primary/40 bg-primary/[0.03] p-4">
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
+                      <Sparkles className="size-3.5" />
+                      Live preview
+                    </p>
+                    <button
+                      type="button"
+                      aria-pressed={showTemplateStructure}
+                      onClick={() =>
+                        setShowTemplateStructure((current) => !current)
+                      }
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium shadow-sm transition ${
+                        showTemplateStructure
+                          ? 'border-primary/40 bg-primary/10 text-primary'
+                          : 'bg-card text-muted-foreground hover:text-foreground'
+                      }`}
                     >
-                      <button
-                        onClick={() => setSelectedId(isOpen ? '' : field.name)}
-                        className={`flex w-full items-center gap-3 px-3 py-3 text-left ${isOpen ? 'bg-primary/10' : 'rounded-xl hover:bg-muted/60'}`}
-                      >
-                        <span
-                          className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${isOpen ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground'}`}
+                      <Layers3 className="size-3.5" />
+                      {showTemplateStructure ? 'Hide' : 'Show'} template
+                    </button>
+                  </div>
+                  {showTemplateStructure && (
+                    <div className="mb-4 rounded-2xl border border-primary/30 shadow-sm">
+                      <div className="rounded-t-2xl border-b border-dashed border-primary/20 bg-muted p-3">
+                        <TemplateInspector
+                          template={template}
+                          editingRole={editingRole}
+                        />
+                      </div>
+                      <div className="rounded-b-2xl bg-muted/30 p-4">
+                        <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          Isolated preview
+                        </p>
+                        <div
+                          className={
+                            template === 'tile' || template === 'detail-header'
+                              ? 'max-w-sm'
+                              : 'w-full'
+                          }
                         >
-                          {field.rank}
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block truncate text-sm font-medium">
-                            {field.label}
-                          </span>
-                          <span className="block truncate text-[11px] text-muted-foreground">
-                            {field.name} ·{' '}
-                            <span className="font-mono">{field.type}</span>
-                          </span>
-                        </span>
-                        <span className="flex shrink-0 items-center gap-1.5">
-                          <RoleChipTag role={field.semanticRole} />
-                          <span
-                            title={
-                              isPresent
-                                ? `Shown in ${activeTemplateDef.label}`
-                                : `Not used by ${activeTemplateDef.label}`
-                            }
-                          >
-                            {isPresent ? (
-                              <Eye className="size-3.5 text-foreground" />
-                            ) : (
-                              <EyeOff className="size-3.5 text-muted-foreground/40" />
-                            )}
-                          </span>
-                          <ChevronDown
-                            className={`size-3.5 shrink-0 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}
-                          />
-                        </span>
+                          <TemplateSample template={template} fields={fields} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {renderToolbar(
+                    activeModel,
+                    template,
+                    setTemplate,
+                    query,
+                    setQueryAndReset,
+                    filter,
+                    setFilterAndReset,
+                    sort,
+                    setSortAndReset,
+                    page,
+                    setPage,
+                    visible.length,
+                  )}
+                  {renderItems()}
+                  <p className="mt-4 text-xs text-muted-foreground">
+                    Showing {Math.min((page - 1) * 6 + 1, visible.length)}–
+                    {Math.min(page * 6, visible.length)} of {visible.length}{' '}
+                    records
+                  </p>
+                </section>
+                <aside className="overflow-hidden rounded-2xl border bg-card shadow-sm xl:sticky xl:top-4 xl:flex xl:max-h-[calc(100vh-9rem)] xl:flex-col">
+                  {isPanelCollapsed ? (
+                    <div className="flex flex-row items-center justify-center gap-2 p-2 xl:flex-col">
+                      <button
+                        type="button"
+                        onClick={() => setIsPanelCollapsed(false)}
+                        aria-label="Expand data model panel"
+                        title="Expand data model panel"
+                        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                      >
+                        <PanelRightOpen className="size-4" />
                       </button>
-                      {isOpen && (
-                        <div className="border-t border-primary/20 bg-card p-4">
-                          <div className="mb-3">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                              Semantic role
+                    </div>
+                  ) : (
+                    <>
+                      <div className="shrink-0 border-b px-4 py-4">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold">
+                              Edit Semantic Role Mapping
+                            </p>
+                            <p className="truncate text-xs text-muted-foreground">
+                              {fields.length} fields · {activeModel.name}
                             </p>
                           </div>
-                          <select
-                            value={field.semanticRole}
-                            onChange={(event) =>
-                              updateSemanticRole(
-                                event.target.value as SemanticRole,
-                              )
-                            }
-                            className="w-full rounded-lg border bg-card px-3 py-2 text-sm"
-                          >
-                            {semanticRoles.map((semanticRole) => (
-                              <option key={semanticRole} value={semanticRole}>
-                                {semanticRoleLabels[semanticRole]}
-                              </option>
-                            ))}
-                          </select>
-                          <label className="mt-3 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                            Rank
-                            <input
-                              type="number"
-                              min={1}
-                              step={1}
-                              value={field.rank}
-                              onChange={(event) =>
-                                updateRank(Number(event.target.value))
-                              }
-                              className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal text-foreground"
-                            />
-                          </label>
-                          <div className="mt-3 rounded-lg border bg-card p-3 text-xs">
-                            <div className="flex items-center gap-2 font-semibold">
-                              <Info className="size-3.5 text-cyan-700" />
-                              {
-                                contractRoleDefinitions[field.semanticRole]
-                                  .label
-                              }
-                            </div>
-                            <p className="mt-1 leading-relaxed text-muted-foreground">
-                              {
-                                contractRoleDefinitions[field.semanticRole]
-                                  .definition
-                              }
-                            </p>
-                            <p className="mt-2 text-[10px] text-muted-foreground">
-                              {
-                                contractRoleDefinitions[field.semanticRole]
-                                  .representation
-                              }
-                            </p>
+                          <div className="flex shrink-0 items-center gap-1.5">
+                            <Button size="sm" onClick={() => setSelectedId('')}>
+                              <Save className="size-3.5" />
+                              Save
+                            </Button>
+                            <button
+                              type="button"
+                              onClick={() => setIsPanelCollapsed(true)}
+                              aria-label="Collapse data model panel"
+                              title="Collapse data model panel"
+                              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                            >
+                              <PanelRightClose className="size-4" />
+                            </button>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  )
-                })}
+                      </div>
+                      <div className="flex flex-col gap-1 p-2 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
+                        {fields.map((field) => {
+                          const isOpen = selectedId === field.name
+                          const isPresent =
+                            activeTemplateDef.supportedRoles.includes(
+                              field.semanticRole,
+                            )
+                          return (
+                            <div
+                              key={field.name}
+                              className={`shrink-0 overflow-hidden rounded-xl ${isOpen ? 'border border-primary/30' : ''}`}
+                            >
+                              <button
+                                onClick={() =>
+                                  setSelectedId(isOpen ? '' : field.name)
+                                }
+                                aria-expanded={isOpen}
+                                className={`flex w-full items-center gap-3 px-3 py-3 text-left ${isOpen ? 'bg-primary/10' : 'rounded-xl hover:bg-muted/60'}`}
+                              >
+                                <span className="flex shrink-0 flex-col items-center gap-0.5">
+                                  <span className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">
+                                    Rank
+                                  </span>
+                                  <span
+                                    className={`grid size-6 place-items-center rounded-full text-[11px] font-bold ${isOpen ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground'}`}
+                                  >
+                                    {field.rank}
+                                  </span>
+                                </span>
+                                <span className="min-w-0 flex-1">
+                                  <span className="block truncate text-sm font-semibold">
+                                    {field.label}
+                                  </span>
+                                  <span className="mt-1 flex flex-wrap items-center gap-1.5">
+                                    <span className="truncate font-mono text-[11px] text-muted-foreground">
+                                      {field.type}
+                                    </span>
+                                  </span>
+                                </span>
+                                <span className="flex shrink-0 items-center gap-1.5">
+                                  <RoleChipTag
+                                    role={field.semanticRole}
+                                    compact
+                                  />
+                                  <span
+                                    title={
+                                      isPresent
+                                        ? `Shown in ${activeTemplateDef.label}`
+                                        : `Not used by ${activeTemplateDef.label}`
+                                    }
+                                    aria-label={
+                                      isPresent
+                                        ? `Shown in ${activeTemplateDef.label}`
+                                        : `Not used by ${activeTemplateDef.label}`
+                                    }
+                                  >
+                                    {isPresent ? (
+                                      <Eye className="size-3.5 text-foreground" />
+                                    ) : (
+                                      <EyeOff className="size-3.5 text-muted-foreground/40" />
+                                    )}
+                                  </span>
+                                  <ChevronDown
+                                    className={`size-3.5 shrink-0 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                                  />
+                                </span>
+                              </button>
+                              {isOpen && (
+                                <div className="border-t border-primary/20 bg-card p-4">
+                                  <div className="mb-3">
+                                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                      Semantic role
+                                    </p>
+                                  </div>
+                                  <select
+                                    value={field.semanticRole}
+                                    onChange={(event) =>
+                                      updateSemanticRole(
+                                        field.name,
+                                        event.target.value as SemanticRole,
+                                      )
+                                    }
+                                    className="w-full rounded-lg border bg-card px-3 py-2 text-sm"
+                                  >
+                                    {semanticRoles.map((semanticRole) => (
+                                      <option
+                                        key={semanticRole}
+                                        value={semanticRole}
+                                      >
+                                        {semanticRoleLabels[semanticRole]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <label className="mt-3 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                    Rank
+                                    <input
+                                      type="number"
+                                      min={1}
+                                      step={1}
+                                      value={field.rank}
+                                      onChange={(event) =>
+                                        updateRank(
+                                          field.name,
+                                          Number(event.target.value),
+                                        )
+                                      }
+                                      className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal text-foreground"
+                                    />
+                                  </label>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </>
+                  )}
+                </aside>
               </div>
-            </aside>
-          </div>
-        ) : (
-          <section>
-            {renderToolbar(
-              activeModel,
-              template,
-              setTemplate,
-              query,
-              setQueryAndReset,
-              filter,
-              setFilterAndReset,
-              sort,
-              setSortAndReset,
-              page,
-              setPage,
-              visible.length,
-              highlightRegions,
-              setHighlightRegions,
-              fields,
-            )}
-            {renderItems()}
-            <p className="mt-4 text-xs text-muted-foreground">
-              Showing {Math.min((page - 1) * 6 + 1, visible.length)}–
-              {Math.min(page * 6, visible.length)} of {visible.length} records
-            </p>
-          </section>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </main>
   )
@@ -1995,10 +2584,6 @@ function renderToolbar(
   page: number,
   setPage: (value: number) => void,
   resultCount: number,
-  highlightRegions: boolean,
-  setHighlightRegions: (value: boolean) => void,
-  fields: Field[],
-  editingRole?: SemanticRole,
 ) {
   return (
     <div className="mb-4 flex flex-col gap-3">
@@ -2015,15 +2600,6 @@ function renderToolbar(
             </option>
           ))}
         </select>
-        <button
-          type="button"
-          aria-pressed={highlightRegions}
-          onClick={() => setHighlightRegions(!highlightRegions)}
-          className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm shadow-sm ${highlightRegions ? 'border-border bg-muted text-foreground' : 'bg-card'}`}
-        >
-          <Layers3 className="size-4" />
-          {highlightRegions ? 'Hide' : 'Show'} template structure
-        </button>
 
         {resultCount > 0 && (
           <div className="ml-auto flex items-center gap-1 rounded-lg border bg-card p-1 text-xs shadow-sm">
@@ -2051,28 +2627,6 @@ function renderToolbar(
           </div>
         )}
       </div>
-
-      {highlightRegions && (
-        <div className="rounded-2xl border border-primary/30 shadow-sm">
-          <div className="rounded-t-2xl border-b border-dashed border-primary/20 bg-muted p-3">
-            <TemplateInspector template={template} editingRole={editingRole} />
-          </div>
-          <div className="rounded-b-2xl bg-muted/30 p-4">
-            <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Isolated preview
-            </p>
-            <div
-              className={
-                template === 'tile' || template === 'detail-header'
-                  ? 'max-w-sm'
-                  : 'w-full'
-              }
-            >
-              <TemplateSample template={template} fields={fields} />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
