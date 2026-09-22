@@ -173,7 +173,7 @@
   .semantic-region {
     --region-hue: 200;
     position: relative;
-    border-radius: 6px;
+    border-radius: 4px;
   }
 
   .semantic-region-editing {

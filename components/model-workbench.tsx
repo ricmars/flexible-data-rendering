@@ -460,7 +460,7 @@ function FlagIndicator({
     <span
       title={`${label}: ${description}`}
       aria-label={`${label}: ${description}`}
-      className={`inline-flex items-center gap-1.5 rounded-md border border-border bg-muted px-2 py-1 text-xs font-medium text-foreground ${dense ? 'px-1.5' : ''}`}
+      className={`inline-flex items-center gap-1.5 rounded border border-border bg-muted px-2 py-1 text-xs font-medium text-foreground ${dense ? 'px-1.5' : ''}`}
     >
       <Icon aria-hidden="true" className="size-3.5 shrink-0" />
       <span className={dense ? 'sr-only' : undefined}>{label}</span>
@@ -886,50 +886,47 @@ function TemplateModal({
   )
 }
 
-function TemplateInspector({
-  template,
-  editingRole,
-}: {
-  template: Template
-  editingRole?: SemanticRole
-}) {
+function TemplateInspector({ template }: { template: Template }) {
   const definition = templates.find((entry) => entry.value === template)!
   return (
     <div className="text-xs text-foreground">
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <span className="font-semibold">
-          {definition.label} · {definition.density} density
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="mr-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Render order
-          </span>
-          {definition.supportedRoles.map((role, index) => (
-            <span key={role} className="flex items-center">
-              <span
-                className={`semantic-region-${role} flex size-5 items-center justify-center rounded-full border text-[10px] font-bold`}
-                style={{
-                  backgroundColor: 'oklch(55% 0.16 var(--region-hue) / 0.25)',
-                }}
-              >
-                {role.charAt(0).toUpperCase()}
-              </span>
-              {index < definition.supportedRoles.length - 1 && (
-                <ChevronRight className="size-3 text-muted-foreground/40" />
-              )}
-            </span>
-          ))}
-        </span>
-      </div>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {definition.supportedRoles.map((role) => (
-          <RoleChipTag
-            key={role}
-            role={role}
-            editing={role === editingRole}
-            suffix={`: ${definition.slots[role] === 'all' ? 'all' : (definition.slots[role] ?? 0)}`}
-          />
-        ))}
+      <span className="font-semibold">
+        {definition.label} · {definition.density} density
+      </span>
+    </div>
+  )
+}
+
+function TemplateMockPreview({
+  template,
+  fields,
+  className = '',
+}: {
+  template: Template
+  fields: Field[]
+  className?: string
+}) {
+  return (
+    <div
+      className={`p-4 ${className}`}
+      style={{
+        backgroundImage:
+          'conic-gradient(rgba(128,128,128,0.14) 25%, transparent 25% 50%, rgba(128,128,128,0.14) 50% 75%, transparent 75%)',
+        backgroundSize: '16px 16px',
+      }}
+    >
+      <p className="mb-3 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+        <Eye className="size-3.5" />
+        Mock preview
+      </p>
+      <div
+        className={
+          template === 'tile' || template === 'detail-header'
+            ? 'max-w-sm'
+            : 'w-full'
+        }
+      >
+        <TemplateSample template={template} fields={fields} />
       </div>
     </div>
   )
@@ -948,7 +945,7 @@ function RoleChipTag({
 }) {
   return (
     <span
-      className={`role-chip semantic-region-${role} inline-flex items-stretch overflow-hidden rounded-md border text-[11px] font-medium ${editing ? 'role-chip-editing' : ''}`}
+      className={`role-chip semantic-region-${role} inline-flex items-stretch overflow-hidden rounded border text-[11px] font-medium ${editing ? 'role-chip-editing' : ''}`}
     >
       <span
         className={`flex shrink-0 items-center justify-center border-r border-current/25 font-bold ${compact ? 'w-4' : 'w-5'}`}
@@ -1261,36 +1258,16 @@ function TemplateReference({
                 <p className="mt-1 text-sm text-muted-foreground">
                   {entry.description}
                 </p>
-              </div>
-              <div className="border-b bg-muted/30 p-4">
-                <TemplateInspector template={entry.value} />
                 <p className="mt-3 text-xs text-muted-foreground">
                   {fieldsShown} of {fields.length} fields from {modelName}{' '}
                   render in this template.
                 </p>
               </div>
-              <div
-                className="flex-1 rounded-b-2xl p-4"
-                style={{
-                  backgroundImage:
-                    'conic-gradient(rgba(128,128,128,0.14) 25%, transparent 25% 50%, rgba(128,128,128,0.14) 50% 75%, transparent 75%)',
-                  backgroundSize: '16px 16px',
-                }}
-              >
-                <p className="mb-3 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-                  <Eye className="size-3.5" />
-                  Mock preview
-                </p>
-                <div
-                  className={
-                    entry.value === 'tile' || entry.value === 'detail-header'
-                      ? 'max-w-sm'
-                      : 'w-full'
-                  }
-                >
-                  <TemplateSample template={entry.value} fields={fields} />
-                </div>
-              </div>
+              <TemplateMockPreview
+                template={entry.value}
+                fields={fields}
+                className="flex-1 rounded-b-2xl"
+              />
             </div>
           )
         })}
@@ -1385,6 +1362,29 @@ export default function ModelWorkbench() {
     (field) => field.name === selectedId,
   )?.semanticRole
   const activeTemplateDef = templates.find((entry) => entry.value === template)!
+  // A field only actually renders if its role has a non-zero slot cap and
+  // the field ranks within that cap among same-role fields (ties broken by
+  // declaration order), matching the selection logic in selectSlots.
+  const presentFieldNames = useMemo(() => {
+    const byRole = new Map<SemanticRole, Field[]>()
+    fields.forEach((field) => {
+      const list = byRole.get(field.semanticRole) ?? []
+      list.push(field)
+      byRole.set(field.semanticRole, list)
+    })
+    const present = new Set<string>()
+    byRole.forEach((roleFields, role) => {
+      if (!activeTemplateDef.supportedRoles.includes(role)) return
+      const cap = activeTemplateDef.slots[role]
+      if (cap === undefined || cap === 0) return
+      const ordered = [...roleFields].sort(
+        (a, b) => a.rank - b.rank || fields.indexOf(a) - fields.indexOf(b),
+      )
+      const selected = cap === 'all' ? ordered : ordered.slice(0, cap)
+      selected.forEach((field) => present.add(field.name))
+    })
+    return present
+  }, [fields, activeTemplateDef])
   const visible = useMemo(() => {
     const result = records
       .filter((item) =>
@@ -1682,7 +1682,7 @@ export default function ModelWorkbench() {
               </span>
               {selectedValuesFor(item, 'action').length > 0 && (
                 <span
-                  className={`hidden shrink-0 rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-foreground sm:block ${roleClass('action')}`}
+                  className={`hidden shrink-0 rounded bg-primary px-2 py-1 text-xs font-medium text-primary-foreground sm:block ${roleClass('action')}`}
                 >
                   {String(selectedValueFor(item, 'action'))}
                 </span>
@@ -1779,7 +1779,7 @@ export default function ModelWorkbench() {
                         {selectedTextFor(item, 'tags').map((tag) => (
                           <span
                             key={tag}
-                            className="rounded-md border bg-muted/60 px-2 py-1 text-xs"
+                            className="rounded border bg-muted/60 px-2 py-1 text-xs"
                           >
                             {tag}
                           </span>
@@ -1890,7 +1890,7 @@ export default function ModelWorkbench() {
                         {selectedValuesFor(item, 'action').map((entry) => (
                           <span
                             key={entry.field.name}
-                            className="rounded-md bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
+                            className="rounded bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground"
                           >
                             {String(entry.displayValue)}
                           </span>
@@ -2360,25 +2360,13 @@ export default function ModelWorkbench() {
                   {showTemplateStructure && (
                     <div className="mb-4 rounded-2xl border border-primary/30 shadow-sm">
                       <div className="rounded-t-2xl border-b border-dashed border-primary/20 bg-muted p-3">
-                        <TemplateInspector
-                          template={template}
-                          editingRole={editingRole}
-                        />
+                        <TemplateInspector template={template} />
                       </div>
-                      <div className="rounded-b-2xl bg-muted/30 p-4">
-                        <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                          Isolated preview
-                        </p>
-                        <div
-                          className={
-                            template === 'tile' || template === 'detail-header'
-                              ? 'max-w-sm'
-                              : 'w-full'
-                          }
-                        >
-                          <TemplateSample template={template} fields={fields} />
-                        </div>
-                      </div>
+                      <TemplateMockPreview
+                        template={template}
+                        fields={fields}
+                        className="rounded-b-2xl"
+                      />
                     </div>
                   )}
                   {renderToolbar(
@@ -2423,8 +2411,10 @@ export default function ModelWorkbench() {
                             <p className="truncate text-sm font-semibold">
                               Edit Semantic Role Mapping
                             </p>
-                            <p className="truncate text-xs text-muted-foreground">
-                              {fields.length} fields · {activeModel.name}
+                            <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Eye className="size-3.5 shrink-0" />
+                              {presentFieldNames.size} visible / {fields.length}{' '}
+                              total fields
                             </p>
                           </div>
                           <div className="flex shrink-0 items-center gap-1.5">
@@ -2447,10 +2437,7 @@ export default function ModelWorkbench() {
                       <div className="flex flex-col gap-1 p-2 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
                         {fields.map((field) => {
                           const isOpen = selectedId === field.name
-                          const isPresent =
-                            activeTemplateDef.supportedRoles.includes(
-                              field.semanticRole,
-                            )
+                          const isPresent = presentFieldNames.has(field.name)
                           return (
                             <div
                               key={field.name}
