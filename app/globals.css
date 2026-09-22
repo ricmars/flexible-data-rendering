@@ -171,30 +171,117 @@
 
 @layer components {
   .semantic-region {
-    outline: 2px dashed rgb(8 145 178 / 0.65);
-    outline-offset: 3px;
-    background-image: linear-gradient(
-      135deg,
-      rgb(8 145 178 / 0.08) 25%,
-      transparent 25%,
-      transparent 50%,
-      rgb(8 145 178 / 0.08) 50%,
-      rgb(8 145 178 / 0.08) 75%,
-      transparent 75%
-    );
-    background-size: 8px 8px;
+    --region-hue: 200;
+    position: relative;
+    border-radius: 6px;
   }
 
-  .semantic-region-hovered {
-    outline-color: rgb(220 38 38 / 0.9);
-    background-image: linear-gradient(
-      135deg,
-      rgb(220 38 38 / 0.12) 25%,
-      transparent 25%,
-      transparent 50%,
-      rgb(220 38 38 / 0.12) 50%,
-      rgb(220 38 38 / 0.12) 75%,
-      transparent 75%
-    );
+  .semantic-region-editing {
+    outline: 2px solid oklch(50% 0.17 var(--region-hue));
+    outline-offset: 2px;
+    background-color: oklch(58% 0.15 var(--region-hue) / 0.14);
+  }
+
+  .semantic-region-editing::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    box-shadow: 0 0 0 5px oklch(58% 0.15 var(--region-hue) / 0.16);
+    pointer-events: none;
+  }
+
+  /* Distinct hue per semantic role, reused by regions and inspector chips */
+  .semantic-region-media {
+    --region-hue: 0;
+  }
+  .semantic-region-title {
+    --region-hue: 137;
+  }
+  .semantic-region-subtitle {
+    --region-hue: 274;
+  }
+  .semantic-region-identifier {
+    --region-hue: 51;
+  }
+  .semantic-region-status {
+    --region-hue: 188;
+  }
+  .semantic-region-priority {
+    --region-hue: 325;
+  }
+  .semantic-region-progress {
+    --region-hue: 102;
+  }
+  .semantic-region-flags {
+    --region-hue: 239;
+  }
+  .semantic-region-tags {
+    --region-hue: 16;
+  }
+  .semantic-region-highlight {
+    --region-hue: 153;
+  }
+  .semantic-region-metric {
+    --region-hue: 290;
+  }
+  .semantic-region-temporal {
+    --region-hue: 67;
+  }
+  .semantic-region-people {
+    --region-hue: 204;
+  }
+  .semantic-region-location {
+    --region-hue: 341;
+  }
+  .semantic-region-secondary {
+    --region-hue: 118;
+  }
+  .semantic-region-description {
+    --region-hue: 255;
+  }
+  .semantic-region-annotation {
+    --region-hue: 32;
+  }
+  .semantic-region-relation {
+    --region-hue: 169;
+  }
+  .semantic-region-attachment {
+    --region-hue: 306;
+  }
+  .semantic-region-action {
+    --region-hue: 83;
+  }
+  .semantic-region-navigation {
+    --region-hue: 220;
+  }
+  .semantic-region-sortKey {
+    --region-hue: 357;
+  }
+  .semantic-region-groupKey {
+    --region-hue: 134;
+  }
+  .semantic-region-searchText {
+    --region-hue: 271;
+  }
+  .semantic-region-sensitivity {
+    --region-hue: 48;
+  }
+
+  .role-chip {
+    border-color: oklch(55% 0.14 var(--region-hue) / 0.5);
+    background-color: oklch(55% 0.14 var(--region-hue) / 0.14);
+    color: oklch(32% 0.1 var(--region-hue));
+  }
+
+  .dark .role-chip {
+    color: oklch(92% 0.06 var(--region-hue));
+    background-color: oklch(55% 0.14 var(--region-hue) / 0.26);
+  }
+
+  .role-chip-editing {
+    border-width: 2px;
+    border-color: oklch(50% 0.16 var(--region-hue));
+    font-weight: 600;
   }
 }
