@@ -58,6 +58,9 @@ export default function EditorView({ modelId }: { modelId: string }) {
   )
   const [selectedId, setSelectedId] = useState('')
   const [template, setTemplate] = useState<Template>('row')
+  const [hiddenRolesByTemplate, setHiddenRolesByTemplate] = useState<
+    Partial<Record<Template, Set<SemanticRole>>>
+  >({})
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('All statuses')
   const [sort, setSort] = useState('Available first')
@@ -187,6 +190,20 @@ export default function EditorView({ modelId }: { modelId: string }) {
       ? `semantic-region semantic-region-${role} semantic-region-editing`
       : ''
 
+  const hiddenRoles = hiddenRolesByTemplate[template]
+
+  const handleToggleRole = (role: SemanticRole) => {
+    setHiddenRolesByTemplate((prev) => {
+      const next = new Set(prev[template])
+      if (next.has(role)) {
+        next.delete(role)
+      } else {
+        next.add(role)
+      }
+      return { ...prev, [template]: next }
+    })
+  }
+
   const RuntimeComponent = runtimeByTemplate[template]
 
   const renderItems = () => {
@@ -198,6 +215,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
@@ -216,6 +234,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
@@ -234,6 +253,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
@@ -249,6 +269,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
@@ -264,6 +285,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
@@ -282,6 +304,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
@@ -304,6 +327,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
             key={item.id}
             item={item}
             roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
             onOpenDetail={setDetail}
             onViewJson={setJsonItem}
             onViewTemplate={setTemplateItem}
@@ -379,11 +403,26 @@ export default function EditorView({ modelId }: { modelId: string }) {
                   <p className="mt-0.5 line-clamp-1 text-xs">
                     <TemplateInspector template={template} inline />
                   </p>
+                  {(hiddenRoles?.size ?? 0) > 0 ? (
+                    <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-primary">
+                      <EyeOff className="size-3.5 shrink-0" />
+                      {hiddenRoles!.size} field
+                      {hiddenRoles!.size === 1 ? '' : 's'} hidden from the
+                      preview — click a chip to bring it back.
+                    </p>
+                  ) : (
+                    <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-primary">
+                      <Eye className="size-3.5 shrink-0" />
+                      Click a role chip to hide it from the live preview.
+                    </p>
+                  )}
                 </div>
                 <TemplateMockPreview
                   template={template}
                   fields={fields}
                   className="rounded-b-2xl"
+                  hiddenRoles={hiddenRoles}
+                  onToggleRole={handleToggleRole}
                 />
               </div>
             )}
@@ -559,15 +598,13 @@ export default function EditorView({ modelId }: { modelId: string }) {
                           </span>
                         </span>
                         <span className="flex shrink-0 items-center gap-1.5">
-                          <RoleChipTag role={field.semanticRole} compact />
-                          {!isPresent && (
-                            <span
-                              title={`Not rendered by ${activeTemplateDef.label}`}
-                              aria-label={`Not rendered by ${activeTemplateDef.label}`}
-                            >
-                              <EyeOff className="size-3.5 text-muted-foreground/40" />
-                            </span>
-                          )}
+                          <span
+                            className={
+                              isPresent ? '' : 'opacity-40 grayscale-[0.4]'
+                            }
+                          >
+                            <RoleChipTag role={field.semanticRole} xs />
+                          </span>
                           <button
                             type="button"
                             onClick={() =>

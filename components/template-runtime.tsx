@@ -10,6 +10,8 @@ import {
   Clipboard,
   ClipboardX,
   ClockAlert,
+  Eye,
+  EyeOff,
   LayoutTemplate,
   LockKeyhole,
   MoreHorizontal,
@@ -888,38 +890,108 @@ export function RoleChipTag({
   suffix,
   editing,
   compact,
+  xs,
+  hidden,
+  onToggle,
 }: {
   role: SemanticRole
   suffix?: string
   editing?: boolean
   compact?: boolean
+  /** Extra-small size for dense, read-only contexts (e.g. the field list). */
+  xs?: boolean
+  /** Marks the chip as toggled-off in the Live Editor's live preview. */
+  hidden?: boolean
+  /** When provided, the chip becomes clickable to toggle preview visibility. */
+  onToggle?: () => void
 }) {
-  return (
-    <span
-      className={`role-chip semantic-region-${role} inline-flex items-stretch overflow-hidden rounded border text-[11px] font-medium ${editing ? 'role-chip-editing' : ''}`}
-    >
+  const label = contractRoleDefinitions[role].label
+  const className = `role-chip semantic-region-${role} inline-flex items-stretch overflow-hidden rounded border font-medium ${xs ? 'text-[10px]' : 'text-[11px]'} ${editing ? 'role-chip-editing' : ''} ${hidden ? 'opacity-45 grayscale-[0.3]' : ''} ${onToggle ? 'cursor-pointer transition hover:ring-2 hover:ring-offset-1 hover:ring-current/50' : ''}`
+  const content = (
+    <>
       <span
-        className={`flex shrink-0 items-center justify-center border-r border-current/25 font-bold ${compact ? 'w-4' : 'w-5'}`}
+        className={`flex shrink-0 items-center justify-center border-r border-current/25 font-bold ${xs ? 'w-3' : compact ? 'w-4' : 'w-5'}`}
         style={{ backgroundColor: 'oklch(55% 0.16 var(--region-hue) / 0.3)' }}
       >
         {role.charAt(0).toUpperCase()}
       </span>
-      <span className={compact ? 'px-1.5 py-0.5' : 'px-2 py-1'}>
-        {contractRoleDefinitions[role].label}
+      <span
+        className={`flex items-center gap-1 ${xs ? 'px-1' : compact ? 'px-1.5 py-0.5' : 'px-2 py-1'}`}
+      >
+        {label}
         {suffix}
+        {hidden && (
+          <EyeOff className={xs ? 'size-2.5' : 'size-3'} aria-hidden="true" />
+        )}
+        {onToggle && !hidden && (
+          <Eye
+            className={`opacity-60 ${xs ? 'size-2.5' : 'size-3'}`}
+            aria-hidden="true"
+          />
+        )}
       </span>
-    </span>
+    </>
   )
+  if (onToggle) {
+    return (
+      <button
+        type="button"
+        onClick={onToggle}
+        className={className}
+        title={
+          hidden
+            ? `${label} is hidden in the live preview — click to show it`
+            : `${label} is shown in the live preview — click to hide it`
+        }
+      >
+        {content}
+      </button>
+    )
+  }
+  return <span className={className}>{content}</span>
 }
 
-export function RoleChipDot({ role }: { role: SemanticRole }) {
-  return (
-    <span
-      className={`role-chip semantic-region-${role} flex size-full items-center justify-center rounded-full text-[11px] font-bold`}
-    >
-      {role.charAt(0).toUpperCase()}
-    </span>
+export function RoleChipDot({
+  role,
+  hidden,
+  onToggle,
+}: {
+  role: SemanticRole
+  /** Marks the dot as toggled-off in the Live Editor's live preview. */
+  hidden?: boolean
+  /** When provided, the dot becomes clickable to toggle preview visibility. */
+  onToggle?: () => void
+}) {
+  const label = contractRoleDefinitions[role].label
+  const className = `role-chip semantic-region-${role} relative flex size-full items-center justify-center rounded-full text-[11px] font-bold ${hidden ? 'opacity-45 grayscale-[0.3]' : ''} ${onToggle ? 'cursor-pointer transition hover:ring-2 hover:ring-offset-1 hover:ring-current/50' : ''}`
+  const content = hidden ? (
+    <EyeOff className="size-3" aria-hidden="true" />
+  ) : (
+    role.charAt(0).toUpperCase()
   )
+  if (onToggle) {
+    return (
+      <button
+        type="button"
+        onClick={onToggle}
+        className={className}
+        title={
+          hidden
+            ? `${label} is hidden in the live preview — click to show it`
+            : `${label} is shown in the live preview — click to hide it`
+        }
+      >
+        {content}
+        {!hidden && (
+          <Eye
+            className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-card p-0.5 text-current opacity-80"
+            aria-hidden="true"
+          />
+        )}
+      </button>
+    )
+  }
+  return <span className={className}>{content}</span>
 }
 
 export function HoverActions({
@@ -992,10 +1064,16 @@ export function TemplateMockPreview({
   template,
   fields,
   className = '',
+  hiddenRoles,
+  onToggleRole,
 }: {
   template: Template
   fields: Field[]
   className?: string
+  /** Roles currently toggled off in the live preview (Live Editor only). */
+  hiddenRoles?: Set<SemanticRole>
+  /** Called when a toggle-eligible role chip is clicked (Live Editor only). */
+  onToggleRole?: (role: SemanticRole) => void
 }) {
   return (
     <TemplatePreviewSurface
@@ -1006,7 +1084,12 @@ export function TemplateMockPreview({
           : 'w-full'
       }
     >
-      <TemplateSample template={template} fields={fields} />
+      <TemplateSample
+        template={template}
+        fields={fields}
+        hiddenRoles={hiddenRoles}
+        onToggleRole={onToggleRole}
+      />
     </TemplatePreviewSurface>
   )
 }
@@ -1014,12 +1097,23 @@ export function TemplateMockPreview({
 export function TemplateSample({
   template,
   fields,
+  hiddenRoles,
+  onToggleRole,
 }: {
   template: Template
   fields: Field[]
+  hiddenRoles?: Set<SemanticRole>
+  onToggleRole?: (role: SemanticRole) => void
 }) {
   const definition = templateCatalog.find((entry) => entry.value === template)!
   const usedRoles = new Set(fields.map((field) => field.semanticRole))
+  const toggleProps = (role: SemanticRole) =>
+    onToggleRole
+      ? {
+          hidden: hiddenRoles?.has(role),
+          onToggle: () => onToggleRole(role),
+        }
+      : {}
   const supports = (role: SemanticRole) =>
     definition.supportedRoles.includes(role) && usedRoles.has(role)
 
@@ -1027,18 +1121,18 @@ export function TemplateSample({
     return (
       <div className="inline-flex max-w-full items-center gap-2 rounded-full border bg-card px-3 py-2 text-sm shadow-sm">
         {supports('media') && (
-          <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-muted">
-            <RoleChipDot role="media" />
+          <span className="grid size-6 shrink-0 place-items-center rounded-full bg-muted">
+            <RoleChipDot role="media" {...toggleProps('media')} />
           </span>
         )}
         {supports('title') && (
           <span className="min-w-0 truncate">
-            <RoleChipTag role="title" />
+            <RoleChipTag role="title" {...toggleProps('title')} />
           </span>
         )}
         {supports('status') && (
           <span className="shrink-0">
-            <RoleChipTag role="status" />
+            <RoleChipTag role="status" {...toggleProps('status')} />
           </span>
         )}
       </div>
@@ -1048,22 +1142,22 @@ export function TemplateSample({
     return (
       <div className="flex w-full items-center gap-3 rounded-xl border bg-card px-4 py-3">
         {supports('media') && (
-          <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted">
-            <RoleChipDot role="media" />
+          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-muted">
+            <RoleChipDot role="media" {...toggleProps('media')} />
           </span>
         )}
         <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
-          {supports('title') && <RoleChipTag role="title" />}
+          {supports('title') && <RoleChipTag role="title" {...toggleProps('title')} />}
           <span className="flex flex-wrap items-center gap-1.5">
-            {supports('subtitle') && <RoleChipTag role="subtitle" />}
-            {supports('identifier') && <RoleChipTag role="identifier" />}
+            {supports('subtitle') && <RoleChipTag role="subtitle" {...toggleProps('subtitle')} />}
+            {supports('identifier') && <RoleChipTag role="identifier" {...toggleProps('identifier')} />}
           </span>
         </span>
-        {supports('status') && <RoleChipTag role="status" />}
-        {supports('flags') && <RoleChipTag role="flags" />}
-        {supports('metric') && <RoleChipTag role="metric" />}
-        {supports('people') && <RoleChipTag role="people" />}
-        {supports('action') && <RoleChipTag role="action" />}
+        {supports('status') && <RoleChipTag role="status" {...toggleProps('status')} />}
+        {supports('flags') && <RoleChipTag role="flags" {...toggleProps('flags')} />}
+        {supports('metric') && <RoleChipTag role="metric" {...toggleProps('metric')} />}
+        {supports('people') && <RoleChipTag role="people" {...toggleProps('people')} />}
+        {supports('action') && <RoleChipTag role="action" {...toggleProps('action')} />}
       </div>
     )
 
@@ -1072,70 +1166,70 @@ export function TemplateSample({
       <div className="overflow-hidden rounded-xl border bg-card p-4 text-sm">
         <div className="flex min-w-0 items-start gap-3">
           {supports('media') && (
-            <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted">
-              <RoleChipDot role="media" />
+            <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-muted">
+              <RoleChipDot role="media" {...toggleProps('media')} />
             </span>
           )}
           <div className="min-w-0 flex-1 space-y-1">
             {supports('objectType') && (
               <div>
-                <RoleChipTag role="objectType" />
+                <RoleChipTag role="objectType" {...toggleProps('objectType')} />
               </div>
             )}
             {supports('title') && (
               <div>
-                <RoleChipTag role="title" />
+                <RoleChipTag role="title" {...toggleProps('title')} />
               </div>
             )}
             <div className="flex flex-wrap gap-1.5">
-              {supports('subtitle') && <RoleChipTag role="subtitle" />}
-              {supports('identifier') && <RoleChipTag role="identifier" />}
+              {supports('subtitle') && <RoleChipTag role="subtitle" {...toggleProps('subtitle')} />}
+              {supports('identifier') && <RoleChipTag role="identifier" {...toggleProps('identifier')} />}
             </div>
           </div>
           <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
-            {supports('status') && <RoleChipTag role="status" />}
-            {supports('priority') && <RoleChipTag role="priority" />}
+            {supports('status') && <RoleChipTag role="status" {...toggleProps('status')} />}
+            {supports('priority') && <RoleChipTag role="priority" {...toggleProps('priority')} />}
           </div>
         </div>
         {supports('flags') && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            <RoleChipTag role="flags" />
+            <RoleChipTag role="flags" {...toggleProps('flags')} />
           </div>
         )}
         {supports('highlight') && (
           <div className="mt-3 grid gap-3 border-y py-3 sm:grid-cols-3">
-            <RoleChipTag role="highlight" />
-            <RoleChipTag role="highlight" />
-            <RoleChipTag role="highlight" />
+            <RoleChipTag role="highlight" {...toggleProps('highlight')} />
+            <RoleChipTag role="highlight" {...toggleProps('highlight')} />
+            <RoleChipTag role="highlight" {...toggleProps('highlight')} />
           </div>
         )}
         {supports('progress') && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            <RoleChipTag role="progress" />
+            <RoleChipTag role="progress" {...toggleProps('progress')} />
           </div>
         )}
         {supports('description') && (
           <p className="mt-3">
-            <RoleChipTag role="description" />
+            <RoleChipTag role="description" {...toggleProps('description')} />
           </p>
         )}
         {(supports('temporal') ||
           supports('people') ||
           supports('relation')) && (
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            {supports('temporal') && <RoleChipTag role="temporal" />}
-            {supports('people') && <RoleChipTag role="people" />}
-            {supports('relation') && <RoleChipTag role="relation" />}
+            {supports('temporal') && <RoleChipTag role="temporal" {...toggleProps('temporal')} />}
+            {supports('people') && <RoleChipTag role="people" {...toggleProps('people')} />}
+            {supports('relation') && <RoleChipTag role="relation" {...toggleProps('relation')} />}
           </div>
         )}
         {supports('tags') && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            <RoleChipTag role="tags" />
+            <RoleChipTag role="tags" {...toggleProps('tags')} />
           </div>
         )}
         {supports('action') && (
           <div className="mt-3 flex flex-wrap gap-2">
-            <RoleChipTag role="action" />
+            <RoleChipTag role="action" {...toggleProps('action')} />
           </div>
         )}
       </div>
@@ -1146,7 +1240,7 @@ export function TemplateSample({
       <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
         {supports('media') && (
           <div className="flex h-44 w-full items-center justify-center bg-muted/60">
-            <RoleChipTag role="media" />
+            <RoleChipTag role="media" {...toggleProps('media')} />
           </div>
         )}
         <div className="flex flex-col gap-2 p-4">
@@ -1154,7 +1248,7 @@ export function TemplateSample({
             <div className="min-w-0">
               {supports('objectType') ? (
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  <RoleChipTag role="objectType" />
+                  <RoleChipTag role="objectType" {...toggleProps('objectType')} />
                 </p>
               ) : (
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -1163,17 +1257,17 @@ export function TemplateSample({
               )}
               {supports('title') && (
                 <span className="text-xl">
-                  <RoleChipTag role="title" />
+                  <RoleChipTag role="title" {...toggleProps('title')} />
                 </span>
               )}
               {supports('subtitle') && (
                 <div className="mt-1 flex flex-wrap gap-1.5">
-                  <RoleChipTag role="subtitle" />
+                  <RoleChipTag role="subtitle" {...toggleProps('subtitle')} />
                 </div>
               )}
               {supports('identifier') && (
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  <RoleChipTag role="identifier" />
+                  <RoleChipTag role="identifier" {...toggleProps('identifier')} />
                 </div>
               )}
             </div>
@@ -1181,67 +1275,67 @@ export function TemplateSample({
               supports('priority') ||
               supports('flags')) && (
               <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
-                {supports('status') && <RoleChipTag role="status" />}
-                {supports('priority') && <RoleChipTag role="priority" />}
-                {supports('flags') && <RoleChipTag role="flags" />}
+                {supports('status') && <RoleChipTag role="status" {...toggleProps('status')} />}
+                {supports('priority') && <RoleChipTag role="priority" {...toggleProps('priority')} />}
+                {supports('flags') && <RoleChipTag role="flags" {...toggleProps('flags')} />}
               </div>
             )}
           </div>
           {supports('highlight') && (
             <div className="grid grid-cols-2 gap-2 border-y py-2 sm:grid-cols-4">
-              <RoleChipTag role="highlight" />
+              <RoleChipTag role="highlight" {...toggleProps('highlight')} />
             </div>
           )}
           {supports('tags') && (
             <div className="flex flex-wrap gap-1.5">
-              <RoleChipTag role="tags" />
+              <RoleChipTag role="tags" {...toggleProps('tags')} />
             </div>
           )}
           {supports('progress') && (
             <div className="flex flex-wrap gap-1.5">
-              <RoleChipTag role="progress" />
+              <RoleChipTag role="progress" {...toggleProps('progress')} />
             </div>
           )}
           {supports('metric') && (
             <div className="flex flex-wrap gap-1.5">
-              <RoleChipTag role="metric" />
+              <RoleChipTag role="metric" {...toggleProps('metric')} />
             </div>
           )}
           {supports('description') && (
             <div className="flex flex-wrap gap-1.5">
-              <RoleChipTag role="description" />
+              <RoleChipTag role="description" {...toggleProps('description')} />
             </div>
           )}
           {supports('temporal') && (
             <div className="flex flex-wrap gap-2">
-              <RoleChipTag role="temporal" />
+              <RoleChipTag role="temporal" {...toggleProps('temporal')} />
             </div>
           )}
-          {supports('location') && <RoleChipTag role="location" />}
+          {supports('location') && <RoleChipTag role="location" {...toggleProps('location')} />}
           {supports('people') && (
             <div className="flex flex-wrap gap-2">
-              <RoleChipTag role="people" />
+              <RoleChipTag role="people" {...toggleProps('people')} />
             </div>
           )}
-          {supports('annotation') && <RoleChipTag role="annotation" />}
+          {supports('annotation') && <RoleChipTag role="annotation" {...toggleProps('annotation')} />}
           {supports('relation') && (
             <div className="flex flex-wrap gap-2">
-              <RoleChipTag role="relation" />
+              <RoleChipTag role="relation" {...toggleProps('relation')} />
             </div>
           )}
           {supports('secondary') && (
             <div className="grid gap-2 sm:grid-cols-2">
               <div className="rounded-md bg-muted/50 p-2 text-xs">
-                <RoleChipTag role="secondary" />
+                <RoleChipTag role="secondary" {...toggleProps('secondary')} />
               </div>
               <div className="rounded-md bg-muted/50 p-2 text-xs">
-                <RoleChipTag role="secondary" />
+                <RoleChipTag role="secondary" {...toggleProps('secondary')} />
               </div>
             </div>
           )}
           {supports('action') && (
             <div className="flex flex-wrap gap-2">
-              <RoleChipTag role="action" />
+              <RoleChipTag role="action" {...toggleProps('action')} />
             </div>
           )}
         </div>
@@ -1254,19 +1348,19 @@ export function TemplateSample({
         {supports('metric') && (
           <div className="flex items-baseline gap-2">
             <span className="text-lg">
-              <RoleChipTag role="metric" />
+              <RoleChipTag role="metric" {...toggleProps('metric')} />
             </span>
           </div>
         )}
         {supports('title') && (
           <div className="mt-2">
-            <RoleChipTag role="title" />
+            <RoleChipTag role="title" {...toggleProps('title')} />
           </div>
         )}
         {(supports('status') || supports('temporal')) && (
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            {supports('status') && <RoleChipTag role="status" />}
-            {supports('temporal') && <RoleChipTag role="temporal" />}
+            {supports('status') && <RoleChipTag role="status" {...toggleProps('status')} />}
+            {supports('temporal') && <RoleChipTag role="temporal" {...toggleProps('temporal')} />}
           </div>
         )}
       </div>
@@ -1275,28 +1369,28 @@ export function TemplateSample({
   if (template === 'progress-card')
     return (
       <div className="w-full rounded-2xl border bg-card p-4 shadow-sm">
-        {supports('progress') && <RoleChipTag role="progress" />}
+        {supports('progress') && <RoleChipTag role="progress" {...toggleProps('progress')} />}
         {supports('title') && (
           <div className="mt-3">
-            <RoleChipTag role="title" />
+            <RoleChipTag role="title" {...toggleProps('title')} />
           </div>
         )}
         {(supports('subtitle') || supports('identifier')) && (
           <div className="mt-1 flex flex-wrap gap-1.5">
-            {supports('subtitle') && <RoleChipTag role="subtitle" />}
-            {supports('identifier') && <RoleChipTag role="identifier" />}
+            {supports('subtitle') && <RoleChipTag role="subtitle" {...toggleProps('subtitle')} />}
+            {supports('identifier') && <RoleChipTag role="identifier" {...toggleProps('identifier')} />}
           </div>
         )}
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-1.5">
-            {supports('status') && <RoleChipTag role="status" />}
-            {supports('temporal') && <RoleChipTag role="temporal" />}
+            {supports('status') && <RoleChipTag role="status" {...toggleProps('status')} />}
+            {supports('temporal') && <RoleChipTag role="temporal" {...toggleProps('temporal')} />}
           </div>
-          {supports('people') && <RoleChipTag role="people" />}
+          {supports('people') && <RoleChipTag role="people" {...toggleProps('people')} />}
         </div>
         {supports('action') && (
           <div className="mt-3 flex flex-wrap gap-2">
-            <RoleChipTag role="action" />
+            <RoleChipTag role="action" {...toggleProps('action')} />
           </div>
         )}
       </div>
@@ -1311,28 +1405,28 @@ export function TemplateSample({
               <RoleChipDot role="flags" />
             </span>
           )}
-          {supports('flags') && <RoleChipTag role="flags" />}
-          {supports('priority') && <RoleChipTag role="priority" />}
-          {supports('temporal') && <RoleChipTag role="temporal" />}
+          {supports('flags') && <RoleChipTag role="flags" {...toggleProps('flags')} />}
+          {supports('priority') && <RoleChipTag role="priority" {...toggleProps('priority')} />}
+          {supports('temporal') && <RoleChipTag role="temporal" {...toggleProps('temporal')} />}
         </div>
         {supports('title') && (
           <div className="mt-3">
-            <RoleChipTag role="title" />
+            <RoleChipTag role="title" {...toggleProps('title')} />
           </div>
         )}
         {supports('description') && (
           <div className="mt-2">
-            <RoleChipTag role="description" />
+            <RoleChipTag role="description" {...toggleProps('description')} />
           </div>
         )}
         {supports('identifier') && (
           <div className="mt-2">
-            <RoleChipTag role="identifier" />
+            <RoleChipTag role="identifier" {...toggleProps('identifier')} />
           </div>
         )}
         {supports('action') && (
           <div className="mt-3 flex flex-wrap gap-2">
-            <RoleChipTag role="action" />
+            <RoleChipTag role="action" {...toggleProps('action')} />
           </div>
         )}
       </div>
@@ -1342,44 +1436,44 @@ export function TemplateSample({
     return (
       <div className="w-full rounded-2xl border bg-card p-4 text-center shadow-sm">
         {supports('media') && (
-          <div className="mx-auto flex size-14 items-center justify-center overflow-hidden rounded-full bg-muted">
-            <RoleChipDot role="media" />
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-muted">
+            <RoleChipDot role="media" {...toggleProps('media')} />
           </div>
         )}
         {supports('title') && (
           <div className="mt-3 flex justify-center">
-            <RoleChipTag role="title" />
+            <RoleChipTag role="title" {...toggleProps('title')} />
           </div>
         )}
         {supports('subtitle') && (
           <div className="mt-1 flex justify-center">
-            <RoleChipTag role="subtitle" />
+            <RoleChipTag role="subtitle" {...toggleProps('subtitle')} />
           </div>
         )}
         {supports('status') && (
           <div className="mt-2 flex justify-center gap-1.5">
-            <RoleChipTag role="status" />
+            <RoleChipTag role="status" {...toggleProps('status')} />
           </div>
         )}
         {supports('flags') && (
           <div className="mt-2 flex flex-wrap justify-center gap-1.5">
-            <RoleChipTag role="flags" />
+            <RoleChipTag role="flags" {...toggleProps('flags')} />
           </div>
         )}
         {supports('highlight') && (
           <div className="mt-3 grid grid-cols-2 gap-2 border-t pt-2 text-left">
-            <RoleChipTag role="highlight" />
-            <RoleChipTag role="highlight" />
+            <RoleChipTag role="highlight" {...toggleProps('highlight')} />
+            <RoleChipTag role="highlight" {...toggleProps('highlight')} />
           </div>
         )}
         {supports('tags') && (
           <div className="mt-2 flex flex-wrap justify-center gap-1.5">
-            <RoleChipTag role="tags" />
+            <RoleChipTag role="tags" {...toggleProps('tags')} />
           </div>
         )}
         {supports('action') && (
           <div className="mt-3 flex flex-wrap justify-center gap-2">
-            <RoleChipTag role="action" />
+            <RoleChipTag role="action" {...toggleProps('action')} />
           </div>
         )}
       </div>
@@ -1390,7 +1484,7 @@ export function TemplateSample({
       <div className="flex w-full gap-3 rounded-2xl border bg-card p-4 shadow-sm">
         {supports('temporal') && (
           <div className="w-20 shrink-0 pt-1 text-right">
-            <RoleChipTag role="temporal" />
+            <RoleChipTag role="temporal" {...toggleProps('temporal')} />
           </div>
         )}
         <div className="flex flex-col items-center pt-1">
@@ -1398,22 +1492,22 @@ export function TemplateSample({
           <span className="mt-1 w-px flex-1 bg-border" />
         </div>
         <div className="min-w-0 flex-1">
-          {supports('title') && <RoleChipTag role="title" />}
+          {supports('title') && <RoleChipTag role="title" {...toggleProps('title')} />}
           {supports('status') && (
             <div className="mt-1.5">
-              <RoleChipTag role="status" />
+              <RoleChipTag role="status" {...toggleProps('status')} />
             </div>
           )}
           {supports('description') && (
             <div className="mt-1.5">
-              <RoleChipTag role="description" />
+              <RoleChipTag role="description" {...toggleProps('description')} />
             </div>
           )}
           {(supports('people') || supports('relation') || supports('attachment')) && (
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              {supports('people') && <RoleChipTag role="people" />}
-              {supports('relation') && <RoleChipTag role="relation" />}
-              {supports('attachment') && <RoleChipTag role="attachment" />}
+              {supports('people') && <RoleChipTag role="people" {...toggleProps('people')} />}
+              {supports('relation') && <RoleChipTag role="relation" {...toggleProps('relation')} />}
+              {supports('attachment') && <RoleChipTag role="attachment" {...toggleProps('attachment')} />}
             </div>
           )}
         </div>
@@ -1429,32 +1523,32 @@ export function TemplateSample({
           )}
           <div className="min-w-0 flex-1 p-4">
             <div className="flex items-start justify-between gap-2">
-              {supports('title') && <RoleChipTag role="title" />}
-              {supports('priority') && <RoleChipTag role="priority" />}
+              {supports('title') && <RoleChipTag role="title" {...toggleProps('title')} />}
+              {supports('priority') && <RoleChipTag role="priority" {...toggleProps('priority')} />}
             </div>
             {supports('identifier') && (
               <div className="mt-1">
-                <RoleChipTag role="identifier" />
+                <RoleChipTag role="identifier" {...toggleProps('identifier')} />
               </div>
             )}
             {supports('flags') && (
               <div className="mt-2 flex flex-wrap gap-1.5">
-                <RoleChipTag role="flags" />
+                <RoleChipTag role="flags" {...toggleProps('flags')} />
               </div>
             )}
             {supports('tags') && (
               <div className="mt-2 flex flex-wrap gap-1.5">
-                <RoleChipTag role="tags" />
+                <RoleChipTag role="tags" {...toggleProps('tags')} />
               </div>
             )}
             {supports('progress') && (
               <div className="mt-2">
-                <RoleChipTag role="progress" />
+                <RoleChipTag role="progress" {...toggleProps('progress')} />
               </div>
             )}
             <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-              {supports('temporal') && <RoleChipTag role="temporal" />}
-              {supports('people') && <RoleChipTag role="people" />}
+              {supports('temporal') && <RoleChipTag role="temporal" {...toggleProps('temporal')} />}
+              {supports('people') && <RoleChipTag role="people" {...toggleProps('people')} />}
             </div>
           </div>
         </div>
@@ -1466,33 +1560,33 @@ export function TemplateSample({
     <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
       {supports('media') && (
         <div className="relative flex aspect-[16/9] w-full items-center justify-center bg-muted/60">
-          <RoleChipTag role="media" />
+          <RoleChipTag role="media" {...toggleProps('media')} />
           {supports('status') && (
             <span className="absolute right-3 top-3">
-              <RoleChipTag role="status" />
+              <RoleChipTag role="status" {...toggleProps('status')} />
             </span>
           )}
         </div>
       )}
       <div className="flex flex-col gap-3 p-4">
         <div className="flex items-center justify-between gap-2">
-          {supports('objectType') && <RoleChipTag role="objectType" />}
-          {supports('flags') && <RoleChipTag role="flags" />}
+          {supports('objectType') && <RoleChipTag role="objectType" {...toggleProps('objectType')} />}
+          {supports('flags') && <RoleChipTag role="flags" {...toggleProps('flags')} />}
         </div>
         <div className="flex flex-col items-start gap-1">
-          {supports('title') && <RoleChipTag role="title" />}
-          {supports('subtitle') && <RoleChipTag role="subtitle" />}
+          {supports('title') && <RoleChipTag role="title" {...toggleProps('title')} />}
+          {supports('subtitle') && <RoleChipTag role="subtitle" {...toggleProps('subtitle')} />}
         </div>
         {supports('highlight') && (
           <div className="grid gap-2 border-y py-3 sm:grid-cols-2">
-            <RoleChipTag role="highlight" />
-            <RoleChipTag role="highlight" />
+            <RoleChipTag role="highlight" {...toggleProps('highlight')} />
+            <RoleChipTag role="highlight" {...toggleProps('highlight')} />
           </div>
         )}
-        {supports('progress') && <RoleChipTag role="progress" />}
+        {supports('progress') && <RoleChipTag role="progress" {...toggleProps('progress')} />}
         {supports('tags') && (
           <div className="flex flex-wrap gap-1.5">
-            <RoleChipTag role="tags" />
+            <RoleChipTag role="tags" {...toggleProps('tags')} />
           </div>
         )}
       </div>
@@ -1514,13 +1608,20 @@ export type RuntimeInteractions = {
   onViewTemplate?: (item: RecordItem) => void
   onPersonClick?: (name: string, fieldLabel: string, anchorRect: DOMRect) => void
   isLast?: boolean
+  /** Roles hidden via the Template structure mock's toggle chips (Live Editor only). */
+  hiddenRoles?: Set<SemanticRole>
 }
 
 type RuntimeProps = { item: RecordItem } & RuntimeInteractions
 
-function useSelection(item: RecordItem, template: Template) {
+function useSelection(
+  item: RecordItem,
+  template: Template,
+  hiddenRoles?: Set<SemanticRole>,
+) {
   const selection = resolveTemplateSlots(item, template)
-  const valuesFor = (role: SemanticRole) => selection.byRole[role] ?? []
+  const valuesFor = (role: SemanticRole) =>
+    hiddenRoles?.has(role) ? [] : (selection.byRole[role] ?? [])
   const valueFor = (role: SemanticRole) => valuesFor(role)[0]?.displayValue
   const textFor = (role: SemanticRole) =>
     valuesFor(role)
@@ -1712,8 +1813,9 @@ export function RoleChipRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
 }: RuntimeProps) {
-  const { valueFor } = useSelection(item, 'role-chip')
+  const { valuesFor, valueFor } = useSelection(item, 'role-chip', hiddenRoles)
   const interactive = Boolean(onOpenDetail)
   return (
     <div
@@ -1732,25 +1834,31 @@ export function RoleChipRuntime({
       }
       className={`group inline-flex max-w-full items-center gap-2 rounded-full border bg-card px-3 py-2 text-left text-sm shadow-sm transition ${interactive ? 'cursor-pointer hover:border-cyan-400 hover:shadow-md' : ''}`}
     >
-      <span
-        className={`grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-primary/10 text-[10px] font-semibold text-primary ${roleClass('media')}`}
-      >
-        <SafeImage
-          src={item.image}
-          alt=""
-          width={24}
-          height={24}
-          className="size-full object-cover"
-        />
-      </span>
-      <span className={`min-w-0 truncate font-medium ${roleClass('title')}`}>
-        {String(valueFor('title'))}
-      </span>
-      <span
-        className={`shrink-0 text-xs text-muted-foreground ${roleClass('status')}`}
-      >
-        {String(valueFor('status'))}
-      </span>
+      {!hiddenRoles?.has('media') && (
+        <span
+          className={`grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-primary/10 text-[10px] font-semibold text-primary ${roleClass('media')}`}
+        >
+          <SafeImage
+            src={item.image}
+            alt=""
+            width={24}
+            height={24}
+            className="size-full object-cover"
+          />
+        </span>
+      )}
+      {valuesFor('title').length > 0 && (
+        <span className={`min-w-0 truncate font-medium ${roleClass('title')}`}>
+          {String(valueFor('title'))}
+        </span>
+      )}
+      {valuesFor('status').length > 0 && (
+        <span
+          className={`shrink-0 text-xs text-muted-foreground ${roleClass('status')}`}
+        >
+          {String(valueFor('status'))}
+        </span>
+      )}
       {onViewJson && onViewTemplate && (
         <HoverActions
           variant="inline"
@@ -1768,12 +1876,10 @@ export function RowRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
   onPersonClick,
 }: RuntimeProps) {
-  const { valuesFor, valueFor, textFor, metricTextFor } = useSelection(
-    item,
-    'row',
-  )
+  const { valuesFor, valueFor, textFor, metricTextFor } = useSelection(item, 'row', hiddenRoles)
   const interactive = Boolean(onOpenDetail)
   const metricEntry = valuesFor('metric')[0]
   return (
@@ -1799,29 +1905,35 @@ export function RowRuntime({
           onViewTemplate={() => onViewTemplate(item)}
         />
       )}
-      <span
-        className={`grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-primary/10 text-xs font-semibold text-primary ${roleClass('media')}`}
-      >
-        <SafeImage
-          src={item.image}
-          alt=""
-          width={36}
-          height={36}
-          className="size-full object-cover"
-        />
-      </span>
-      <span className="min-w-0 flex-1">
+      {!hiddenRoles?.has('media') && (
         <span
-          className={`block truncate text-sm font-medium ${roleClass('title')}`}
+          className={`grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-primary/10 text-xs font-semibold text-primary ${roleClass('media')}`}
         >
-          {item.name}
+          <SafeImage
+            src={item.image}
+            alt=""
+            width={36}
+            height={36}
+            className="size-full object-cover"
+          />
         </span>
-        <span className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+      )}
+      <span className="min-w-0 flex-1">
+        {!hiddenRoles?.has('title') && (
           <span
-            className={`truncate ${roleClass('subtitle')}`}
+            className={`block truncate text-sm font-medium ${roleClass('title')}`}
           >
-            {item.subtitle || item.location}
+            {item.name}
           </span>
+        )}
+        <span className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+          {!hiddenRoles?.has('subtitle') && (
+            <span
+              className={`truncate ${roleClass('subtitle')}`}
+            >
+              {item.subtitle || item.location}
+            </span>
+          )}
           {valuesFor('identifier').map((entry) => (
             <CopyableIdentifier
               key={entry.field.name}
@@ -1887,8 +1999,9 @@ export function TileRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
 }: RuntimeProps) {
-  const { valuesFor, valueFor } = useSelection(item, 'tile')
+  const { valuesFor, valueFor } = useSelection(item, 'tile', hiddenRoles)
   const interactive = Boolean(onOpenDetail)
   const statusEntry = valuesFor('status')[0]
   const flagEntries = valuesFor('flags').filter(
@@ -1918,13 +2031,15 @@ export function TileRuntime({
         />
       )}
       <div className="relative">
-        <SafeImage
-          src={item.image}
-          alt={item.name}
-          width={1200}
-          height={675}
-          className={`h-36 w-full object-cover transition-transform duration-500 group-hover:scale-105 ${roleClass('media')}`}
-        />
+        {!hiddenRoles?.has('media') && (
+          <SafeImage
+            src={item.image}
+            alt={item.name}
+            width={1200}
+            height={675}
+            className={`h-36 w-full object-cover transition-transform duration-500 group-hover:scale-105 ${roleClass('media')}`}
+          />
+        )}
         {statusEntry && (
           <span className={`absolute right-3 top-3 ${roleClass('status')}`}>
             <StatusPill entry={statusEntry} className="bg-card/90 shadow-sm" />
@@ -1949,14 +2064,20 @@ export function TileRuntime({
           )}
         </div>
         <div>
-          <h3 className={`font-semibold tracking-tight ${roleClass('title')}`}>
-            {item.name}
-          </h3>
-          <p
-            className={`mt-1 text-xs text-muted-foreground ${roleClass('subtitle')}`}
-          >
-            {item.subtitle}
-          </p>
+          {!hiddenRoles?.has('title') && (
+            <h3
+              className={`font-semibold tracking-tight ${roleClass('title')}`}
+            >
+              {item.name}
+            </h3>
+          )}
+          {!hiddenRoles?.has('subtitle') && (
+            <p
+              className={`mt-1 text-xs text-muted-foreground ${roleClass('subtitle')}`}
+            >
+              {item.subtitle}
+            </p>
+          )}
         </div>
         {valuesFor('highlight').length > 0 && (
           <div
@@ -2002,9 +2123,10 @@ export function SummaryRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
   onPersonClick,
 }: RuntimeProps) {
-  const { valuesFor, temporalFor } = useSelection(item, 'summary')
+  const { valuesFor, temporalFor } = useSelection(item, 'summary', hiddenRoles)
   const interactive = Boolean(onOpenDetail)
   const flagEntries = valuesFor('flags').filter(
     (entry) => entry.value === true || entry.derived,
@@ -2036,13 +2158,15 @@ export function SummaryRuntime({
         />
       )}
       <div className="flex flex-wrap items-center gap-2">
-        <SafeImage
-          src={item.image}
-          alt=""
-          width={32}
-          height={32}
-          className={`size-8 shrink-0 rounded-lg object-cover ${roleClass('media')}`}
-        />
+        {!hiddenRoles?.has('media') && (
+          <SafeImage
+            src={item.image}
+            alt=""
+            width={32}
+            height={32}
+            className={`size-8 shrink-0 rounded-lg object-cover ${roleClass('media')}`}
+          />
+        )}
         {valuesFor('status').map((entry) => (
           <span key={entry.field.name} className={roleClass('status')}>
             <StatusPill entry={entry} />
@@ -2072,7 +2196,9 @@ export function SummaryRuntime({
             {String(valuesFor('objectType')[0].displayValue)}
           </p>
         )}
-        <p className={`font-semibold ${roleClass('title')}`}>{item.name}</p>
+        {!hiddenRoles?.has('title') && (
+          <p className={`font-semibold ${roleClass('title')}`}>{item.name}</p>
+        )}
         <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1 text-xs text-muted-foreground">
           {valuesFor('subtitle').map((entry) => (
             <span key={entry.field.name} className={roleClass('subtitle')}>
@@ -2192,12 +2318,10 @@ export function DetailHeaderRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
   onPersonClick,
 }: RuntimeProps) {
-  const { valuesFor, textFor, metricTextFor } = useSelection(
-    item,
-    'detail-header',
-  )
+  const { valuesFor, textFor, metricTextFor } = useSelection(item, 'detail-header', hiddenRoles)
   const interactive = Boolean(onOpenDetail)
   return (
     <div
@@ -2225,13 +2349,15 @@ export function DetailHeaderRuntime({
           onViewTemplate={() => onViewTemplate(item)}
         />
       )}
-      <SafeImage
-        src={item.image}
-        alt={item.name}
-        width={1200}
-        height={400}
-        className={`h-44 w-full object-cover ${roleClass('media')}`}
-      />
+      {!hiddenRoles?.has('media') && (
+        <SafeImage
+          src={item.image}
+          alt={item.name}
+          width={1200}
+          height={400}
+          className={`h-44 w-full object-cover ${roleClass('media')}`}
+        />
+      )}
       <div className="flex flex-col gap-2 p-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
@@ -2242,14 +2368,18 @@ export function DetailHeaderRuntime({
                 ? String(valuesFor('objectType')[0].displayValue)
                 : 'Collection item'}
             </p>
-            <h3 className={`text-xl font-semibold ${roleClass('title')}`}>
-              {item.name}
-            </h3>
-            <p
-              className={`text-sm text-muted-foreground ${roleClass('subtitle')}`}
-            >
-              {item.subtitle}
-            </p>
+            {!hiddenRoles?.has('title') && (
+              <h3 className={`text-xl font-semibold ${roleClass('title')}`}>
+                {item.name}
+              </h3>
+            )}
+            {!hiddenRoles?.has('subtitle') && (
+              <p
+                className={`text-sm text-muted-foreground ${roleClass('subtitle')}`}
+              >
+                {item.subtitle}
+              </p>
+            )}
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {valuesFor('identifier').map((entry) => (
                 <CopyableIdentifier
@@ -2417,8 +2547,9 @@ export function KpiCardRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
 }: RuntimeProps) {
-  const { valuesFor, metricTextFor } = useSelection(item, 'kpi-card')
+  const { valuesFor, metricTextFor } = useSelection(item, 'kpi-card', hiddenRoles)
   const hero = pickHero(item, 'metric')
   const secondaryMetric = valuesFor('metric')[1]
   const interactive = Boolean(onOpenDetail)
@@ -2453,9 +2584,11 @@ export function KpiCardRuntime({
           {secondaryMetric.field.label} {String(secondaryMetric.displayValue)}
         </p>
       )}
-      <p className={`mt-2 text-sm font-medium ${roleClass('title')}`}>
-        {item.name}
-      </p>
+      {!hiddenRoles?.has('title') && (
+        <p className={`mt-2 text-sm font-medium ${roleClass('title')}`}>
+          {item.name}
+        </p>
+      )}
       <div className="mt-2 flex flex-wrap items-center gap-2">
         {valuesFor('status').map((entry) => (
           <span
@@ -2484,9 +2617,10 @@ export function ProgressCardRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
   onPersonClick,
 }: RuntimeProps) {
-  const { valuesFor } = useSelection(item, 'progress-card')
+  const { valuesFor } = useSelection(item, 'progress-card', hiddenRoles)
   const progress = valuesFor('progress')[0]
   const interactive = Boolean(onOpenDetail)
   return (
@@ -2510,9 +2644,11 @@ export function ProgressCardRuntime({
           />
         </div>
       )}
-      <p className={`mt-3 text-sm font-medium ${roleClass('title')}`}>
-        {item.name}
-      </p>
+      {!hiddenRoles?.has('title') && (
+        <p className={`mt-3 text-sm font-medium ${roleClass('title')}`}>
+          {item.name}
+        </p>
+      )}
       <p className="mt-0.5 flex flex-wrap gap-2 text-xs text-muted-foreground">
         {valuesFor('subtitle').map((entry) => (
           <span key={entry.field.name} className={roleClass('subtitle')}>
@@ -2568,8 +2704,9 @@ export function AlertCardRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
 }: RuntimeProps) {
-  const { valuesFor, temporalFor } = useSelection(item, 'alert-card')
+  const { valuesFor, temporalFor } = useSelection(item, 'alert-card', hiddenRoles)
   const flags = valuesFor('flags').filter(
     (entry) => entry.value === true || entry.derived,
   )
@@ -2639,9 +2776,11 @@ export function AlertCardRuntime({
           </div>
         )}
       </div>
-      <p className={`mt-3 text-base font-semibold ${roleClass('title')}`}>
-        {item.name}
-      </p>
+      {!hiddenRoles?.has('title') && (
+        <p className={`mt-3 text-base font-semibold ${roleClass('title')}`}>
+          {item.name}
+        </p>
+      )}
       {valuesFor('description').length > 0 && (
         <p
           className={`mt-2 line-clamp-2 text-sm text-muted-foreground ${roleClass('description')}`}
@@ -2672,8 +2811,9 @@ export function PartyCardRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
 }: RuntimeProps) {
-  const { valuesFor } = useSelection(item, 'party-card')
+  const { valuesFor } = useSelection(item, 'party-card', hiddenRoles)
   const hero = pickHero(item, 'media')
   const interactive = Boolean(onOpenDetail)
   return (
@@ -2689,24 +2829,28 @@ export function PartyCardRuntime({
           onViewTemplate={() => onViewTemplate(item)}
         />
       )}
-      <div
-        className={`mx-auto grid size-14 place-items-center rounded-full bg-primary/10 text-lg font-bold text-primary ${roleClass('media')}`}
-      >
-        {hero ? (
-          initialsFor(item.name)
-        ) : (
-          <SafeImage
-            src={item.image}
-            alt={item.name}
-            width={56}
-            height={56}
-            className="size-14 rounded-full object-cover"
-          />
-        )}
-      </div>
-      <p className={`mt-3 text-sm font-semibold ${roleClass('title')}`}>
-        {item.name}
-      </p>
+      {!hiddenRoles?.has('media') && (
+        <div
+          className={`mx-auto grid size-14 place-items-center rounded-full bg-primary/10 text-lg font-bold text-primary ${roleClass('media')}`}
+        >
+          {hero ? (
+            initialsFor(item.name)
+          ) : (
+            <SafeImage
+              src={item.image}
+              alt={item.name}
+              width={56}
+              height={56}
+              className="size-14 rounded-full object-cover"
+            />
+          )}
+        </div>
+      )}
+      {!hiddenRoles?.has('title') && (
+        <p className={`mt-3 text-sm font-semibold ${roleClass('title')}`}>
+          {item.name}
+        </p>
+      )}
       <p className="text-xs text-muted-foreground">
         {valuesFor('subtitle')
           .map((entry) => String(entry.displayValue))
@@ -2773,10 +2917,11 @@ export function TimelineEntryRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
   onPersonClick,
   isLast = false,
 }: RuntimeProps) {
-  const { valuesFor } = useSelection(item, 'timeline-entry')
+  const { valuesFor } = useSelection(item, 'timeline-entry', hiddenRoles)
   const hero = pickHero(item, 'temporal')
   const peopleEntries = valuesFor('people')
   const attachmentEntry = valuesFor('attachment')[0]
@@ -2811,9 +2956,11 @@ export function TimelineEntryRuntime({
         {!isLast && <span className="w-px flex-1 bg-border" />}
       </div>
       <div className="min-w-0 flex-1 py-3">
-        <p className={`text-sm font-semibold ${roleClass('title')}`}>
-          {item.name}
-        </p>
+        {!hiddenRoles?.has('title') && (
+          <p className={`text-sm font-semibold ${roleClass('title')}`}>
+            {item.name}
+          </p>
+        )}
         {valuesFor('status').map((entry) => (
           <span key={entry.field.name} className={`mt-1.5 inline-block ${roleClass('status')}`}>
             <StatusPill entry={entry} />
@@ -2871,9 +3018,10 @@ export function BoardCardRuntime({
   onOpenDetail,
   onViewJson,
   onViewTemplate,
+  hiddenRoles,
   onPersonClick,
 }: RuntimeProps) {
-  const { valuesFor } = useSelection(item, 'board-card')
+  const { valuesFor } = useSelection(item, 'board-card', hiddenRoles)
   // groupKey is declared but never rendered as content — it only drives which
   // board column/rail this card belongs to (shown here as an accent color).
   const group = valuesFor('groupKey')[0]
@@ -2903,9 +3051,11 @@ export function BoardCardRuntime({
       />
       <div className="p-4 pl-5">
         <div className="flex items-start justify-between gap-2">
-          <p className={`text-sm font-medium ${roleClass('title')}`}>
-            {item.name}
-          </p>
+          {!hiddenRoles?.has('title') && (
+            <p className={`text-sm font-medium ${roleClass('title')}`}>
+              {item.name}
+            </p>
+          )}
           {valuesFor('priority').map((entry) => (
             <span
               key={entry.field.name}
