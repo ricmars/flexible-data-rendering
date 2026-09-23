@@ -3,6 +3,7 @@ export const semanticRoles = [
   'title',
   'subtitle',
   'identifier',
+  'objectType',
   'status',
   'priority',
   'progress',
@@ -50,6 +51,10 @@ export type FormatHint =
   | 'command'
   | 'route'
   | 'policy'
+  | 'labelValue'
+  | 'ordinal'
+  | 'collation'
+  | 'enumRef'
 
 export type Sensitivity = 'public' | 'internal' | 'confidential' | 'restricted'
 
@@ -66,6 +71,10 @@ export type Field = {
   searchText?: boolean
   sortKey?: string
   groupKey?: string
+  /** Name of a sibling field holding the prior value used to derive metric.trend. */
+  trendSource?: string
+  /** Name of a sibling field holding the "of" denominator for a stage-format progress field. */
+  stageOfSource?: string
 }
 
 export type RawRecord = Record<string, unknown> & { id: string }
@@ -79,6 +88,10 @@ export type ResolvedField = {
   declarationOrder: number
   masked: boolean
   derived?: boolean
+  /** Percent delta derived from a trend history, e.g. metric.trend. */
+  trendPercent?: number
+  /** Percent complete derived from a stage/of pair when not directly supplied. */
+  derivedPercent?: number
 }
 
 export type ResolutionDiagnostic = {
@@ -151,6 +164,12 @@ export const roleDefinitions: Record<
     label: 'Identifier',
     definition: 'A human-readable business key.',
     representation: 'Copyable code',
+    singleton: true,
+  },
+  objectType: {
+    label: 'Object type',
+    definition: "The object's own class. Mandatory in mixed-type surfaces.",
+    representation: 'Enum badge',
     singleton: true,
   },
   status: {
@@ -269,9 +288,9 @@ export const roleDefinitions: Record<
 }
 
 export const fallbackChains: Partial<Record<SemanticRole, SemanticRole[]>> = {
-  title: ['identifier'],
+  title: ['identifier', 'objectType'],
   media: [],
-  subtitle: ['identifier'],
+  subtitle: ['identifier', 'objectType'],
   status: [],
   metric: ['highlight'],
 }
@@ -309,6 +328,7 @@ export const templates: TemplateDefinition[] = [
     density: 'standard',
     slots: {
       media: 1,
+      objectType: 1,
       title: 1,
       subtitle: 1,
       status: 1,
@@ -325,6 +345,7 @@ export const templates: TemplateDefinition[] = [
     density: 'rich',
     slots: {
       media: 1,
+      objectType: 1,
       title: 1,
       subtitle: 2,
       identifier: 1,
@@ -348,6 +369,7 @@ export const templates: TemplateDefinition[] = [
     density: 'full',
     slots: {
       media: 1,
+      objectType: 1,
       title: 1,
       subtitle: 2,
       identifier: 1,

@@ -80,6 +80,21 @@
       "rank": 1
     },
     {
+      "name": "objectType",
+      "label": "Object type",
+      "type": "text",
+      "semanticRole": "objectType",
+      "rank": 1
+    },
+    {
+      "name": "priorityLevel",
+      "label": "Priority",
+      "type": "select",
+      "semanticRole": "priority",
+      "format": "ordinal",
+      "rank": 1
+    },
+    {
       "name": "overdue",
       "label": "Overdue",
       "type": "boolean",
@@ -115,10 +130,19 @@
       "rank": 5
     },
     {
+      "name": "serviceLocation",
+      "label": "Site address",
+      "type": "text",
+      "semanticRole": "location",
+      "format": "address",
+      "rank": 1
+    },
+    {
       "name": "updatedAt",
       "label": "Last updated",
       "type": "date",
       "semanticRole": "temporal",
+      "qualifier": "updated",
       "rank": 1
     },
     {
@@ -126,6 +150,7 @@
       "label": "Created",
       "type": "date",
       "semanticRole": "temporal",
+      "qualifier": "created",
       "rank": 2
     },
     {
@@ -133,6 +158,7 @@
       "label": "Owner",
       "type": "text",
       "semanticRole": "people",
+      "qualifier": "owner",
       "rank": 1
     },
     {
@@ -140,6 +166,7 @@
       "label": "Reviewer",
       "type": "text",
       "semanticRole": "people",
+      "qualifier": "reviewer",
       "rank": 2
     },
     {
@@ -147,6 +174,30 @@
       "label": "Related record",
       "type": "text",
       "semanticRole": "relation",
+      "rank": 1
+    },
+    {
+      "name": "attachmentCount",
+      "label": "Attachments",
+      "type": "number",
+      "semanticRole": "attachment",
+      "format": "fileRef",
+      "rank": 1
+    },
+    {
+      "name": "syncNote",
+      "label": "Sync annotation",
+      "type": "text",
+      "semanticRole": "annotation",
+      "sensitivity": "internal",
+      "rank": 1
+    },
+    {
+      "name": "detailRoute",
+      "label": "Open record",
+      "type": "text",
+      "semanticRole": "navigation",
+      "format": "route",
       "rank": 1
     },
     {
@@ -162,6 +213,37 @@
       "type": "text",
       "semanticRole": "action",
       "rank": 2
+    },
+    {
+      "name": "sortRank",
+      "label": "Sort key",
+      "type": "number",
+      "semanticRole": "sortKey",
+      "format": "collation",
+      "rank": 1
+    },
+    {
+      "name": "groupBucket",
+      "label": "Group",
+      "type": "text",
+      "semanticRole": "groupKey",
+      "format": "enumRef",
+      "rank": 1
+    },
+    {
+      "name": "searchIndex",
+      "label": "Search text",
+      "type": "text",
+      "semanticRole": "searchText",
+      "rank": 1
+    },
+    {
+      "name": "sensitivityLevel",
+      "label": "Sensitivity",
+      "type": "select",
+      "semanticRole": "sensitivity",
+      "format": "policy",
+      "rank": 1
     }
   ]
 }
