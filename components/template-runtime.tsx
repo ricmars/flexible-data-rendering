@@ -1,10 +1,13 @@
 'use client'
 
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type MouseEvent, type ReactNode } from 'react'
 import Image from 'next/image'
 import {
   AlertTriangle,
   Braces,
+  Check,
+  Clipboard,
+  ClipboardX,
   ClockAlert,
   LayoutTemplate,
   LockKeyhole,
@@ -22,6 +25,7 @@ import {
   type SlotCap,
 } from '@/lib/rendering-contract'
 import { resolveCollection, selectSlots, pickHero } from '@/lib/resolve-record'
+import { Button } from '@/components/ui/button'
 
 /**
  * Reusable rendering building blocks shared by every page (Editor, UI
@@ -487,6 +491,43 @@ export const formatMetric = (value: number, field: Field) =>
       }).format(value)
     : formatNumber(value)
 
+export function formatFieldValue(entry: ResolvedField) {
+  if (entry.masked) return String(entry.displayValue)
+
+  const value = entry.displayValue
+  if (value == null || value === '') return '—'
+  if (Array.isArray(value)) return value.map(String).join(', ')
+
+  if (entry.field.format === 'percent') {
+    const numeric = Number(value)
+    return Number.isFinite(numeric) ? `${numeric}%` : String(value)
+  }
+
+  if (entry.field.format === 'datetime' || entry.field.type === 'date') {
+    const date = new Date(String(value))
+    if (!Number.isNaN(date.getTime())) {
+      return new Intl.DateTimeFormat('en-US', {
+        dateStyle: 'medium',
+        timeStyle: entry.field.format === 'datetime' ? 'short' : undefined,
+      }).format(date)
+    }
+  }
+
+  if (entry.field.format === 'fileRef') {
+    const count = Number(value)
+    if (Number.isFinite(count))
+      return `${count} ${count === 1 ? 'file' : 'files'}`
+  }
+
+  if (entry.field.type === 'number' || entry.field.type === 'currency') {
+    const numeric = Number(value)
+    if (Number.isFinite(numeric)) return formatMetric(numeric, entry.field)
+  }
+
+  if (entry.field.type === 'boolean') return value === true ? 'Yes' : 'No'
+  return String(value)
+}
+
 const initialsFor = (name: string) =>
   name
     .trim()
@@ -555,6 +596,90 @@ export function FlagIndicator({
     >
       <Icon aria-hidden="true" className="size-3.5 shrink-0" />
       <span className={dense ? 'sr-only' : undefined}>{label}</span>
+    </span>
+  )
+}
+
+export function CopyableIdentifier({
+  entry,
+  className = '',
+}: {
+  entry: ResolvedField
+  className?: string
+}) {
+  const [state, setState] = useState<'idle' | 'copied' | 'error'>('idle')
+  const value = formatFieldValue(entry)
+
+  useEffect(() => {
+    if (state === 'idle') return
+    const timeout = window.setTimeout(() => setState('idle'), 2200)
+    return () => window.clearTimeout(timeout)
+  }, [state])
+
+  const copyValue = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation()
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error('Clipboard API unavailable')
+      }
+      await navigator.clipboard.writeText(value)
+      setState('copied')
+    } catch {
+      setState('error')
+    }
+  }
+
+  const isCopied = state === 'copied'
+  const isError = state === 'error'
+  return (
+    <span
+      className={`inline-flex min-w-0 max-w-full items-center gap-1 rounded-md border border-transparent bg-muted/60 px-1.5 py-0.5 ${className}`}
+    >
+      <code className="min-w-0 truncate text-[inherit]">{value}</code>
+      {!entry.masked && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-xs"
+          title={
+            isCopied ? 'Copied' : isError ? 'Copy failed' : 'Copy identifier'
+          }
+          aria-label={
+            isCopied
+              ? 'Identifier copied'
+              : isError
+                ? 'Copy identifier failed'
+                : 'Copy identifier'
+          }
+          onClick={copyValue}
+          className="size-5 rounded-sm text-muted-foreground hover:text-foreground"
+        >
+          {isCopied ? (
+            <Check className="size-3.5 text-emerald-600" />
+          ) : isError ? (
+            <ClipboardX className="size-3.5 text-destructive" />
+          ) : (
+            <Clipboard className="size-3.5" />
+          )}
+        </Button>
+      )}
+      {isCopied && (
+        <span className="shrink-0 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+          Copied
+        </span>
+      )}
+      {isError && (
+        <span className="shrink-0 rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] font-semibold text-destructive">
+          Copy failed
+        </span>
+      )}
+      <span className="sr-only" aria-live="polite">
+        {isCopied
+          ? 'Identifier copied to clipboard'
+          : isError
+            ? 'Unable to copy identifier'
+            : ''}
+      </span>
     </span>
   )
 }
@@ -794,7 +919,7 @@ export function TemplateSample({
     return (
       <div className="inline-flex max-w-full items-center gap-2 rounded-full border bg-card px-3 py-2 text-sm shadow-sm">
         {supports('media') && (
-          <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-blue-50">
+          <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-muted">
             <RoleChipDot role="media" />
           </span>
         )}
@@ -815,7 +940,7 @@ export function TemplateSample({
     return (
       <div className="flex w-full items-center gap-3 rounded-xl border bg-card px-4 py-3">
         {supports('media') && (
-          <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-blue-50">
+          <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted">
             <RoleChipDot role="media" />
           </span>
         )}
@@ -843,7 +968,7 @@ export function TemplateSample({
       <div className="overflow-hidden rounded-xl border bg-card p-4 text-sm">
         <div className="flex min-w-0 items-start gap-3">
           {supports('media') && (
-            <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-blue-50">
+            <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted">
               <RoleChipDot role="media" />
             </span>
           )}
@@ -916,7 +1041,7 @@ export function TemplateSample({
     return (
       <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
         {supports('media') && (
-          <div className="flex h-44 w-full items-center justify-center bg-blue-50">
+          <div className="flex h-44 w-full items-center justify-center bg-muted/60">
             <RoleChipTag role="media" />
           </div>
         )}
@@ -1068,7 +1193,7 @@ export function TemplateSample({
 
   if (template === 'alert-card')
     return (
-      <div className="w-full rounded-2xl border border-rose-200 bg-rose-50/40 p-4 shadow-sm dark:border-rose-900/40 dark:bg-rose-950/20">
+      <div className="w-full rounded-2xl border border-destructive/30 bg-destructive/5 p-4 shadow-sm">
         <div className="flex flex-wrap items-center gap-1.5">
           {supports('flags') && <RoleChipTag role="flags" />}
           {supports('priority') && <RoleChipTag role="priority" />}
@@ -1101,7 +1226,7 @@ export function TemplateSample({
     return (
       <div className="w-full rounded-2xl border bg-card p-4 text-center shadow-sm">
         {supports('media') && (
-          <div className="mx-auto flex size-14 items-center justify-center overflow-hidden rounded-full bg-blue-50">
+          <div className="mx-auto flex size-14 items-center justify-center overflow-hidden rounded-full bg-muted">
             <RoleChipDot role="media" />
           </div>
         )}
@@ -1148,7 +1273,7 @@ export function TemplateSample({
     return (
       <div className="flex w-full gap-3 rounded-2xl border bg-card p-4 shadow-sm">
         <div className="flex flex-col items-center pt-1">
-          <span className="size-2.5 rounded-full bg-cyan-500" />
+          <span className="size-2.5 rounded-full bg-primary" />
           <span className="mt-1 w-px flex-1 bg-border" />
         </div>
         <div className="min-w-0 flex-1">
@@ -1183,7 +1308,7 @@ export function TemplateSample({
       <div className="w-full overflow-hidden rounded-2xl border bg-card shadow-sm">
         <div className="flex">
           {supports('groupKey') && (
-            <span className="w-1 shrink-0 bg-violet-400" aria-hidden="true" />
+            <span className="w-1 shrink-0 bg-primary/60" aria-hidden="true" />
           )}
           <div className="min-w-0 flex-1 p-4">
             <div className="flex items-start justify-between gap-2">
@@ -1223,7 +1348,7 @@ export function TemplateSample({
   return (
     <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
       {supports('media') && (
-        <div className="relative flex aspect-[16/9] w-full items-center justify-center bg-blue-50">
+        <div className="relative flex aspect-[16/9] w-full items-center justify-center bg-muted/60">
           <RoleChipTag role="media" />
           {supports('status') && (
             <span className="absolute left-3 top-3">
@@ -1270,7 +1395,7 @@ export function TemplateSample({
 // One component per template kind, each rendering a single real record with
 // its actual resolved values (not placeholders). All interaction hooks are
 // optional so the same component works as a static preview (e.g. on the
-// Architecture page) or fully wired up (e.g. on the Editor page).
+// Architecture page) or fully wired up (e.g. on the Live Editor page).
 
 export type RuntimeInteractions = {
   /** Extra classes applied to a role's region, e.g. for edit-mode highlight. */
@@ -1289,7 +1414,7 @@ function useSelection(item: RecordItem, template: Template) {
   const valueFor = (role: SemanticRole) => valuesFor(role)[0]?.displayValue
   const textFor = (role: SemanticRole) =>
     valuesFor(role)
-      .map((entry) => String(entry.displayValue ?? ''))
+      .map((entry) => formatFieldValue(entry))
       .filter(Boolean)
   const temporalFor = (qualifier?: string) => {
     const values = valuesFor('temporal')
@@ -1320,7 +1445,7 @@ function PersonControl({
         key={entry.field.name}
         className="inline-flex items-center gap-1.5 rounded-full border bg-card px-2 py-1 text-xs font-medium text-foreground shadow-sm"
       >
-        <span className="grid size-5 place-items-center rounded-full bg-cyan-100 text-[9px] font-bold text-cyan-800">
+        <span className="grid size-5 place-items-center rounded-full bg-primary/10 text-[9px] font-bold text-primary">
           {initialsFor(name)}
         </span>
         {name}
@@ -1345,7 +1470,7 @@ function PersonControl({
         }
       }}
     >
-      <span className="grid size-5 place-items-center rounded-full bg-cyan-100 text-[9px] font-bold text-cyan-800">
+      <span className="grid size-5 place-items-center rounded-full bg-primary/10 text-[9px] font-bold text-primary">
         {initialsFor(name)}
       </span>
       {name}
@@ -1354,10 +1479,10 @@ function PersonControl({
 }
 
 const avatarPalette = [
-  'bg-violet-100 text-violet-700',
-  'bg-cyan-100 text-cyan-700',
-  'bg-amber-100 text-amber-700',
-  'bg-emerald-100 text-emerald-700',
+  'bg-primary/10 text-primary',
+  'bg-muted text-foreground',
+  'bg-secondary text-secondary-foreground',
+  'bg-accent text-accent-foreground',
 ]
 
 /**
@@ -1441,7 +1566,7 @@ function RelationControl({
     <span
       role="link"
       tabIndex={0}
-      className="cursor-pointer text-cyan-700 underline decoration-cyan-300 underline-offset-2 hover:text-cyan-900"
+      className="cursor-pointer text-primary underline decoration-primary/40 underline-offset-2 hover:text-primary/80"
       onClick={(event) => {
         event.stopPropagation()
         onOpenDetail(item)
@@ -1486,7 +1611,7 @@ export function RoleChipRuntime({
       className={`group inline-flex max-w-full items-center gap-2 rounded-full border bg-card px-3 py-2 text-left text-sm shadow-sm transition ${interactive ? 'cursor-pointer hover:border-cyan-400 hover:shadow-md' : ''}`}
     >
       <span
-        className={`grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-cyan-100 text-[10px] font-semibold text-cyan-800 ${roleClass('media')}`}
+        className={`grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-primary/10 text-[10px] font-semibold text-primary ${roleClass('media')}`}
       >
         <SafeImage
           src={item.image}
@@ -1551,7 +1676,7 @@ export function RowRuntime({
         />
       )}
       <span
-        className={`grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-cyan-100 text-xs font-semibold text-cyan-800 ${roleClass('media')}`}
+        className={`grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-primary/10 text-xs font-semibold text-primary ${roleClass('media')}`}
       >
         <SafeImage
           src={item.image}
@@ -1573,12 +1698,11 @@ export function RowRuntime({
           {item.subtitle || item.location}
         </span>
         {valuesFor('identifier').map((entry) => (
-          <span
+          <CopyableIdentifier
             key={entry.field.name}
+            entry={entry}
             className={`mt-1 block truncate font-mono text-[11px] text-muted-foreground ${roleClass('identifier')}`}
-          >
-            {String(entry.displayValue)}
-          </span>
+          />
         ))}
       </span>
       <span
@@ -1824,7 +1948,7 @@ export function SummaryRuntime({
             }
           : undefined
       }
-      className={`group relative border-b border-border/60 p-4 text-sm last:border-0 ${interactive ? 'cursor-pointer hover:bg-muted/30' : ''}`}
+      className={`group relative rounded-xl border bg-card p-4 text-sm shadow-sm ${interactive ? 'cursor-pointer hover:bg-muted/30' : ''}`}
     >
       {onViewJson && onViewTemplate && (
         <HoverActions
@@ -1856,12 +1980,11 @@ export function SummaryRuntime({
               </span>
             ))}
             {valuesFor('identifier').map((entry) => (
-              <span
+              <CopyableIdentifier
                 key={entry.field.name}
+                entry={entry}
                 className={`font-mono ${roleClass('identifier')}`}
-              >
-                {String(entry.displayValue)}
-              </span>
+              />
             ))}
           </div>
         </div>
@@ -1877,7 +2000,7 @@ export function SummaryRuntime({
           {valuesFor('priority').map((entry) => (
             <span
               key={entry.field.name}
-              className={`rounded-full bg-rose-50 px-2 py-1 text-xs text-rose-800 ${roleClass('priority')}`}
+              className={`rounded-full bg-destructive/10 px-2 py-1 text-xs text-destructive ${roleClass('priority')}`}
             >
               {String(entry.displayValue)}
             </span>
@@ -2036,12 +2159,11 @@ export function DetailHeaderRuntime({
         <div className="space-y-3">
           <div className="flex flex-wrap gap-1.5">
             {valuesFor('identifier').map((entry) => (
-              <span
+              <CopyableIdentifier
                 key={entry.field.name}
+                entry={entry}
                 className={`font-mono text-xs text-muted-foreground ${roleClass('identifier')}`}
-              >
-                {String(entry.displayValue)}
-              </span>
+              />
             ))}
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -2056,7 +2178,7 @@ export function DetailHeaderRuntime({
             {valuesFor('priority').map((entry) => (
               <span
                 key={entry.field.name}
-                className={`rounded-full bg-rose-50 px-2 py-1 text-xs text-rose-800 ${roleClass('priority')}`}
+                className={`rounded-full bg-destructive/10 px-2 py-1 text-xs text-destructive ${roleClass('priority')}`}
               >
                 {String(entry.displayValue)}
               </span>
@@ -2306,12 +2428,11 @@ export function ProgressCardRuntime({
           </span>
         ))}
         {valuesFor('identifier').map((entry) => (
-          <span
+          <CopyableIdentifier
             key={entry.field.name}
+            entry={entry}
             className={`font-mono ${roleClass('identifier')}`}
-          >
-            {String(entry.displayValue)}
-          </span>
+          />
         ))}
       </p>
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
@@ -2372,7 +2493,7 @@ export function AlertCardRuntime({
       role={interactive ? 'button' : undefined}
       tabIndex={interactive ? 0 : undefined}
       onClick={interactive ? () => onOpenDetail!(item) : undefined}
-      className={`group relative rounded-2xl border border-rose-200 bg-rose-50/40 p-4 shadow-sm dark:border-rose-900/40 dark:bg-rose-950/20 ${interactive ? 'cursor-pointer hover:shadow-md' : ''}`}
+      className={`group relative rounded-2xl border border-destructive/30 bg-destructive/5 p-4 shadow-sm ${interactive ? 'cursor-pointer hover:shadow-md' : ''}`}
     >
       {onViewJson && onViewTemplate && (
         <HoverActions
@@ -2393,7 +2514,7 @@ export function AlertCardRuntime({
         {valuesFor('priority').map((entry) => (
           <span
             key={entry.field.name}
-            className={`rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-800 ${roleClass('priority')}`}
+            className={`rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-semibold text-destructive ${roleClass('priority')}`}
           >
             {String(entry.displayValue)}
           </span>
@@ -2411,12 +2532,11 @@ export function AlertCardRuntime({
         {item.name}
       </p>
       {valuesFor('identifier').map((entry) => (
-        <p
+        <CopyableIdentifier
           key={entry.field.name}
+          entry={entry}
           className={`font-mono text-xs text-muted-foreground ${roleClass('identifier')}`}
-        >
-          {String(entry.displayValue)}
-        </p>
+        />
       ))}
       {valuesFor('description').length > 0 && (
         <p
@@ -2465,7 +2585,7 @@ export function PartyCardRuntime({
         />
       )}
       <div
-        className={`mx-auto grid size-14 place-items-center rounded-full bg-cyan-100 text-lg font-bold text-cyan-800 ${roleClass('media')}`}
+        className={`mx-auto grid size-14 place-items-center rounded-full bg-primary/10 text-lg font-bold text-primary ${roleClass('media')}`}
       >
         {hero ? (
           initialsFor(item.name)
@@ -2588,7 +2708,7 @@ export function TimelineEntryRuntime({
         />
       )}
       <div className="flex flex-col items-center pt-1">
-        <span className="size-2.5 rounded-full bg-cyan-500" />
+        <span className="size-2.5 rounded-full bg-primary" />
         <span className="mt-1 w-px flex-1 bg-border" />
       </div>
       <div className="min-w-0 flex-1">
@@ -2681,19 +2801,18 @@ export function BoardCardRuntime({
           {valuesFor('priority').map((entry) => (
             <span
               key={entry.field.name}
-              className={`shrink-0 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-800 ${roleClass('priority')}`}
+              className={`shrink-0 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive ${roleClass('priority')}`}
             >
               {String(entry.displayValue)}
             </span>
           ))}
         </div>
         {valuesFor('identifier').map((entry) => (
-          <p
+          <CopyableIdentifier
             key={entry.field.name}
+            entry={entry}
             className={`mt-0.5 font-mono text-xs text-muted-foreground ${roleClass('identifier')}`}
-          >
-            {String(entry.displayValue)}
-          </p>
+          />
         ))}
         {valuesFor('flags').filter(
           (entry) => entry.value === true || entry.derived,

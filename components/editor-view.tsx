@@ -2,14 +2,15 @@
 
 import { useMemo, useState } from 'react'
 import {
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Eye,
   EyeOff,
-  Layers3,
+  Info,
+  LayoutTemplate,
   PanelRightClose,
   PanelRightOpen,
+  PencilLine,
   Save,
   Search,
   Sparkles,
@@ -45,13 +46,16 @@ const semanticRoleLabels = Object.fromEntries(
 ) as Record<SemanticRole, string>
 
 /**
- * The "Editor" page: search/filter/sort/pagination over the active
+ * The "Live Editor" page: search/filter/sort/pagination over the active
  * data object's records, rendered through the selected template, plus the
  * "Edit Semantic Role Mapping" side panel.
  */
 export default function EditorView({ modelId }: { modelId: string }) {
   const activeModel = useMemo(() => resolveModel(modelId), [modelId])
   const [fields, setFields] = useState<Field[]>(() => activeModel.fields)
+  const [savedFields, setSavedFields] = useState<Field[]>(
+    () => activeModel.fields,
+  )
   const [selectedId, setSelectedId] = useState('')
   const [template, setTemplate] = useState<Template>('tile')
   const [query, setQuery] = useState('')
@@ -77,6 +81,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
   if (prevModelId !== modelId) {
     setPrevModelId(modelId)
     setFields(activeModel.fields)
+    setSavedFields(activeModel.fields)
     setSelectedId('')
     setPage(1)
     setQuery('')
@@ -91,6 +96,8 @@ export default function EditorView({ modelId }: { modelId: string }) {
   const editingRole = fields.find(
     (field) => field.name === selectedId,
   )?.semanticRole
+  const hasUnsavedChanges =
+    JSON.stringify(fields) !== JSON.stringify(savedFields)
   const activeTemplateDef = templateCatalog.find(
     (entry) => entry.value === template,
   )!
@@ -202,7 +209,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
       )
     if (template === 'summary')
       return (
-        <div className="overflow-hidden rounded-xl border">
+        <div className="grid gap-3">
           <div className="hidden grid-cols-[minmax(180px,1.4fr)_140px_120px_120px_28px] gap-4 border-b bg-muted/40 px-4 py-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground md:grid">
             <span>{activeModel.name}</span>
             <span>Location</span>
@@ -314,10 +321,20 @@ export default function EditorView({ modelId }: { modelId: string }) {
           </p>
         </div>
       </div>
+      <div className="mb-6 flex items-start gap-2.5 rounded-xl border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+        <Info className="mt-0.5 size-4 shrink-0 text-primary" />
+        <p>
+          Use the panel on the right to change how each field is interpreted,
+          its semantic role and display rank, then save your changes. The
+          preview on the left updates immediately, rendering real sample records
+          from this data model through the selected template, so you can see
+          exactly how your changes affect the final experience.
+        </p>
+      </div>
       <div
         className={`grid gap-6 ${isPanelCollapsed ? 'xl:grid-cols-[minmax(0,1fr)_3.5rem]' : 'xl:grid-cols-[minmax(0,1fr)_350px]'}`}
       >
-        <section className="min-w-0 rounded-2xl border-2 border-dashed border-primary/40 bg-primary/[0.03] p-4">
+        <section className="min-w-0 rounded-2xl border border-accent-surface-border bg-accent-surface p-4 text-accent-surface-foreground">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
               <Sparkles className="size-3.5" />
@@ -333,7 +350,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
                   : 'bg-card text-muted-foreground hover:text-foreground'
               }`}
             >
-              <Layers3 className="size-3.5" />
+              <LayoutTemplate className="size-3.5" />
               {showTemplateStructure ? 'Hide' : 'Show'} template
             </button>
           </div>
@@ -396,10 +413,18 @@ export default function EditorView({ modelId }: { modelId: string }) {
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5">
-                    <Button size="sm" onClick={() => setSelectedId('')}>
-                      <Save className="size-3.5" />
-                      Save
-                    </Button>
+                    {hasUnsavedChanges && (
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setSavedFields(fields)
+                          setSelectedId('')
+                        }}
+                      >
+                        <Save className="size-3.5" />
+                        Save
+                      </Button>
+                    )}
                     <button
                       type="button"
                       onClick={() => setIsPanelCollapsed(true)}
@@ -455,8 +480,11 @@ export default function EditorView({ modelId }: { modelId: string }) {
                     Visible only
                   </button>
                 </div>
+                <p className="mt-2 text-[11px] text-muted-foreground">
+                  Select a field to edit its semantic role and rank.
+                </p>
               </div>
-              <div className="flex flex-col gap-1 p-2 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
+              <div className="flex flex-col p-0 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
                 {panelFields.length === 0 && (
                   <p className="px-2 py-6 text-center text-xs text-muted-foreground">
                     No fields match &quot;{panelQuery}&quot;
@@ -469,28 +497,26 @@ export default function EditorView({ modelId }: { modelId: string }) {
                   return (
                     <div
                       key={field.name}
-                      className={`shrink-0 overflow-hidden rounded-xl ${isOpen ? 'border border-primary/30' : ''}`}
+                      className={`semantic-region-${field.semanticRole} relative shrink-0 border-b border-border/60 last:border-b-0`}
+                      style={{
+                        borderLeftWidth: '4px',
+                        borderLeftColor: 'oklch(55% 0.16 var(--region-hue))',
+                      }}
                     >
-                      <button
-                        onClick={() => setSelectedId(isOpen ? '' : field.name)}
-                        aria-expanded={isOpen}
-                        className={`flex w-full items-center gap-3 px-3 py-3 text-left ${isOpen ? 'bg-primary/10' : 'rounded-xl hover:bg-muted/60'}`}
-                      >
+                      <div className="flex items-center gap-2 px-2 py-2">
                         <span className="flex shrink-0 flex-col items-center gap-0.5">
                           <span className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">
                             Rank
                           </span>
-                          <span
-                            className={`grid size-6 place-items-center rounded-full text-[11px] font-bold ${isOpen ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground'}`}
-                          >
+                          <span className="grid size-6 place-items-center rounded-full bg-muted text-[11px] font-bold text-muted-foreground">
                             {field.rank}
                           </span>
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-sm font-semibold">
+                          <span className="block truncate text-sm font-semibold text-foreground">
                             {field.label}
                           </span>
-                          <span className="mt-1 flex flex-wrap items-center gap-1.5">
+                          <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
                             <span className="truncate font-mono text-[11px] text-muted-foreground">
                               {field.type}
                             </span>
@@ -516,34 +542,61 @@ export default function EditorView({ modelId }: { modelId: string }) {
                               <EyeOff className="size-3.5 text-muted-foreground/40" />
                             )}
                           </span>
-                          <ChevronDown
-                            className={`size-3.5 shrink-0 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}
-                          />
-                        </span>
-                      </button>
-                      {isOpen && (
-                        <div className="border-t border-primary/20 bg-card p-4">
-                          <div className="mb-3">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                              Semantic role
-                            </p>
-                          </div>
-                          <select
-                            value={field.semanticRole}
-                            onChange={(event) =>
-                              updateSemanticRole(
-                                field.name,
-                                event.target.value as SemanticRole,
-                              )
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setSelectedId(isOpen ? '' : field.name)
                             }
-                            className="w-full rounded-lg border bg-card px-3 py-2 text-sm"
+                            aria-expanded={isOpen}
+                            aria-haspopup="dialog"
+                            aria-label={`Edit role and rank for ${field.label}`}
+                            title={`Edit role and rank for ${field.label}`}
+                            className={`rounded-md p-1.5 transition ${
+                              isOpen
+                                ? 'bg-primary/15 text-primary'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            }`}
                           >
-                            {semanticRoles.map((semanticRole) => (
-                              <option key={semanticRole} value={semanticRole}>
-                                {semanticRoleLabels[semanticRole]}
-                              </option>
-                            ))}
-                          </select>
+                            <PencilLine className="size-3.5" />
+                          </button>
+                        </span>
+                      </div>
+                      {isOpen && (
+                        <div
+                          role="dialog"
+                          aria-label={`Edit ${field.label}`}
+                          className="absolute right-2 top-full z-20 mt-1 w-[min(18rem,calc(100vw-2rem))] rounded-xl border bg-popover p-4 text-popover-foreground shadow-lg"
+                        >
+                          <div className="mb-3 flex items-center justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-semibold">
+                                Edit {field.label}
+                              </p>
+                              <p className="mt-0.5 text-xs text-muted-foreground">
+                                Choose its role and display priority.
+                              </p>
+                            </div>
+                            <RoleChipTag role={field.semanticRole} compact />
+                          </div>
+                          <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                            Semantic role
+                            <select
+                              value={field.semanticRole}
+                              onChange={(event) =>
+                                updateSemanticRole(
+                                  field.name,
+                                  event.target.value as SemanticRole,
+                                )
+                              }
+                              className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal normal-case tracking-normal text-foreground"
+                            >
+                              {semanticRoles.map((semanticRole) => (
+                                <option key={semanticRole} value={semanticRole}>
+                                  {semanticRoleLabels[semanticRole]}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
                           <label className="mt-3 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                             Rank
                             <input
@@ -557,7 +610,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
                                   Number(event.target.value),
                                 )
                               }
-                              className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal text-foreground"
+                              className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal tracking-normal text-foreground"
                             />
                           </label>
                         </div>

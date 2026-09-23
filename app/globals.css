@@ -24,6 +24,9 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  --color-accent-surface-foreground: var(--accent-surface-foreground);
+  --color-accent-surface-border: var(--accent-surface-border);
+  --color-accent-surface: var(--accent-surface);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -61,6 +64,9 @@
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
+  --accent-surface: oklch(0.98 0.018 300);
+  --accent-surface-foreground: oklch(0.3 0.045 300);
+  --accent-surface-border: oklch(0.86 0.07 300);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -97,6 +103,9 @@
   --muted-foreground: oklch(0.708 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
+  --accent-surface: oklch(0.23 0.022 300);
+  --accent-surface-foreground: oklch(0.93 0.025 300);
+  --accent-surface-border: oklch(0.42 0.06 300);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
@@ -133,6 +142,9 @@
     --muted-foreground: oklch(0.708 0 0);
     --accent: oklch(0.269 0 0);
     --accent-foreground: oklch(0.985 0 0);
+    --accent-surface: oklch(0.23 0.022 300);
+    --accent-surface-foreground: oklch(0.93 0.025 300);
+    --accent-surface-border: oklch(0.42 0.06 300);
     --destructive: oklch(0.704 0.191 22.216);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
@@ -280,6 +292,13 @@
   .dark .role-chip {
     color: oklch(92% 0.06 var(--region-hue));
     background-color: oklch(55% 0.14 var(--region-hue) / 0.26);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light) .role-chip {
+      color: oklch(92% 0.06 var(--region-hue));
+      background-color: oklch(55% 0.14 var(--region-hue) / 0.26);
+    }
   }
 
   .role-chip-editing {

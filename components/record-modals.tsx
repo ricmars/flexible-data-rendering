@@ -20,7 +20,7 @@ import {
 } from '@/components/template-runtime'
 
 /**
- * Page-level modals for the Editor view: record detail, operator
+ * Page-level modals for the Live Editor view: record detail, operator
  * lookup, raw JSON, and the per-record template slot breakdown.
  */
 
