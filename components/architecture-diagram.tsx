@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import {
   ArrowRight,
   Database,
@@ -23,14 +24,16 @@ import {
 import { modelSources } from '@/lib/model-sources'
 
 /**
- * Architecture page: a small "layers" diagram at the top (Data object ->
- * Semantic roles -> UI templates -> Runtime), followed by concrete, worked
- * examples for the four densest-to-richest per-record templates (Role
- * chip, List row, Tile card, Summary card) rendered for one real data
- * object ("Manufacturing plant") — as three columns each: the data model
- * with semantic roles mapped, the template's mock structure, and its live
- * runtime render. Everything below the mini diagram uses real shared
- * assets (`lib/model-sources.ts`, `components/template-runtime.tsx`), not
+ * Architecture page: an article-style proposal for the semantic role
+ * contract, aimed at both executives and architects. It walks through the
+ * problem statement, proposed solution, reference architecture, semantic
+ * contract schema, an AI/cross-client use case, constraints (density tiers
+ * and fallback chains), and worked examples for four per-record templates
+ * (Role chip, List row, Tile card, Summary card) rendered for one real
+ * data object ("Manufacturing plant") as three columns each: the data
+ * model with semantic roles mapped, the template's mock structure, and its
+ * live runtime render. Everything on this page uses real shared assets
+ * (`lib/model-sources.ts`, `components/template-runtime.tsx`), not
  * hand-drawn mockups.
  */
 
@@ -63,12 +66,12 @@ function LayerBlock({
     <div
       className={`flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl border p-4 text-center shadow-sm ${
         tone === 'accent'
-          ? 'border-fuchsia-300 bg-fuchsia-50 dark:border-fuchsia-800/60 dark:bg-fuchsia-950/30'
+          ? 'border-accent-surface-border bg-accent-surface'
           : 'border-border bg-card'
       }`}
     >
       <Icon
-        className={`size-5 ${tone === 'accent' ? 'text-fuchsia-600 dark:text-fuchsia-400' : 'text-muted-foreground'}`}
+        className={`size-5 ${tone === 'accent' ? 'text-primary' : 'text-muted-foreground'}`}
       />
       <h3 className="text-sm font-semibold leading-tight">{title}</h3>
       <p className="text-xs text-muted-foreground">{description}</p>
@@ -106,7 +109,7 @@ function ColumnHeader({
 }
 
 // One row per field: its label, semantic role chip, and its raw field type
-// — deliberately no field id/name, since the point of this column is the
+// deliberately no field id/name, since the point of this column is the
 // role mapping, not the underlying schema.
 function FieldRoleRow({ field }: { field: (typeof plantFields)[number] }) {
   return (
@@ -222,208 +225,435 @@ function FallbackChainList() {
 }
 
 export default function ArchitectureDiagram() {
+  const [showExamples, setShowExamples] = useState(true)
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-[1400px] px-6 py-8">
-        <p className="mb-3 text-3xl font-extrabold tracking-tight text-balance">
-          Data objects and UI templates never reference each other directly.
-        </p>
-        <p className="mb-2 max-w-3xl text-sm text-muted-foreground">
-          Normally, adding a new data object means hand-wiring it into every
-          card/row/detail layout that should render it, and adding a new layout
-          means touching every data object&apos;s mapping code. This codebase
-          removes that N×M coupling with a fixed vocabulary of{' '}
-          <span className="font-semibold text-foreground">
-            26 semantic roles
-          </span>{' '}
-          (title, status, metric, temporal, people, and so on — see the{' '}
-          <Link
-            href="/roles"
-            className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
-          >
-            Semantic Roles page
-          </Link>{' '}
-          for the full catalog). A field only ever declares{' '}
-          <em>which role it plays</em> (&quot;this is the <code>title</code>
-          &quot;); a template only ever declares <em>
-            which roles it needs
-          </em>{' '}
-          to fill its slots. Neither side knows the other exists — swap the
-          object, swap the template, and the mapping still resolves.
-        </p>
-        <p className="mb-8 max-w-3xl text-sm text-muted-foreground">
-          Four mechanisms make that resolution actually work in practice, rather
-          than just look nice as a diagram: templates request a slot{' '}
-          <em>count</em>, not specific fields (a &quot;highlight&quot; slot
-          capped at 3 shows however many highlight-role fields exist, up to 3);
-          density tiers (micro → compact → standard → rich → full) are strict
-          supersets, so a richer template never contradicts a leaner one, it
-          only shows more; missing roles fall back along a defined chain (no{' '}
-          <code>title</code>? fall back to <code>identifier</code>, then{' '}
-          <code>objectType</code>) instead of leaving a blank slot; and a field
-          marked <code>sensitivity</code>-masked can never be promoted to a hero
-          position, even if a hero-promotion template would otherwise pick it.
-        </p>
+        <header className="mb-8 max-w-4xl">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+            Architecture proposal
+          </p>
+          <h1 className="text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
+            One semantic contract for every client
+          </h1>
+          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+            A data model should not dictate how every screen, API, search
+            result, or AI response is assembled. A shared semantic layer lets
+            each client select the fields that matter for its task.
+          </p>
+        </header>
 
-        <section className="mb-10">
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            How the layers connect
+        <section className="mb-10 rounded-2xl border bg-card p-6 shadow-sm">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Executive summary
+          </p>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Move from field names to shared meaning
           </h2>
+          <p className="mt-3 max-w-4xl text-sm leading-relaxed text-muted-foreground">
+            A field such as <code>updatedAt</code> has a technical name, but
+            clients need to know that it represents a temporal value used for
+            recency. A field such as <code>referenceCode</code> is an identifier
+            that can be copied, searched, or used to find a record. Semantic
+            roles make that meaning explicit once and make it available to every
+            consumer.
+          </p>
+          <div className="mt-6 grid gap-3 md:grid-cols-3">
+            {[
+              [
+                'Business outcome',
+                'Consistent experiences without custom mapping work in every client.',
+              ],
+              [
+                'Architecture outcome',
+                'A stable contract between data models and consuming applications.',
+              ],
+              [
+                'AI outcome',
+                'Relevant answers based on field meaning instead of raw payload order.',
+              ],
+            ].map(([label, text]) => (
+              <div key={label} className="rounded-xl bg-muted/50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {label}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed">{text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-10 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Problem statement
+            </p>
+            <h2 className="text-xl font-bold tracking-tight">
+              Clients repeat the same decisions
+            </h2>
+            <ul className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
+              <li>
+                <strong className="text-foreground">UI teams</strong> map fields
+                to cards, tables, and detail screens independently.
+              </li>
+              <li>
+                <strong className="text-foreground">
+                  API and search teams
+                </strong>{' '}
+                decide which fields to return using endpoint-specific rules.
+              </li>
+              <li>
+                <strong className="text-foreground">AI assistants</strong> may
+                expose too much data or choose fields based on naming and
+                payload order.
+              </li>
+            </ul>
+          </div>
+          <div className="rounded-2xl border-2 border-accent-surface-border bg-accent-surface p-6 text-accent-surface-foreground shadow-sm">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider opacity-80">
+              Proposed solution
+            </p>
+            <h2 className="text-xl font-bold tracking-tight">
+              Add a semantic role layer
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed opacity-90">
+              Each field declares a business meaning, such as <code>title</code>
+              , <code>status</code>, <code>metric</code>, or <code>owner</code>.
+              Clients request those meanings and receive ranked, format-aware
+              values. The data model and the client remain independent.
+            </p>
+            <p className="mt-4 text-sm leading-relaxed opacity-90">
+              Review the{' '}
+              <Link
+                href="/roles"
+                className="font-medium underline underline-offset-2 hover:opacity-80"
+              >
+                Semantic Roles catalog
+              </Link>{' '}
+              and the{' '}
+              <Link
+                href="/templates"
+                className="font-medium underline underline-offset-2 hover:opacity-80"
+              >
+                UI Templates catalog
+              </Link>{' '}
+              to see the contract in action.
+            </p>
+          </div>
+        </section>
+
+        <aside className="mb-10 overflow-hidden rounded-2xl border-2 border-accent-surface-border bg-accent-surface shadow-sm">
+          <div className="flex gap-4 p-5 sm:p-6">
+            <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+              <Sparkles className="size-5" aria-hidden="true" />
+            </div>
+            <div className="min-w-0">
+              <h2 className="text-base font-semibold tracking-tight">
+                Semantic roles can power AI answers, not just UI layouts
+              </h2>
+              <p className="mt-2 max-w-4xl text-sm leading-relaxed text-muted-foreground">
+                Semantic roles give every client a shared understanding of what
+                each field means and how important it is. An AI Assistant can
+                use that layer to select the few relevant fields for an answer
+                instead of guessing from raw field names, dumping the whole
+                record, or choosing a view at random. The same approach can
+                guide search, APIs, mobile clients, automation, and reports:
+                each client can decide what to show based on meaning rather than
+                bespoke knowledge of every data model.
+              </p>
+              <blockquote className="mt-4 rounded-xl border border-primary/20 bg-background/80 p-3 text-sm shadow-sm">
+                <p className="font-medium text-foreground">
+                  &quot;What needs attention at the North Plant?&quot;
+                </p>
+                <p className="mt-1 text-muted-foreground">
+                  The Assistant can prioritize the <code>status</code>,{' '}
+                  <code>priority</code>, <code>flags</code>,{' '}
+                  <code>nextAction</code>, and <code>owner</code> roles, then
+                  answer with the relevant facts without exposing unrelated sort
+                  keys, internal annotations, or every field in the record.
+                </p>
+              </blockquote>
+            </div>
+          </div>
+        </aside>
+
+        <section className="mb-10 rounded-2xl border bg-card p-6 shadow-sm">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Reference architecture
+          </p>
+          <h2 className="text-2xl font-bold tracking-tight">
+            One contract, many client experiences
+          </h2>
+          <p className="mt-3 max-w-4xl text-sm leading-relaxed text-muted-foreground">
+            The semantic layer is a shared decision point. It does not replace
+            the data model or the client. It describes what a field means, how
+            it should be presented, and whether it is safe to use.
+          </p>
           <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
             <LayerBlock
               icon={Database}
-              title="Data object"
-              description="A schema's fields — e.g. plantType, capacity, owner"
+              title="Data model"
+              description="Fields such as plantType, capacity, and owner"
               tone="neutral"
             />
             <FlowArrow />
             <LayerBlock
               icon={Shapes}
-              title="Semantic roles"
-              description="Each field is tagged with 1 of 26 fixed roles"
+              title="Semantic contract"
+              description="Each field gets a shared business role"
               tone="accent"
             />
             <FlowArrow />
             <LayerBlock
               icon={LayoutTemplate}
-              title="UI templates"
-              description="Each slot asks for a role + a max count, not a field"
+              title="Client request"
+              description="A screen, API, search, or assistant asks for roles"
               tone="neutral"
             />
             <FlowArrow />
             <LayerBlock
               icon={Sparkles}
-              title="Runtime"
-              description="Roles resolved, ranked, and rendered for one record"
+              title="Selected response"
+              description="Values are ranked, formatted, and policy-aware"
               tone="neutral"
             />
           </div>
         </section>
 
-        <section className="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div>
-            <h2 className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Density tiers are strict supersets
-            </h2>
-            <p className="mb-3 max-w-md text-sm text-muted-foreground">
-              5 tiers, ordered leanest to richest. A role that appears at tier 1
-              is still there at tier 5 — richer tiers only ever <em>add</em>{' '}
-              roles, never drop or replace one.{' '}
-              <span className="rounded bg-fuchsia-50 px-1 py-0.5 ring-1 ring-fuchsia-300 dark:bg-fuchsia-950/30">
-                Highlighted
-              </span>{' '}
-              roles are new at that tier; faded roles were already resolved by a
-              leaner one. A <code>×N</code> badge is that slot&apos;s cap —
-              &quot;up to N fields with this role,&quot; not &quot;field
-              N.&quot;
+        <section className="mb-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Semantic contract
             </p>
-            <DensityLadder />
+            <h2 className="text-xl font-bold tracking-tight">
+              What a field declares
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              The role is the primary meaning. Supporting metadata controls
+              ranking, format, sensitivity, and relationships to other fields.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {[
+                [
+                  'Role',
+                  'What the value means, such as title, status, or owner.',
+                ],
+                [
+                  'Rank',
+                  'Which value should be preferred when several share a role.',
+                ],
+                [
+                  'Format hint',
+                  'The default presentation, such as code, date, percent, or file reference. A template can override it when needed.',
+                ],
+                [
+                  'Policy',
+                  'Whether the value is public, masked, searchable, or safe for promotion.',
+                ],
+              ].map(([label, text]) => (
+                <div key={label} className="rounded-lg border bg-muted/30 p-3">
+                  <p className="text-sm font-semibold">{label}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    {text}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-
-          <div>
-            <h2 className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Fallback chains: never a blank slot
-            </h2>
-            <p className="mb-3 max-w-md text-sm text-muted-foreground">
-              If a data object has no field mapped to the preferred role,
-              resolution walks the chain instead of rendering nothing. Every{' '}
-              <code>plant</code>, <code>case</code>, or <code>policy</code>{' '}
-              record can always show a title, because &quot;no{' '}
-              <code>title</code>&quot; falls back to &quot;show the{' '}
-              <code>identifier</code>&quot;, and failing that, the{' '}
-              <code>objectType</code>.
+          <div className="rounded-2xl border bg-muted/50 p-6 text-foreground shadow-sm">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Example declaration
             </p>
-            <FallbackChainList />
+            <pre className="overflow-x-auto text-xs leading-relaxed">
+              <code>{`{
+  "name": "referenceCode",
+  "semanticRole": "identifier",
+  "format": "code",
+  "rank": 1,
+  "sensitivity": "public"
+}`}</code>
+            </pre>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              A UI can render this as copyable code. An API can use it as a
+              stable identifier. An assistant can include it when the user asks
+              how to find or reference the record. The <code>code</code> value
+              is a default hint, not a hard rule. A template can override the
+              hint when its context requires a different presentation.
+            </p>
           </div>
         </section>
 
-        <section className="mb-10">
-          <h2 className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Worked examples: the same field mapping, four density tiers
-          </h2>
-          <p className="mb-4 max-w-3xl text-sm text-muted-foreground">
-            The{' '}
-            <span className="font-semibold text-foreground">{plant.name}</span>{' '}
-            data model is mapped to its semantic roles exactly once (left).
-            Every template on the right reads that same mapping — nothing is
-            remapped per template. Role chip → List row → Tile card → Summary
-            card is the actual density ladder, low to high: each step is a
-            superset of the previous one&apos;s roles, so title/status never
-            disappear going up a tier, they&apos;re just joined by more
-            (highlights, progress, people, description...). The &quot;UI
-            template&quot; column is the slot structure derived purely from
-            roles; &quot;Runtime&quot; is the same component rendering one real
-            record — compare them to see exactly which role landed in which
-            slot.
-          </p>
+        <section className="mb-10 overflow-hidden rounded-xl border bg-card shadow-sm">
+          <button
+            type="button"
+            className="flex w-full items-start justify-between gap-4 p-4 text-left transition hover:bg-muted/20"
+            aria-expanded={showExamples}
+            onClick={() => setShowExamples((visible) => !visible)}
+          >
+            <span>
+              <span className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Worked examples: the same field mapping, four density tiers
+              </span>
+              <span className="mt-1 block text-sm text-muted-foreground">
+                Compare one real data model with its mock templates and live
+                runtime output, or{' '}
+                <Link
+                  href="/editor"
+                  className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  open the live Editor
+                </Link>{' '}
+                to play with the mappings yourself.
+              </span>
+            </span>
+            <ArrowRight
+              className={`mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform ${
+                showExamples ? 'rotate-90' : ''
+              }`}
+              aria-hidden="true"
+            />
+          </button>
 
-          <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[260px_minmax(0,1fr)]">
-            <div className="min-w-0 rounded-xl border border-dashed p-3 lg:sticky lg:top-6">
-              <ColumnHeader
-                icon={Database}
-                title="Data model with roles mapped"
-                description={`Every ${plant.name} field → its semantic role`}
-              />
-              <div className="flex flex-col gap-1">
-                {plantFields.map((field) => (
-                  <FieldRoleRow key={field.name} field={field} />
-                ))}
+          {showExamples && (
+            <div className="border-t px-4 pb-4 pt-4 sm:px-5">
+              <p className="mb-4 max-w-3xl text-sm text-muted-foreground">
+                The{' '}
+                <span className="font-semibold text-foreground">
+                  {plant.name}
+                </span>{' '}
+                data model is mapped to its semantic roles once, on the left.
+                Every template on the right reads the same mapping. The examples
+                move from a small role chip to a list row, tile card, and
+                summary card. Each step adds more information while keeping the
+                earlier roles. The UI template shows the requested slots, and
+                Runtime shows the same record with real data.
+              </p>
+
+              <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[260px_minmax(0,1fr)]">
+                <div className="min-w-0 rounded-xl border border-dashed p-3 lg:sticky lg:top-6">
+                  <ColumnHeader
+                    icon={Database}
+                    title="Data model with roles mapped"
+                    description={`Every ${plant.name} field and its semantic role`}
+                  />
+                  <div className="flex flex-col gap-1">
+                    {plantFields.map((field) => (
+                      <FieldRoleRow key={field.name} field={field} />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-6">
+                  {exampleTemplates.map((tmpl) => {
+                    const Runtime = runtimeByTemplate[tmpl.value]
+                    return (
+                      <div key={tmpl.value}>
+                        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                          {tmpl.label}
+                        </h3>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <div className="min-w-0 rounded-xl border border-dashed p-3">
+                            <ColumnHeader
+                              icon={LayoutTemplate}
+                              title="UI template"
+                              description={tmpl.description}
+                            />
+                            <TemplateSample
+                              template={tmpl.value}
+                              fields={plantFields}
+                            />
+                          </div>
+
+                          <div className="min-w-0 rounded-xl border border-dashed p-3">
+                            <ColumnHeader
+                              icon={Sparkles}
+                              title="Runtime"
+                              description={`${sampleRecord.name} rendered live`}
+                            />
+                            <Runtime item={sampleRecord} />
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </div>
+          )}
+        </section>
 
-            <div className="flex flex-col gap-6">
-              {exampleTemplates.map((tmpl) => {
-                const Runtime = runtimeByTemplate[tmpl.value]
-                return (
-                  <div key={tmpl.value}>
-                    <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                      {tmpl.label}
-                    </h3>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <div className="min-w-0 rounded-xl border border-dashed p-3">
-                        <ColumnHeader
-                          icon={LayoutTemplate}
-                          title="UI template"
-                          description={tmpl.description}
-                        />
-                        <TemplateSample
-                          template={tmpl.value}
-                          fields={plantFields}
-                        />
-                      </div>
-
-                      <div className="min-w-0 rounded-xl border border-dashed p-3">
-                        <ColumnHeader
-                          icon={Sparkles}
-                          title="Runtime"
-                          description={`${sampleRecord.name} rendered live`}
-                        />
-                        <Runtime item={sampleRecord} />
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
+        <section className="mb-10 rounded-2xl border bg-card p-6 shadow-sm">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Constraints and resolution
+          </p>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Rules that keep the contract predictable
+          </h2>
+          <p className="mt-3 max-w-4xl text-sm leading-relaxed text-muted-foreground">
+            Clients should not need to rebuild selection logic. Density controls
+            how much information is requested. Fallbacks keep required slots
+            useful when a preferred role is missing.
+          </p>
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <div className="rounded-xl border bg-muted/30 p-5">
+              <h3 className="text-lg font-semibold">Density tiers</h3>
+              <p className="mt-2 mb-4 text-sm leading-relaxed text-muted-foreground">
+                Five tiers move from compact to detailed. A role shown in an
+                earlier tier remains available in richer tiers. Highlighted
+                roles are new at that tier. A <code>×N</code> badge means the
+                tier can show up to N fields with that role.
+              </p>
+              <DensityLadder />
+            </div>
+            <div className="rounded-xl border bg-muted/30 p-5">
+              <h3 className="text-lg font-semibold">Fallback chains</h3>
+              <p className="mt-2 mb-4 text-sm leading-relaxed text-muted-foreground">
+                If the preferred role is missing, the runtime uses the next
+                useful role. For example, <code>title</code> can use{' '}
+                <code>identifier</code>, then <code>objectType</code>. This
+                keeps the interface useful instead of leaving an empty slot.
+              </p>
+              <FallbackChainList />
             </div>
           </div>
         </section>
 
-        <p className="mt-8 rounded-xl border border-dashed bg-muted/30 p-3 text-xs text-muted-foreground">
-          The role-chip colors above are the same ones used everywhere in this
-          app — a field tagged <code>status</code> renders in the same hue on a
-          list row, a tile, or a detail header. Beyond the 4 density tiers shown
-          here plus Detail header (5 total, each a strict superset of the last),
-          there are {templateCatalog.length - 5} more built-in templates: 6
-          hero-promotion variants (KPI, Progress, Alert, Party, Timeline entry,
-          Board — each the standard tier with one extra role promoted above the
-          title) and a role-driven availability matrix that decides which
-          collection views (Table, Grid, Calendar, Map, Chart...) a data object
-          even qualifies for, based only on which roles it has mapped. See{' '}
-          <code className="rounded bg-muted px-1 py-0.5 text-[11px]">
-            /templates
-          </code>{' '}
-          for all of them, against any of the 10 sample data objects.
-        </p>
+        <section className="rounded-2xl border bg-muted/30 p-6">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            References and next steps
+          </p>
+          <h2 className="text-xl font-bold tracking-tight">
+            Apply the contract across the product
+          </h2>
+          <p className="mt-3 max-w-4xl text-sm leading-relaxed text-muted-foreground">
+            Review the{' '}
+            <Link
+              href="/roles"
+              className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
+            >
+              Semantic Roles
+            </Link>{' '}
+            catalog, compare the{' '}
+            <Link
+              href="/templates"
+              className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
+            >
+              UI Templates
+            </Link>
+            , and use the{' '}
+            <Link
+              href="/editor"
+              className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
+            >
+              live Editor
+            </Link>{' '}
+            to explore how one semantic mapping supports different client
+            experiences. The same contract can drive API projections, search
+            ranking, assistant responses, and automation.
+          </p>
+        </section>
       </div>
     </main>
   )

@@ -4,26 +4,28 @@ Flexible Data Rendering is a Next.js workbench for defining semantic data models
 
 ## What it does
 
-The workbench is organized into four pages, plus a shared **Data object** picker in a fixed header bar that stays visible while the rest of the page scrolls:
+The workbench is organized into four pages, in this order, plus a shared **Data object** picker and a light/dark **theme toggle** in a fixed header bar that stays visible while the rest of the page scrolls:
 
-- **Editor** — browse the active model's records rendered as role chips, list rows, tile cards, summary cards, detail headers, or one of the six hero-promotion variants (KPI, progress, alert, party, timeline, board cards).
-  - Toggle **Show template** in the Live preview panel to see the template's render order, role slots, and an isolated mock preview alongside the real data.
+- **Architecture** — an article-style proposal that explains the semantic role contract: the problem it solves, the proposed solution, a reference architecture diagram, the field-level schema (role, rank, format hint, sensitivity), an AI Assistant and cross-client use case, density tiers and fallback chains as contract constraints, and worked examples for four per-record templates (role chip, list row, tile card, summary card) rendered from one real data object. Inline links point to the Semantic Roles and UI Templates pages and to the Live Editor for hands-on experimentation.
+- **Semantic Roles** — a compact reference dictionary of every semantic role (title, media, objectType, metric, progress, status, and more), its meaning, default format hint, and fallback rule, with a legend for singleton roles, format hints, and fallbacks. This reference is independent of the active data object.
+- **UI Templates** — a side-by-side reference of every per-record template (role chip, list row, tile card, summary card, detail header, and the six hero-promotion variants) showing its density and role slots, plus a short explainer on how semantic roles, templates, and views compose together, a density legend, and a **Preview as** control to switch each card between its mock structure and real records from the active model. A **Collection templates** section (table, list, grid, board, calendar, timeline, map, chart) shows a role-driven availability matrix and a live mock of each view.
+- **Live Editor** — browse the active model's records rendered as role chips, list rows, tile cards, summary cards, detail headers, or one of the six hero-promotion variants (KPI, progress, alert, party, timeline, board cards). An instructional banner at the top explains how to use the page.
+  - Toggle **Show template** in the Live preview panel (highlighted with a subtle purple accent surface) to see the template's render order, role slots, and an isolated mock preview alongside the real data.
   - Hover (or focus) any record to reveal **View JSON** (the raw underlying record) and **View template** (how that specific record resolves into the active template's slots).
-  - The **Edit Semantic Role Mapping** panel is always visible next to the preview. Expand a field row to change its semantic role or rank; collapse the panel to a narrow rail when you need more room for the preview.
-- **UI Templates** — a side-by-side reference of every per-record template (role chip, list row, tile card, summary card, detail header, and the six hero-promotion variants) showing its density, render order, role slot counts for the active model, and a mock preview; plus a **Collection templates** section (table, list, grid, board, calendar, timeline, map, chart) with a role-driven availability matrix and a live mock of each view.
-- **Semantic Roles** — a reference of every semantic role (title, media, objectType, metric, progress, status, and more) with its definition, representation, and how many fields in the active model use it.
-- **Architecture** — a single four-column story for one data object: every field, its semantic role, every built-in UI template, and every template's live runtime render, each listed exactly once.
+  - The **Edit Semantic Role Mapping** panel is always visible next to the preview, listed as a compact, role-colored field list. Click the pencil icon on a field to open a popover and change its semantic role or rank; collapse the panel to a narrow rail when you need more room for the preview. A **Save** button appears only once a field has unsaved changes.
 
 Other behaviors:
 
+- Identifier-role fields render as copyable codes: a copy icon transitions to a checkmark and a transient "Copied" chip on success, or a "Copy failed" state if the clipboard is unavailable.
 - Percent-like fields (e.g. utilization, quota attainment) mapped to the `progress` role render as a linear bar or a compact radial ring, depending on template density; a `progress` field can also derive its percentage from a declared stage/of pair.
 - A `metric` field can declare a `trendSource` sibling field to derive a percent delta (metric.trend), shown on the KPI card.
+- A field's `format` is a default presentation hint (code, percent, date, file reference, etc.); a template can override it when its context calls for a different presentation.
 - Compare micro, compact, standard, rich, and full-density layouts.
 - Highlight the semantic regions that each template renders.
 - Open record and operator details from the preview.
 - Fall back safely when remote preview images cannot be loaded.
 - A field's `sensitivity` classification masks its value at every tier and is never promoted to hero, even when its rank would otherwise select it.
-- Respect both an explicit `.dark` theme and the operating system color preference.
+- Respect an explicit user theme choice (persisted in `localStorage`), falling back to the operating system color preference, with a header toggle to switch between them.
 
 ## Requirements
 
@@ -37,7 +39,7 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) after the development server starts.
+Open [http://localhost:3000](http://localhost:3000) after the development server starts. The root path redirects to `/architecture`.
 
 ## Commands
 
@@ -53,14 +55,23 @@ Open [http://localhost:3000](http://localhost:3000) after the development server
 ## Project structure
 
 ```text
-app/                    Next.js app shell and global theme styles
+app/                    Next.js app shell, routes, and global theme styles
 components/             Workbench UI and shared UI primitives
 data/                   Model definitions and generated sample records
 lib/rendering-contract.ts
 						Semantic roles, field types, and template contracts
 lib/resolve-record.ts   Resolves raw records into renderable fields
 components/template-runtime.tsx
-						Per-record template catalog and runtime renderers
+						Per-record template catalog, runtime renderers, and the
+						copyable identifier control
+components/template-reference.tsx
+						UI Templates and Semantic Roles reference pages
+components/architecture-diagram.tsx
+						Architecture page (proposal, contract schema, examples)
+components/editor-view.tsx
+						Live Editor page and semantic-role editing panel
+components/theme-toggle.tsx
+						Light/dark theme switch used in the shared header
 components/collection-views.tsx
 						Collection templates (table, list, grid, board, calendar,
 						timeline, map, chart) and their role-driven availability
@@ -73,7 +84,7 @@ Each model in `data/*-model.json` defines fields with a type and a `semanticRole
 
 The rendering contract maps those roles to template slots. `lib/resolve-record.ts` resolves raw record values (including fallback chains and derived values like `progress.pct` and `metric.trend`), while `components/template-runtime.tsx` selects the supported slots for the active template and renders the preview.
 
-Semantic roles and rank are edited live from the Editor tab: expand a field row in the **Edit Semantic Role Mapping** panel to change its role or rank and see the preview update immediately. This only changes in-memory state for the session; it does not write back to the JSON files.
+Semantic roles and rank are edited live from the Live Editor page: click the pencil icon on a field row in the **Edit Semantic Role Mapping** panel to open its editor popover, change its role or rank, and see the preview update immediately. Use **Save** once you are done; this only changes in-memory state for the session and does not write back to the JSON files.
 
 To add a new sample model:
 
