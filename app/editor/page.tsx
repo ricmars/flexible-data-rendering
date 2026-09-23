@@ -12,10 +12,8 @@ function EditorPageInner() {
   return (
     <main className="flex h-screen flex-col overflow-hidden bg-background text-foreground">
       <WorkbenchHeader />
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-[1500px] px-6 py-6">
-          <EditorView modelId={modelId} />
-        </div>
+      <div className="min-h-0 flex-1 overflow-hidden">
+        <EditorView modelId={modelId} />
       </div>
     </main>
   )

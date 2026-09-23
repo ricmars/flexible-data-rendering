@@ -29,13 +29,30 @@ import {
  * by the Live Editor's preview toggle.
  */
 
-export function TemplateInspector({ template }: { template: Template }) {
+export function TemplateInspector({
+  template,
+  inline = false,
+}: {
+  template: Template
+  inline?: boolean
+}) {
   const definition = templateCatalog.find((entry) => entry.value === template)!
+  if (inline) {
+    return (
+      <span className="min-w-0 text-muted-foreground">
+        <span className="font-semibold text-foreground">
+          {definition.label}
+        </span>{' '}
+        · {definition.density} density — {definition.description}
+      </span>
+    )
+  }
   return (
     <div className="text-xs text-foreground">
       <span className="font-semibold">
         {definition.label} · {definition.density} density
       </span>
+      <p className="mt-0.5 text-muted-foreground">{definition.description}</p>
     </div>
   )
 }
