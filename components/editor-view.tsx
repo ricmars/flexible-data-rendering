@@ -7,9 +7,8 @@ import {
   Eye,
   EyeOff,
   Info,
-  LayoutTemplate,
-  PanelRightClose,
-  PanelRightOpen,
+  Maximize2,
+  Minimize2,
   PencilLine,
   Save,
   Search,
@@ -34,6 +33,7 @@ import {
   type Template,
 } from '@/components/template-runtime'
 import { TemplateInspector } from '@/components/template-reference'
+import { TemplatePickerPanel } from '@/components/template-picker-panel'
 import {
   Detail,
   JsonModal,
@@ -57,21 +57,25 @@ export default function EditorView({ modelId }: { modelId: string }) {
     () => activeModel.fields,
   )
   const [selectedId, setSelectedId] = useState('')
-  const [template, setTemplate] = useState<Template>('tile')
+  const [template, setTemplate] = useState<Template>('row')
+  const [hiddenRolesByTemplate, setHiddenRolesByTemplate] = useState<
+    Partial<Record<Template, Set<SemanticRole>>>
+  >({})
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('All statuses')
   const [sort, setSort] = useState('Available first')
   const [page, setPage] = useState(1)
-  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false)
-  const [showTemplateStructure, setShowTemplateStructure] = useState(false)
+  const [showTemplateStructure, setShowTemplateStructure] = useState(true)
+  const [isPreviewFullscreen, setIsPreviewFullscreen] = useState(false)
   const [panelQuery, setPanelQuery] = useState('')
-  const [showOnlyVisibleFields, setShowOnlyVisibleFields] = useState(false)
+  const [showOnlyVisibleFields, setShowOnlyVisibleFields] = useState(true)
   const [detail, setDetail] = useState<RecordItem | null>(null)
   const [jsonItem, setJsonItem] = useState<RecordItem | null>(null)
   const [templateItem, setTemplateItem] = useState<RecordItem | null>(null)
   const [operator, setOperator] = useState<{
     name: string
     fieldLabel: string
+    anchorRect: DOMRect
   } | null>(null)
 
   // Reset all record-view state whenever the active data object changes
@@ -186,6 +190,20 @@ export default function EditorView({ modelId }: { modelId: string }) {
       ? `semantic-region semantic-region-${role} semantic-region-editing`
       : ''
 
+  const hiddenRoles = hiddenRolesByTemplate[template]
+
+  const handleToggleRole = (role: SemanticRole) => {
+    setHiddenRolesByTemplate((prev) => {
+      const next = new Set(prev[template])
+      if (next.has(role)) {
+        next.delete(role)
+      } else {
+        next.add(role)
+      }
+      return { ...prev, [template]: next }
+    })
+  }
+
   const RuntimeComponent = runtimeByTemplate[template]
 
   const renderItems = () => {
@@ -197,11 +215,12 @@ export default function EditorView({ modelId }: { modelId: string }) {
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
-              onPersonClick={(name, fieldLabel) =>
-                setOperator({ name, fieldLabel })
+              onPersonClick={(name, fieldLabel, anchorRect) =>
+                setOperator({ name, fieldLabel, anchorRect })
               }
             />
           ))}
@@ -209,24 +228,18 @@ export default function EditorView({ modelId }: { modelId: string }) {
       )
     if (template === 'summary')
       return (
-        <div className="grid gap-3">
-          <div className="hidden grid-cols-[minmax(180px,1.4fr)_140px_120px_120px_28px] gap-4 border-b bg-muted/40 px-4 py-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground md:grid">
-            <span>{activeModel.name}</span>
-            <span>Location</span>
-            <span>Value</span>
-            <span>Status</span>
-            <span />
-          </div>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,384px))] gap-4">
           {pageItems.map((item) => (
             <RuntimeComponent
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
-              onPersonClick={(name, fieldLabel) =>
-                setOperator({ name, fieldLabel })
+              onPersonClick={(name, fieldLabel, anchorRect) =>
+                setOperator({ name, fieldLabel, anchorRect })
               }
             />
           ))}
@@ -240,6 +253,23 @@ export default function EditorView({ modelId }: { modelId: string }) {
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
+              onOpenDetail={setDetail}
+              onViewJson={setJsonItem}
+              onViewTemplate={setTemplateItem}
+            />
+          ))}
+        </div>
+      )
+    if (template === 'tile')
+      return (
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,384px))] gap-4">
+          {pageItems.map((item) => (
+            <RuntimeComponent
+              key={item.id}
+              item={item}
+              roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
@@ -249,32 +279,61 @@ export default function EditorView({ modelId }: { modelId: string }) {
       )
     if (template === 'detail-header')
       return (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,384px))] gap-4">
           {pageItems.map((item) => (
             <RuntimeComponent
               key={item.id}
               item={item}
               roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
               onOpenDetail={setDetail}
               onViewJson={setJsonItem}
               onViewTemplate={setTemplateItem}
-              onPersonClick={(name, fieldLabel) =>
-                setOperator({ name, fieldLabel })
+              onPersonClick={(name, fieldLabel, anchorRect) =>
+                setOperator({ name, fieldLabel, anchorRect })
               }
             />
           ))}
         </div>
       )
+    if (template === 'timeline-entry')
+      return (
+        <div className="overflow-hidden rounded-xl border bg-card">
+          {pageItems.map((item, index) => (
+            <RuntimeComponent
+              key={item.id}
+              item={item}
+              roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
+              onOpenDetail={setDetail}
+              onViewJson={setJsonItem}
+              onViewTemplate={setTemplateItem}
+              onPersonClick={(name, fieldLabel, anchorRect) =>
+                setOperator({ name, fieldLabel, anchorRect })
+              }
+              isLast={index === pageItems.length - 1}
+            />
+          ))}
+        </div>
+      )
+    // Every remaining template (progress-card, alert-card, party-card,
+    // kpi-card, board-card) is content-sized rather than capped to a mobile
+    // width: each card grows to fill its share of the row, and a new column
+    // only appears once there is enough spare width for another card.
     return (
-      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(360px,1fr))] gap-4">
         {pageItems.map((item) => (
           <RuntimeComponent
             key={item.id}
             item={item}
             roleClass={roleClass}
+              hiddenRoles={hiddenRoles}
             onOpenDetail={setDetail}
             onViewJson={setJsonItem}
             onViewTemplate={setTemplateItem}
+            onPersonClick={(name, fieldLabel, anchorRect) =>
+              setOperator({ name, fieldLabel, anchorRect })
+            }
           />
         ))}
       </div>
@@ -294,6 +353,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
         <OperatorPopover
           name={operator.name}
           fieldLabel={operator.fieldLabel}
+          anchorRect={operator.anchorRect}
           onClose={() => setOperator(null)}
         />
       )}
@@ -311,100 +371,117 @@ export default function EditorView({ modelId }: { modelId: string }) {
           onClose={() => setTemplateItem(null)}
         />
       )}
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {activeModel.name} model
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {fields.length} fields · {activeModel.description}
-          </p>
-        </div>
-      </div>
-      <div className="mb-6 flex items-start gap-2.5 rounded-xl border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
-        <Info className="mt-0.5 size-4 shrink-0 text-primary" />
-        <p>
-          Use the panel on the right to change how each field is interpreted,
-          its semantic role and display rank, then save your changes. The
-          preview on the left updates immediately, rendering real sample records
-          from this data model through the selected template, so you can see
-          exactly how your changes affect the final experience.
-        </p>
-      </div>
-      <div
-        className={`grid gap-6 ${isPanelCollapsed ? 'xl:grid-cols-[minmax(0,1fr)_3.5rem]' : 'xl:grid-cols-[minmax(0,1fr)_350px]'}`}
-      >
-        <section className="min-w-0 rounded-2xl border border-accent-surface-border bg-accent-surface p-4 text-accent-surface-foreground">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
-              <Sparkles className="size-3.5" />
-              Live preview
-            </p>
-            <button
-              type="button"
-              aria-pressed={showTemplateStructure}
-              onClick={() => setShowTemplateStructure((current) => !current)}
-              className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium shadow-sm transition ${
-                showTemplateStructure
-                  ? 'border-primary/40 bg-primary/10 text-primary'
-                  : 'bg-card text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <LayoutTemplate className="size-3.5" />
-              {showTemplateStructure ? 'Hide' : 'Show'} template
-            </button>
-          </div>
-          {showTemplateStructure && (
-            <div className="mb-4 rounded-2xl border border-primary/30 shadow-sm">
-              <div className="rounded-t-2xl border-b border-dashed border-primary/20 bg-muted p-3">
-                <TemplateInspector template={template} />
+      <div className="flex h-full min-h-0 flex-col">
+        <div className="relative left-1/2 min-h-0 w-screen flex-1 -translate-x-1/2 border-t bg-slate-100 dark:bg-slate-900/60">
+          <div className="flex h-full flex-col">
+            <div className="flex shrink-0 items-start gap-2.5 border-b border-blue-200 bg-blue-50 px-4 py-2 text-xs text-blue-900 dark:border-blue-900/50 dark:bg-blue-950/40 dark:text-blue-200 xl:px-6">
+              <Info className="mt-0.5 size-3.5 shrink-0 text-blue-500 dark:text-blue-400" />
+              <p>
+                Pick a rendering template on the left, then fine-tune each
+                field&apos;s semantic role and rank on the right — the live
+                preview in the center updates immediately with real sample
+                records, so you can see exactly how your changes affect the
+                final experience.
+              </p>
+            </div>
+            <div className="grid min-h-0 flex-1 gap-6 px-4 py-4 xl:grid-cols-[260px_minmax(0,1fr)_350px] xl:px-6 xl:py-6">
+          <TemplatePickerPanel
+            template={template}
+            onSelectTemplate={setTemplate}
+            showTemplateStructure={showTemplateStructure}
+            onToggleTemplateStructure={() =>
+              setShowTemplateStructure((current) => !current)
+            }
+          />
+          <div className="flex h-full min-w-0 flex-col overflow-y-auto">
+            {showTemplateStructure && (
+              <div className="mb-6 rounded-2xl border border-primary/30 shadow-sm">
+                <div className="rounded-t-2xl border-b border-dashed border-primary/20 bg-muted p-3">
+                  <p className="truncate text-xs font-semibold uppercase tracking-wider text-primary">
+                    Template structure
+                  </p>
+                  <p className="mt-0.5 line-clamp-1 text-xs">
+                    <TemplateInspector template={template} inline />
+                  </p>
+                  {(hiddenRoles?.size ?? 0) > 0 ? (
+                    <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-primary">
+                      <EyeOff className="size-3.5 shrink-0" />
+                      {hiddenRoles!.size} field
+                      {hiddenRoles!.size === 1 ? '' : 's'} hidden from the
+                      preview — click a chip to bring it back.
+                    </p>
+                  ) : (
+                    <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-primary">
+                      <Eye className="size-3.5 shrink-0" />
+                      Click a role chip to hide it from the live preview.
+                    </p>
+                  )}
+                </div>
+                <TemplateMockPreview
+                  template={template}
+                  fields={fields}
+                  className="rounded-b-2xl"
+                  hiddenRoles={hiddenRoles}
+                  onToggleRole={handleToggleRole}
+                />
               </div>
-              <TemplateMockPreview
-                template={template}
-                fields={fields}
-                className="rounded-b-2xl"
-              />
-            </div>
-          )}
-          {renderToolbar(
-            template,
-            setTemplate,
-            query,
-            setQueryAndReset,
-            filter,
-            setFilterAndReset,
-            sort,
-            setSortAndReset,
-            page,
-            setPage,
-            visible.length,
-          )}
-          {renderItems()}
-          <p className="mt-4 text-xs text-muted-foreground">
-            Showing {Math.min((page - 1) * 6 + 1, visible.length)}–
-            {Math.min(page * 6, visible.length)} of {visible.length} records
-          </p>
-        </section>
-        <aside className="overflow-hidden rounded-2xl border bg-card shadow-sm xl:sticky xl:top-4 xl:flex xl:max-h-[calc(100vh-9rem)] xl:flex-col">
-          {isPanelCollapsed ? (
-            <div className="flex flex-row items-center justify-center gap-2 p-2 xl:flex-col">
-              <button
-                type="button"
-                onClick={() => setIsPanelCollapsed(false)}
-                aria-label="Expand data model panel"
-                title="Expand data model panel"
-                className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-              >
-                <PanelRightOpen className="size-4" />
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="shrink-0 border-b px-4 py-4">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold">
-                      Edit Semantic Role Mapping
+            )}
+            <section
+              className={
+                isPreviewFullscreen
+                  ? 'fixed inset-0 z-50 overflow-y-auto rounded-none border-0 bg-accent-surface p-4 text-accent-surface-foreground xl:p-6'
+                  : 'min-w-0 rounded-2xl border border-accent-surface-border bg-accent-surface p-4 text-accent-surface-foreground'
+              }
+            >
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
+                  <Sparkles className="size-3.5" />
+                  Live preview
+                </p>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setIsPreviewFullscreen((current) => !current)
+                  }
+                  aria-label={
+                    isPreviewFullscreen
+                      ? 'Exit fullscreen preview'
+                      : 'View live preview fullscreen'
+                  }
+                  title={
+                    isPreviewFullscreen
+                      ? 'Exit fullscreen preview'
+                      : 'View live preview fullscreen'
+                  }
+                  className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                >
+                  {isPreviewFullscreen ? (
+                    <Minimize2 className="size-4" />
+                  ) : (
+                    <Maximize2 className="size-4" />
+                  )}
+                </button>
+              </div>
+              {renderToolbar(
+                query,
+                setQueryAndReset,
+                filter,
+                setFilterAndReset,
+                sort,
+                setSortAndReset,
+                page,
+                setPage,
+                visible.length,
+              )}
+              {renderItems()}
+            </section>
+          </div>
+          <aside className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-sm">
+            <div className="shrink-0 border-b px-4 py-4">
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">
+                    Edit Semantic Role Mapping
                     </p>
                     <p className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Eye className="size-3.5 shrink-0" />
@@ -425,15 +502,6 @@ export default function EditorView({ modelId }: { modelId: string }) {
                         Save
                       </Button>
                     )}
-                    <button
-                      type="button"
-                      onClick={() => setIsPanelCollapsed(true)}
-                      aria-label="Collapse data model panel"
-                      title="Collapse data model panel"
-                      className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-                    >
-                      <PanelRightClose className="size-4" />
-                    </button>
                   </div>
                 </div>
                 <div className="mt-3 flex items-center gap-2">
@@ -457,28 +525,20 @@ export default function EditorView({ modelId }: { modelId: string }) {
                       </button>
                     )}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowOnlyVisibleFields((v) => !v)}
-                    aria-pressed={showOnlyVisibleFields}
-                    title={
-                      showOnlyVisibleFields
-                        ? `Showing only fields visible in ${activeTemplateDef.label}`
-                        : `Show only fields visible in ${activeTemplateDef.label}`
-                    }
-                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-md border px-2 py-1.5 text-xs font-medium shadow-sm transition ${
-                      showOnlyVisibleFields
-                        ? 'border-primary/40 bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                    }`}
+                  <label
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-md border bg-card px-2 py-1.5 text-xs font-medium text-muted-foreground shadow-sm hover:text-foreground"
+                    title={`When unchecked, only fields rendered by ${activeTemplateDef.label} are listed.`}
                   >
-                    {showOnlyVisibleFields ? (
-                      <Eye className="size-3.5" />
-                    ) : (
-                      <EyeOff className="size-3.5" />
-                    )}
-                    Visible only
-                  </button>
+                    <input
+                      type="checkbox"
+                      checked={!showOnlyVisibleFields}
+                      onChange={(event) =>
+                        setShowOnlyVisibleFields(!event.target.checked)
+                      }
+                      className="size-3.5 shrink-0 accent-primary"
+                    />
+                    Show all fields
+                  </label>
                 </div>
                 <p className="mt-2 text-[11px] text-muted-foreground">
                   Select a field to edit its semantic role and rank.
@@ -488,7 +548,10 @@ export default function EditorView({ modelId }: { modelId: string }) {
                 {panelFields.length === 0 && (
                   <p className="px-2 py-6 text-center text-xs text-muted-foreground">
                     No fields match &quot;{panelQuery}&quot;
-                    {showOnlyVisibleFields ? ' among visible fields' : ''}.
+                    {showOnlyVisibleFields
+                      ? ' among fields rendered by this template'
+                      : ''}
+                    .
                   </p>
                 )}
                 {panelFields.map((field) => {
@@ -513,34 +576,34 @@ export default function EditorView({ modelId }: { modelId: string }) {
                           </span>
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-sm font-semibold text-foreground">
+                          <span
+                            className={`block truncate text-sm font-semibold ${
+                              isPresent
+                                ? 'text-foreground'
+                                : 'text-muted-foreground'
+                            }`}
+                          >
                             {field.label}
                           </span>
                           <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                            <span className="truncate font-mono text-[11px] text-muted-foreground">
+                            <span
+                              className={`truncate font-mono text-[11px] ${
+                                isPresent
+                                  ? 'text-muted-foreground'
+                                  : 'text-muted-foreground/60'
+                              }`}
+                            >
                               {field.type}
                             </span>
                           </span>
                         </span>
                         <span className="flex shrink-0 items-center gap-1.5">
-                          <RoleChipTag role={field.semanticRole} compact />
                           <span
-                            title={
-                              isPresent
-                                ? `Shown in ${activeTemplateDef.label}`
-                                : `Not used by ${activeTemplateDef.label}`
-                            }
-                            aria-label={
-                              isPresent
-                                ? `Shown in ${activeTemplateDef.label}`
-                                : `Not used by ${activeTemplateDef.label}`
+                            className={
+                              isPresent ? '' : 'opacity-40 grayscale-[0.4]'
                             }
                           >
-                            {isPresent ? (
-                              <Eye className="size-3.5 text-foreground" />
-                            ) : (
-                              <EyeOff className="size-3.5 text-muted-foreground/40" />
-                            )}
+                            <RoleChipTag role={field.semanticRole} xs />
                           </span>
                           <button
                             type="button"
@@ -619,17 +682,16 @@ export default function EditorView({ modelId }: { modelId: string }) {
                   )
                 })}
               </div>
-            </>
-          )}
-        </aside>
+          </aside>
+          </div>
+          </div>
+        </div>
       </div>
     </>
   )
 }
 
 function renderToolbar(
-  template: Template,
-  setTemplate: (value: Template) => void,
   query: string,
   setQuery: (value: string) => void,
   filter: string,
@@ -643,19 +705,12 @@ function renderToolbar(
   return (
     <div className="mb-4 flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
-        <select
-          aria-label="Choose template"
-          value={template}
-          onChange={(event) => setTemplate(event.target.value as Template)}
-          className="rounded-lg border bg-card px-3 py-2.5 text-sm shadow-sm"
-        >
-          {templateCatalog.map((entry) => (
-            <option key={entry.value} value={entry.value}>
-              {entry.label} · {entry.density} · {entry.description}
-            </option>
-          ))}
-        </select>
-
+        {resultCount > 0 && (
+          <p className="text-xs text-muted-foreground">
+            Showing {Math.min((page - 1) * 6 + 1, resultCount)}–
+            {Math.min(page * 6, resultCount)} of {resultCount} records
+          </p>
+        )}
         {resultCount > 0 && (
           <div className="ml-auto flex items-center gap-1 rounded-lg border bg-card p-1 text-xs shadow-sm">
             <button

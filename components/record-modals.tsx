@@ -1,5 +1,6 @@
 'use client'
 
+import { useLayoutEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import salesPeople from '@/data/sales-people.json'
 import { Button } from '@/components/ui/button'
@@ -99,10 +100,12 @@ export function Detail({
 export function OperatorPopover({
   name,
   fieldLabel,
+  anchorRect,
   onClose,
 }: {
   name: string
   fieldLabel: string
+  anchorRect: DOMRect
   onClose: () => void
 }) {
   const operator = (salesPeople as RawRecord[]).find(
@@ -116,11 +119,37 @@ export function OperatorPopover({
         ['Reference', String(operator.referenceCode)],
       ]
     : []
+  const popoverRef = useRef<HTMLDivElement>(null)
+  const [position, setPosition] = useState({
+    top: anchorRect.bottom + 8,
+    left: anchorRect.left,
+  })
+
+  // Anchor the popover just below the clicked avatar/pill, then nudge it
+  // back on-screen (or flip above the trigger) once its real size is known.
+  useLayoutEffect(() => {
+    const node = popoverRef.current
+    if (!node) return
+    const { width, height } = node.getBoundingClientRect()
+    const margin = 12
+    let top = anchorRect.bottom + 8
+    let left = anchorRect.left
+    if (left + width > window.innerWidth - margin) {
+      left = Math.max(margin, window.innerWidth - margin - width)
+    }
+    if (top + height > window.innerHeight - margin) {
+      top = anchorRect.top - height - 8
+    }
+    top = Math.max(margin, top)
+    setPosition({ top, left })
+  }, [anchorRect])
 
   return (
     <div className="fixed inset-0 z-40" onClick={onClose}>
       <div
-        className="absolute left-1/2 top-1/2 w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-card p-4 text-left shadow-2xl"
+        ref={popoverRef}
+        className="fixed w-[min(22rem,calc(100vw-2rem))] rounded-xl border bg-card p-4 text-left shadow-2xl"
+        style={{ top: position.top, left: position.left }}
         role="dialog"
         aria-label={`${name} operator details`}
         onClick={(event) => event.stopPropagation()}
