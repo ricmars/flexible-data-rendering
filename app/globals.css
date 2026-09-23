@@ -204,6 +204,9 @@
   .semantic-region-identifier {
     --region-hue: 51;
   }
+  .semantic-region-objectType {
+    --region-hue: 92;
+  }
   .semantic-region-status {
     --region-hue: 188;
   }

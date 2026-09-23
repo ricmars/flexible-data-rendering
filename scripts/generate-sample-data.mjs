@@ -5,11 +5,12 @@ import prettier from 'prettier'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const dataDirectory = resolve(root, 'data')
-const field = (name, label, type, semanticRole) => ({
+const field = (name, label, type, semanticRole, extra = {}) => ({
   name,
   label,
   type,
   semanticRole,
+  ...extra,
 })
 const rankFields = (fields) => {
   const ranks = new Map()
@@ -21,46 +22,90 @@ const rankFields = (fields) => {
 }
 const semanticRoleFields = [
   field('referenceCode', 'Reference code', 'text', 'identifier'),
+  field('objectType', 'Object type', 'text', 'objectType'),
+  field('priorityLevel', 'Priority', 'select', 'priority', {
+    format: 'ordinal',
+  }),
   field('overdue', 'Overdue', 'boolean', 'flags'),
   field('locked', 'Locked', 'boolean', 'flags'),
   field('escalated', 'Escalated', 'boolean', 'flags'),
   field('confidential', 'Confidential', 'boolean', 'flags'),
   field('new', 'New', 'boolean', 'flags'),
-  field('updatedAt', 'Last updated', 'date', 'temporal'),
-  field('createdAt', 'Created', 'date', 'temporal'),
-  field('owner', 'Owner', 'text', 'people'),
-  field('reviewer', 'Reviewer', 'text', 'people'),
+  field('serviceLocation', 'Site address', 'text', 'location', {
+    format: 'address',
+  }),
+  field('updatedAt', 'Last updated', 'date', 'temporal', {
+    qualifier: 'updated',
+  }),
+  field('createdAt', 'Created', 'date', 'temporal', {
+    qualifier: 'created',
+  }),
+  field('owner', 'Owner', 'text', 'people', { qualifier: 'owner' }),
+  field('reviewer', 'Reviewer', 'text', 'people', {
+    qualifier: 'reviewer',
+  }),
   field('relatedRecord', 'Related record', 'text', 'relation'),
+  field('attachmentCount', 'Attachments', 'number', 'attachment', {
+    format: 'fileRef',
+  }),
+  field('syncNote', 'Sync annotation', 'text', 'annotation', {
+    sensitivity: 'internal',
+  }),
+  field('detailRoute', 'Open record', 'text', 'navigation', {
+    format: 'route',
+  }),
   field('nextAction', 'Next action', 'text', 'action'),
   field('secondaryAction', 'Secondary action', 'text', 'action'),
+  field('sortRank', 'Sort key', 'number', 'sortKey', {
+    format: 'collation',
+  }),
+  field('groupBucket', 'Group', 'text', 'groupKey', { format: 'enumRef' }),
+  field('searchIndex', 'Search text', 'text', 'searchText'),
+  field('sensitivityLevel', 'Sensitivity', 'select', 'sensitivity', {
+    format: 'policy',
+  }),
 ]
-const addSemanticRoleSamples = (record, index) => ({
-  ...record,
-  referenceCode: `${record.id.toUpperCase()}-${String(index + 1).padStart(3, '0')}`,
-  overdue: index % 4 === 1,
-  locked: index % 7 === 3,
-  escalated: index % 5 === 2,
-  confidential: index % 6 === 4,
-  new: index % 4 === 1,
-  updatedAt: `2026-${String((index % 9) + 1).padStart(2, '0')}-${String((index % 27) + 1).padStart(2, '0')}`,
-  createdAt: `2025-${String((index % 9) + 1).padStart(2, '0')}-${String((index % 27) + 1).padStart(2, '0')}`,
-  owner: ['Alex Morgan', 'Jordan Lee', 'Taylor Brooks', 'Morgan Ellis'][
-    index % 4
-  ],
-  reviewer: ['Priya Raman', 'Sam Okafor', 'Casey Nguyen', 'Avery Chen'][
-    index % 4
-  ],
-  relatedRecord: `Related ${record.id.toUpperCase()}`,
-  nextAction: ['Review', 'Contact owner', 'Schedule follow-up', 'Archive'][
-    index % 4
-  ],
-  secondaryAction: [
-    'Open details',
-    'Request update',
-    'Assign reviewer',
-    'Defer',
-  ][index % 4],
-})
+const addSemanticRoleSamples = (record, index, definition) => {
+  const sensitivityLevels = ['public', 'public', 'internal', 'confidential']
+  const sensitivityLevel = sensitivityLevels[index % sensitivityLevels.length]
+  return {
+    ...record,
+    referenceCode: `${record.id.toUpperCase()}-${String(index + 1).padStart(3, '0')}`,
+    objectType: definition.name,
+    priorityLevel: ['Low', 'Medium', 'High', 'Critical'][index % 4],
+    overdue: index % 4 === 1,
+    locked: index % 7 === 3,
+    escalated: index % 5 === 2,
+    confidential: index % 6 === 4,
+    new: index % 4 === 1,
+    serviceLocation: `${locations[index % locations.length]} · ${['Main St', 'Elm Ave', '4th Ave', 'Harbor Rd'][index % 4]}`,
+    updatedAt: `2026-${String((index % 9) + 1).padStart(2, '0')}-${String((index % 27) + 1).padStart(2, '0')}`,
+    createdAt: `2025-${String((index % 9) + 1).padStart(2, '0')}-${String((index % 27) + 1).padStart(2, '0')}`,
+    owner: ['Alex Morgan', 'Jordan Lee', 'Taylor Brooks', 'Morgan Ellis'][
+      index % 4
+    ],
+    reviewer: ['Priya Raman', 'Sam Okafor', 'Casey Nguyen', 'Avery Chen'][
+      index % 4
+    ],
+    relatedRecord: `Related ${record.id.toUpperCase()}`,
+    attachmentCount: index % 5,
+    syncNote: `Synced from source system · v${(index % 4) + 1} · ${(index % 12) + 1}h ago`,
+    detailRoute: `/records/${definition.id}/${record.id}`,
+    nextAction: ['Review', 'Contact owner', 'Schedule follow-up', 'Archive'][
+      index % 4
+    ],
+    secondaryAction: [
+      'Open details',
+      'Request update',
+      'Assign reviewer',
+      'Defer',
+    ][index % 4],
+    sortRank: index + 1,
+    groupBucket: ['Intake', 'In progress', 'Review', 'Closed'][index % 4],
+    searchIndex: `${record.id} ${definition.name}`,
+    sensitivityLevel,
+  }
+}
 const image = (photo, id) =>
   `https://images.unsplash.com/photo-${photo}?auto=format&fit=crop&w=1200&q=85&sig=${id}`
 const writeJson = async (name, value) => {
@@ -295,7 +340,7 @@ const definitions = [
       field('fullName', 'Full name', 'text', 'title'),
       field('role', 'Role', 'text', 'subtitle'),
       field('pipeline', 'Pipeline value', 'currency', 'metric'),
-      field('quotaAttainment', 'Quota attainment', 'number', 'highlight'),
+      field('quotaAttainment', 'Quota attainment', 'number', 'progress'),
       field('territory', 'Territory', 'text', 'highlight'),
       field('expertise', 'Expertise', 'tags', 'tags'),
       field('bio', 'Bio', 'long-text', 'description'),
@@ -601,7 +646,7 @@ const definitions = [
       field('name', 'Plant name', 'text', 'title'),
       field('plantType', 'Plant type', 'text', 'subtitle'),
       field('capacity', 'Annual capacity', 'number', 'metric'),
-      field('utilization', 'Utilization', 'number', 'highlight'),
+      field('utilization', 'Utilization', 'number', 'progress'),
       field('commissioned', 'Commissioned', 'number', 'highlight'),
       field('location', 'Location', 'text', 'highlight'),
       field('capabilities', 'Capabilities', 'tags', 'tags'),
@@ -662,7 +707,9 @@ await Promise.all(
       }),
       writeJson(
         definition.file,
-        records.map((record, index) => addSemanticRoleSamples(record, index)),
+        records.map((record, index) =>
+          addSemanticRoleSamples(record, index, definition),
+        ),
       ),
     ]
   }),

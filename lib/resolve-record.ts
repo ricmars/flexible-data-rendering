@@ -219,6 +219,56 @@ export function resolveRecord(
     }
   }
 
+  // status → derived from progress → omit. Only synthesize when the
+  // progress field carries a stage qualifier; a bare percentage isn't a
+  // meaningful status label, so the role is left absent (omitted) instead.
+  if (!byRole.status?.length && byRole.progress?.[0]) {
+    const progressEntry = byRole.progress[0]
+    const stageLabel = progressEntry.field.qualifier
+      ? stringValue(progressEntry.displayValue)
+      : undefined
+    if (stageLabel) {
+      byRole.status = [
+        synthetic('status', stageLabel, 'Status', fields.length + 5),
+      ]
+      diagnostics.push({
+        severity: 'warning',
+        code: 'fallback-used',
+        message: 'Status derived from progress stage.',
+        role: 'status',
+      })
+    }
+  }
+
+  // progress.pct derived from stage/of when the raw value isn't already a
+  // percent (format: 'stage', value like "3" with a stageOfSource sibling).
+  byRole.progress?.forEach((entry) => {
+    if (entry.field.format !== 'stage' || entry.derived) return
+    const stage = Number(entry.value)
+    const of = entry.field.stageOfSource
+      ? Number(record[entry.field.stageOfSource])
+      : undefined
+    if (Number.isFinite(stage) && of && Number.isFinite(of) && of > 0) {
+      entry.derivedPercent = Math.round((stage / of) * 100)
+    }
+  })
+
+  // metric.trend derived from a declared history/prior-value sibling field —
+  // computed once, centrally, rather than per template.
+  byRole.metric?.forEach((entry) => {
+    const trendSource = entry.field.trendSource
+    if (!trendSource) return
+    const previous = Number(record[trendSource])
+    const current = Number(entry.value)
+    if (
+      Number.isFinite(previous) &&
+      previous !== 0 &&
+      Number.isFinite(current)
+    ) {
+      entry.trendPercent = ((current - previous) / Math.abs(previous)) * 100
+    }
+  })
+
   return {
     id: record.id,
     fields: resolved,
@@ -229,6 +279,18 @@ export function resolveRecord(
 
 export function resolveCollection(fields: Field[], records: RawRecord[]) {
   return records.map((record) => resolveRecord(fields, record))
+}
+
+/**
+ * Sensitivity resolves before every other rule, including hero promotion: a
+ * masked field must never be promoted to hero, even when its rank would
+ * otherwise select it. Returns the first unmasked candidate for the role.
+ */
+export function pickHero(
+  record: ResolvedRecord,
+  role: SemanticRole,
+): ResolvedField | undefined {
+  return record.byRole[role]?.find((entry) => !entry.masked)
 }
 
 export type SelectedSlots = {
