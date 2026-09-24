@@ -75,6 +75,8 @@ export type Field = {
   trendSource?: string
   /** Name of a sibling field holding the "of" denominator for a stage-format progress field. */
   stageOfSource?: string
+  /** Child field mappings for an array of structured records. */
+  collectionFields?: Field[]
 }
 
 export type RawRecord = Record<string, unknown> & { id: string }
@@ -92,6 +94,8 @@ export type ResolvedField = {
   trendPercent?: number
   /** Percent complete derived from a stage/of pair when not directly supplied. */
   derivedPercent?: number
+  /** Resolved child records for a collection field. */
+  children?: ResolvedRecord[]
 }
 
 export type ResolutionDiagnostic = {
@@ -112,6 +116,7 @@ export type ResolutionDiagnostic = {
 export type ResolvedRecord = {
   id: string
   fields: ResolvedField[]
+  collections: ResolvedField[]
   byRole: Partial<Record<SemanticRole, ResolvedField[]>>
   diagnostics: ResolutionDiagnostic[]
 }

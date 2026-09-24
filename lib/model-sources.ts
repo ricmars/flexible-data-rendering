@@ -11,6 +11,8 @@ import patientModel from '@/data/patient-model.json'
 import patients from '@/data/patients.json'
 import phoneModel from '@/data/phone-model.json'
 import phones from '@/data/phones.json'
+import projectModel from '@/data/project-model.json'
+import projects from '@/data/projects.json'
 import plantModel from '@/data/plant-model.json'
 import plants from '@/data/plants.json'
 import policyModel from '@/data/policy-model.json'
@@ -67,6 +69,10 @@ export const modelSources: Record<
   patient: {
     model: patientModel as unknown as ModelDefinition,
     records: patients as RawRecord[],
+  },
+  project: {
+    model: projectModel as unknown as ModelDefinition,
+    records: projects as RawRecord[],
   },
   policy: {
     model: policyModel as unknown as ModelDefinition,

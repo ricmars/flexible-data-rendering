@@ -21,7 +21,8 @@
       "label": "Care score",
       "type": "number",
       "semanticRole": "metric",
-      "rank": 1
+      "rank": 1,
+      "trendSource": "previousMetricValue"
     },
     {
       "name": "lastVisit",
@@ -237,6 +238,69 @@
       "semanticRole": "sensitivity",
       "format": "policy",
       "rank": 1
+    },
+    {
+      "name": "startedAt",
+      "label": "Work started",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 3,
+      "qualifier": "start"
+    },
+    {
+      "name": "dueAt",
+      "label": "Next due date",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 4,
+      "qualifier": "due"
+    },
+    {
+      "name": "templateProgress",
+      "label": "Completion",
+      "type": "number",
+      "semanticRole": "progress",
+      "rank": 1,
+      "format": "percent"
+    },
+    {
+      "name": "requester",
+      "label": "Requester",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 3,
+      "qualifier": "requester"
+    },
+    {
+      "name": "approver",
+      "label": "Approver",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 4,
+      "qualifier": "approver"
+    },
+    {
+      "name": "secondaryGroup",
+      "label": "Business unit",
+      "type": "text",
+      "semanticRole": "groupKey",
+      "rank": 2,
+      "format": "enumRef"
+    },
+    {
+      "name": "previousMetricValue",
+      "label": "Previous metric value",
+      "type": "number",
+      "semanticRole": "secondary",
+      "rank": 1
+    },
+    {
+      "name": "sourceNote",
+      "label": "Source note",
+      "type": "text",
+      "semanticRole": "annotation",
+      "rank": 2,
+      "sensitivity": "internal"
     }
   ]
 }

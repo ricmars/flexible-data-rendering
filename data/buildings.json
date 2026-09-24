@@ -34,7 +34,15 @@
     "sortRank": 1,
     "groupBucket": "Intake",
     "searchIndex": "bld01 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-27",
+    "dueAt": null,
+    "templateProgress": 23,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 10560000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld02",
@@ -71,7 +79,15 @@
     "sortRank": 2,
     "groupBucket": "In progress",
     "searchIndex": "bld02 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-28",
+    "dueAt": "2026-10-09",
+    "templateProgress": 40,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 14208500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld03",
@@ -108,7 +124,15 @@
     "sortRank": 3,
     "groupBucket": "Review",
     "searchIndex": "bld03 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-05-29",
+    "dueAt": "2026-11-13",
+    "templateProgress": 57,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 18042000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld04",
@@ -145,7 +169,15 @@
     "sortRank": 4,
     "groupBucket": "Closed",
     "searchIndex": "bld04 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-05-30",
+    "dueAt": "2027-01-05",
+    "templateProgress": 74,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 22060500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld05",
@@ -182,7 +214,15 @@
     "sortRank": 5,
     "groupBucket": "Intake",
     "searchIndex": "bld05 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-31",
+    "dueAt": "2026-08-09",
+    "templateProgress": 91,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "People",
+    "previousMetricValue": 26264000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld06",
@@ -219,7 +259,15 @@
     "sortRank": 6,
     "groupBucket": "In progress",
     "searchIndex": "bld06 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-01",
+    "dueAt": "2026-10-13",
+    "templateProgress": 7,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 30652500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld07",
@@ -256,7 +304,15 @@
     "sortRank": 7,
     "groupBucket": "Review",
     "searchIndex": "bld07 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-02",
+    "dueAt": "2026-11-17",
+    "templateProgress": 24,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 35226000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld08",
@@ -293,7 +349,15 @@
     "sortRank": 8,
     "groupBucket": "Closed",
     "searchIndex": "bld08 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-03",
+    "dueAt": "2027-01-09",
+    "templateProgress": 41,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 33352000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld09",
@@ -330,7 +394,15 @@
     "sortRank": 9,
     "groupBucket": "Intake",
     "searchIndex": "bld09 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-04",
+    "dueAt": "2026-08-13",
+    "templateProgress": 58,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 37648000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld10",
@@ -367,7 +439,15 @@
     "sortRank": 10,
     "groupBucket": "In progress",
     "searchIndex": "bld10 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-05",
+    "dueAt": "2026-10-08",
+    "templateProgress": 75,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 42129000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld11",
@@ -404,7 +484,15 @@
     "sortRank": 11,
     "groupBucket": "Review",
     "searchIndex": "bld11 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-06",
+    "dueAt": "2026-11-12",
+    "templateProgress": 92,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "People",
+    "previousMetricValue": 46795000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld12",
@@ -441,7 +529,15 @@
     "sortRank": 12,
     "groupBucket": "Closed",
     "searchIndex": "bld12 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-07",
+    "dueAt": "2027-01-04",
+    "templateProgress": 8,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 51646000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld13",
@@ -478,7 +574,15 @@
     "sortRank": 13,
     "groupBucket": "Intake",
     "searchIndex": "bld13 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-08",
+    "dueAt": "2026-08-08",
+    "templateProgress": 25,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 56682000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld14",
@@ -515,7 +619,15 @@
     "sortRank": 14,
     "groupBucket": "In progress",
     "searchIndex": "bld14 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-09",
+    "dueAt": null,
+    "templateProgress": 42,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 61903000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld15",
@@ -552,7 +664,15 @@
     "sortRank": 15,
     "groupBucket": "Review",
     "searchIndex": "bld15 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-10",
+    "dueAt": "2026-11-16",
+    "templateProgress": 59,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 56144000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld16",
@@ -589,7 +709,15 @@
     "sortRank": 16,
     "groupBucket": "Closed",
     "searchIndex": "bld16 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-11",
+    "dueAt": "2027-01-08",
+    "templateProgress": 76,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 61087500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld17",
@@ -626,7 +754,15 @@
     "sortRank": 17,
     "groupBucket": "Intake",
     "searchIndex": "bld17 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-12",
+    "dueAt": "2026-08-12",
+    "templateProgress": 93,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "People",
+    "previousMetricValue": 66216000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld18",
@@ -663,7 +799,15 @@
     "sortRank": 18,
     "groupBucket": "In progress",
     "searchIndex": "bld18 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-13",
+    "dueAt": "2026-10-16",
+    "templateProgress": 9,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 71529500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld19",
@@ -700,7 +844,15 @@
     "sortRank": 19,
     "groupBucket": "Review",
     "searchIndex": "bld19 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-14",
+    "dueAt": "2026-11-11",
+    "templateProgress": 26,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 77028000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld20",
@@ -737,7 +889,15 @@
     "sortRank": 20,
     "groupBucket": "Closed",
     "searchIndex": "bld20 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-15",
+    "dueAt": "2027-01-03",
+    "templateProgress": 43,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 82711500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld21",
@@ -774,7 +934,15 @@
     "sortRank": 21,
     "groupBucket": "Intake",
     "searchIndex": "bld21 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-16",
+    "dueAt": "2026-08-07",
+    "templateProgress": 60,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 88580000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld22",
@@ -811,7 +979,15 @@
     "sortRank": 22,
     "groupBucket": "In progress",
     "searchIndex": "bld22 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-17",
+    "dueAt": "2026-10-11",
+    "templateProgress": 77,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 78936000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld23",
@@ -848,7 +1024,15 @@
     "sortRank": 23,
     "groupBucket": "Review",
     "searchIndex": "bld23 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-18",
+    "dueAt": "2026-11-15",
+    "templateProgress": 94,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "People",
+    "previousMetricValue": 84527000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld24",
@@ -885,7 +1069,15 @@
     "sortRank": 24,
     "groupBucket": "Closed",
     "searchIndex": "bld24 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-19",
+    "dueAt": "2027-01-07",
+    "templateProgress": 10,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 90303000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld25",
@@ -922,7 +1114,15 @@
     "sortRank": 25,
     "groupBucket": "Intake",
     "searchIndex": "bld25 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-20",
+    "dueAt": "2026-08-11",
+    "templateProgress": 27,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 96264000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld26",
@@ -959,7 +1159,15 @@
     "sortRank": 26,
     "groupBucket": "In progress",
     "searchIndex": "bld26 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-21",
+    "dueAt": "2026-10-15",
+    "templateProgress": 44,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 102410000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld27",
@@ -996,7 +1204,15 @@
     "sortRank": 27,
     "groupBucket": "Review",
     "searchIndex": "bld27 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-22",
+    "dueAt": null,
+    "templateProgress": 61,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 108741000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld28",
@@ -1033,7 +1249,15 @@
     "sortRank": 28,
     "groupBucket": "Closed",
     "searchIndex": "bld28 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-23",
+    "dueAt": "2027-01-02",
+    "templateProgress": 78,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 115257000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld29",
@@ -1070,7 +1294,15 @@
     "sortRank": 29,
     "groupBucket": "Intake",
     "searchIndex": "bld29 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-24",
+    "dueAt": "2026-08-06",
+    "templateProgress": 95,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "People",
+    "previousMetricValue": 101728000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld30",
@@ -1107,7 +1339,15 @@
     "sortRank": 30,
     "groupBucket": "In progress",
     "searchIndex": "bld30 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-25",
+    "dueAt": "2026-10-10",
+    "templateProgress": 11,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 107966500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld31",
@@ -1144,7 +1384,15 @@
     "sortRank": 31,
     "groupBucket": "Review",
     "searchIndex": "bld31 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-26",
+    "dueAt": "2026-11-14",
+    "templateProgress": 28,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 114390000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld32",
@@ -1181,7 +1429,15 @@
     "sortRank": 32,
     "groupBucket": "Closed",
     "searchIndex": "bld32 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-27",
+    "dueAt": "2027-01-06",
+    "templateProgress": 45,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 120998500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld33",
@@ -1218,7 +1474,15 @@
     "sortRank": 33,
     "groupBucket": "Intake",
     "searchIndex": "bld33 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-28",
+    "dueAt": "2026-08-10",
+    "templateProgress": 62,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 127792000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld34",
@@ -1255,7 +1519,15 @@
     "sortRank": 34,
     "groupBucket": "In progress",
     "searchIndex": "bld34 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-29",
+    "dueAt": "2026-10-14",
+    "templateProgress": 79,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 134770500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld35",
@@ -1292,7 +1564,15 @@
     "sortRank": 35,
     "groupBucket": "Review",
     "searchIndex": "bld35 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-30",
+    "dueAt": "2026-11-18",
+    "templateProgress": 96,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "People",
+    "previousMetricValue": 141934000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld36",
@@ -1329,7 +1609,15 @@
     "sortRank": 36,
     "groupBucket": "Closed",
     "searchIndex": "bld36 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-01",
+    "dueAt": "2027-01-10",
+    "templateProgress": 12,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 124520000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld37",
@@ -1366,7 +1654,15 @@
     "sortRank": 37,
     "groupBucket": "Intake",
     "searchIndex": "bld37 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-02",
+    "dueAt": "2026-08-05",
+    "templateProgress": 29,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 131406000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld38",
@@ -1403,7 +1699,15 @@
     "sortRank": 38,
     "groupBucket": "In progress",
     "searchIndex": "bld38 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-03",
+    "dueAt": "2026-10-09",
+    "templateProgress": 46,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 138477000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld39",
@@ -1440,7 +1744,15 @@
     "sortRank": 39,
     "groupBucket": "Review",
     "searchIndex": "bld39 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-04",
+    "dueAt": "2026-11-13",
+    "templateProgress": 63,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 145733000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld40",
@@ -1477,7 +1789,15 @@
     "sortRank": 40,
     "groupBucket": "Closed",
     "searchIndex": "bld40 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-05",
+    "dueAt": null,
+    "templateProgress": 80,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 153174000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld41",
@@ -1514,7 +1834,15 @@
     "sortRank": 41,
     "groupBucket": "Intake",
     "searchIndex": "bld41 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-06",
+    "dueAt": "2026-08-09",
+    "templateProgress": 97,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "People",
+    "previousMetricValue": 160800000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld42",
@@ -1551,7 +1879,15 @@
     "sortRank": 42,
     "groupBucket": "In progress",
     "searchIndex": "bld42 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-07",
+    "dueAt": "2026-10-13",
+    "templateProgress": 13,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 168611000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld43",
@@ -1588,7 +1924,15 @@
     "sortRank": 43,
     "groupBucket": "Review",
     "searchIndex": "bld43 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-08",
+    "dueAt": "2026-11-17",
+    "templateProgress": 30,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 147312000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld44",
@@ -1625,7 +1969,15 @@
     "sortRank": 44,
     "groupBucket": "Closed",
     "searchIndex": "bld44 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-09",
+    "dueAt": "2027-01-09",
+    "templateProgress": 47,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 154845500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld45",
@@ -1662,7 +2014,15 @@
     "sortRank": 45,
     "groupBucket": "Intake",
     "searchIndex": "bld45 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-10",
+    "dueAt": "2026-08-13",
+    "templateProgress": 64,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 162564000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld46",
@@ -1699,7 +2059,15 @@
     "sortRank": 46,
     "groupBucket": "In progress",
     "searchIndex": "bld46 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-11",
+    "dueAt": "2026-10-08",
+    "templateProgress": 81,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 170467500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld47",
@@ -1736,7 +2104,15 @@
     "sortRank": 47,
     "groupBucket": "Review",
     "searchIndex": "bld47 Building",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-12",
+    "dueAt": "2026-11-12",
+    "templateProgress": 98,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "People",
+    "previousMetricValue": 178556000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld48",
@@ -1773,7 +2149,15 @@
     "sortRank": 48,
     "groupBucket": "Closed",
     "searchIndex": "bld48 Building",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-13",
+    "dueAt": "2027-01-04",
+    "templateProgress": 14,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 186829500,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld49",
@@ -1810,7 +2194,15 @@
     "sortRank": 49,
     "groupBucket": "Intake",
     "searchIndex": "bld49 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-14",
+    "dueAt": "2026-08-08",
+    "templateProgress": 31,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 195288000,
+    "sourceNote": "building sample record · planning and review metadata"
   },
   {
     "id": "bld50",
@@ -1847,6 +2239,14 @@
     "sortRank": 50,
     "groupBucket": "In progress",
     "searchIndex": "bld50 Building",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-15",
+    "dueAt": "2026-10-12",
+    "templateProgress": 48,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 11704000,
+    "sourceNote": "building sample record · planning and review metadata"
   }
 ]

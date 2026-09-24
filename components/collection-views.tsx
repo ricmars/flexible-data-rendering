@@ -30,6 +30,7 @@ export type CollectionView =
   | 'timeline'
   | 'map'
   | 'chart'
+  | 'funnel'
 
 export type CollectionViewCatalogEntry = {
   value: CollectionView
@@ -106,6 +107,14 @@ export const collectionViewCatalog: CollectionViewCatalogEntry[] = [
     requiredRoles: ['metric'],
     match: 'any',
     hero: 'metric',
+  },
+  {
+    value: 'funnel',
+    label: 'Funnel',
+    description: 'Aggregated metric totals by declared group stage',
+    requiredRoles: ['groupKey', 'metric'],
+    match: 'all',
+    hero: 'groupKey + metric',
   },
 ]
 
@@ -498,6 +507,55 @@ function ChartViewMock({ items }: { items: RecordItem[] }) {
   )
 }
 
+function FunnelViewMock({ items }: { items: RecordItem[] }) {
+  const totals = new Map<string, { value: number; count: number }>()
+  items.forEach((item) => {
+    const stage = item.byRole.groupKey?.[0]?.displayValue
+    const metric = item.byRole.metric?.[0]?.value
+    if (stage == null || metric == null) return
+    const key = String(stage)
+    const current = totals.get(key) ?? { value: 0, count: 0 }
+    totals.set(key, {
+      value: current.value + (Number(metric) || 0),
+      count: current.count + 1,
+    })
+  })
+  const stages = Array.from(totals.entries())
+  const maximum = Math.max(1, ...stages.map(([, entry]) => entry.value))
+  if (stages.length === 0)
+    return (
+      <p className="rounded-md border p-4 text-sm text-muted-foreground">
+        Funnel requires both a group stage and a metric.
+      </p>
+    )
+  return (
+    <ol className="space-y-2 rounded-xl border bg-card p-4">
+      {stages.map(([stage, entry], index) => (
+        <li
+          key={stage}
+          className="mx-auto"
+          style={{ width: `${Math.max(38, 100 - index * 11)}%` }}
+        >
+          <div className="flex items-center justify-between gap-3 rounded-md bg-primary px-3 py-2 text-primary-foreground">
+            <span className="truncate text-sm font-medium">{stage}</span>
+            <span className="shrink-0 text-xs">
+              {formatMetric(
+                entry.value,
+                items[0].byRole.metric?.[0]?.field ??
+                  ({ type: 'number' } as Field),
+              )}
+            </span>
+          </div>
+          <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
+            <span>{entry.count} records</span>
+            <span>{Math.round((entry.value / maximum) * 100)}% of max</span>
+          </div>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
 export function CollectionViewMock({
   view,
   fields,
@@ -525,6 +583,8 @@ export function CollectionViewMock({
       return <MapViewMock items={items} />
     case 'chart':
       return <ChartViewMock items={items} />
+    case 'funnel':
+      return <FunnelViewMock items={items} />
   }
 }
 
