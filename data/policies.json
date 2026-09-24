@@ -33,7 +33,15 @@
     "sortRank": 1,
     "groupBucket": "Intake",
     "searchIndex": "pol01 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-27",
+    "dueAt": null,
+    "templateProgress": 23,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 88000,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol02",
@@ -69,7 +77,15 @@
     "sortRank": 2,
     "groupBucket": "In progress",
     "searchIndex": "pol02 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-28",
+    "dueAt": "2026-10-09",
+    "templateProgress": 40,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 156671,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol03",
@@ -105,7 +121,15 @@
     "sortRank": 3,
     "groupBucket": "Review",
     "searchIndex": "pol03 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-05-29",
+    "dueAt": "2026-11-13",
+    "templateProgress": 57,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 228998,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol04",
@@ -141,7 +165,15 @@
     "sortRank": 4,
     "groupBucket": "Closed",
     "searchIndex": "pol04 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-05-30",
+    "dueAt": "2027-01-05",
+    "templateProgress": 74,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 304980,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol05",
@@ -177,7 +209,15 @@
     "sortRank": 5,
     "groupBucket": "Intake",
     "searchIndex": "pol05 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-31",
+    "dueAt": "2026-08-09",
+    "templateProgress": 91,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "People",
+    "previousMetricValue": 384619,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol06",
@@ -213,7 +253,15 @@
     "sortRank": 6,
     "groupBucket": "In progress",
     "searchIndex": "pol06 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-01",
+    "dueAt": "2026-10-13",
+    "templateProgress": 7,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 467913,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol07",
@@ -249,7 +297,15 @@
     "sortRank": 7,
     "groupBucket": "Review",
     "searchIndex": "pol07 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-02",
+    "dueAt": "2026-11-17",
+    "templateProgress": 24,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 554863,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol08",
@@ -285,7 +341,15 @@
     "sortRank": 8,
     "groupBucket": "Closed",
     "searchIndex": "pol08 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-03",
+    "dueAt": "2027-01-09",
+    "templateProgress": 41,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 538401,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol09",
@@ -321,7 +385,15 @@
     "sortRank": 9,
     "groupBucket": "Intake",
     "searchIndex": "pol09 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-04",
+    "dueAt": "2026-08-13",
+    "templateProgress": 58,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 619867,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol10",
@@ -357,7 +429,15 @@
     "sortRank": 10,
     "groupBucket": "In progress",
     "searchIndex": "pol10 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-05",
+    "dueAt": "2026-10-08",
+    "templateProgress": 75,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 704989,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol11",
@@ -393,7 +473,15 @@
     "sortRank": 11,
     "groupBucket": "Review",
     "searchIndex": "pol11 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-06",
+    "dueAt": "2026-11-12",
+    "templateProgress": 92,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "People",
+    "previousMetricValue": 793767,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol12",
@@ -429,7 +517,15 @@
     "sortRank": 12,
     "groupBucket": "Closed",
     "searchIndex": "pol12 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-07",
+    "dueAt": "2027-01-04",
+    "templateProgress": 8,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 886201,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol13",
@@ -465,7 +561,15 @@
     "sortRank": 13,
     "groupBucket": "Intake",
     "searchIndex": "pol13 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-08",
+    "dueAt": "2026-08-08",
+    "templateProgress": 25,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 982291,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol14",
@@ -501,7 +605,15 @@
     "sortRank": 14,
     "groupBucket": "In progress",
     "searchIndex": "pol14 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-09",
+    "dueAt": null,
+    "templateProgress": 42,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1082037,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol15",
@@ -537,7 +649,15 @@
     "sortRank": 15,
     "groupBucket": "Review",
     "searchIndex": "pol15 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-10",
+    "dueAt": "2026-11-16",
+    "templateProgress": 59,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 988801,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol16",
@@ -573,7 +693,15 @@
     "sortRank": 16,
     "groupBucket": "Closed",
     "searchIndex": "pol16 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-11",
+    "dueAt": "2027-01-08",
+    "templateProgress": 76,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 1083063,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol17",
@@ -609,7 +737,15 @@
     "sortRank": 17,
     "groupBucket": "Intake",
     "searchIndex": "pol17 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-12",
+    "dueAt": "2026-08-12",
+    "templateProgress": 93,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "People",
+    "previousMetricValue": 1180981,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol18",
@@ -645,7 +781,15 @@
     "sortRank": 18,
     "groupBucket": "In progress",
     "searchIndex": "pol18 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-13",
+    "dueAt": "2026-10-16",
+    "templateProgress": 9,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 1282554,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol19",
@@ -681,7 +825,15 @@
     "sortRank": 19,
     "groupBucket": "Review",
     "searchIndex": "pol19 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-14",
+    "dueAt": "2026-11-11",
+    "templateProgress": 26,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 1387784,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol20",
@@ -717,7 +869,15 @@
     "sortRank": 20,
     "groupBucket": "Closed",
     "searchIndex": "pol20 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-15",
+    "dueAt": "2027-01-03",
+    "templateProgress": 43,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1496669,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol21",
@@ -753,7 +913,15 @@
     "sortRank": 21,
     "groupBucket": "Intake",
     "searchIndex": "pol21 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-16",
+    "dueAt": "2026-08-07",
+    "templateProgress": 60,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 1609210,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol22",
@@ -789,7 +957,15 @@
     "sortRank": 22,
     "groupBucket": "In progress",
     "searchIndex": "pol22 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-17",
+    "dueAt": "2026-10-11",
+    "templateProgress": 77,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 1439202,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol23",
@@ -825,7 +1001,15 @@
     "sortRank": 23,
     "groupBucket": "Review",
     "searchIndex": "pol23 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-18",
+    "dueAt": "2026-11-15",
+    "templateProgress": 94,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "People",
+    "previousMetricValue": 1546259,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol24",
@@ -861,7 +1045,15 @@
     "sortRank": 24,
     "groupBucket": "Closed",
     "searchIndex": "pol24 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-19",
+    "dueAt": "2027-01-07",
+    "templateProgress": 10,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 1656973,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol25",
@@ -897,7 +1089,15 @@
     "sortRank": 25,
     "groupBucket": "Intake",
     "searchIndex": "pol25 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-20",
+    "dueAt": "2026-08-11",
+    "templateProgress": 27,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 1771342,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol26",
@@ -933,7 +1133,15 @@
     "sortRank": 26,
     "groupBucket": "In progress",
     "searchIndex": "pol26 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-21",
+    "dueAt": "2026-10-15",
+    "templateProgress": 44,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1889367,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol27",
@@ -969,7 +1177,15 @@
     "sortRank": 27,
     "groupBucket": "Review",
     "searchIndex": "pol27 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-22",
+    "dueAt": null,
+    "templateProgress": 61,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 101547,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol28",
@@ -1005,7 +1221,15 @@
     "sortRank": 28,
     "groupBucket": "Closed",
     "searchIndex": "pol28 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-23",
+    "dueAt": "2027-01-02",
+    "templateProgress": 78,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 179384,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol29",
@@ -1041,7 +1265,15 @@
     "sortRank": 29,
     "groupBucket": "Intake",
     "searchIndex": "pol29 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-24",
+    "dueAt": "2026-08-06",
+    "templateProgress": 95,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "People",
+    "previousMetricValue": 217603,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol30",
@@ -1077,7 +1309,15 @@
     "sortRank": 30,
     "groupBucket": "In progress",
     "searchIndex": "pol30 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-25",
+    "dueAt": "2026-10-10",
+    "templateProgress": 11,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 289956,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol31",
@@ -1113,7 +1353,15 @@
     "sortRank": 31,
     "groupBucket": "Review",
     "searchIndex": "pol31 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-26",
+    "dueAt": "2026-11-14",
+    "templateProgress": 28,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 365964,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol32",
@@ -1149,7 +1397,15 @@
     "sortRank": 32,
     "groupBucket": "Closed",
     "searchIndex": "pol32 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-27",
+    "dueAt": "2027-01-06",
+    "templateProgress": 45,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 445629,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol33",
@@ -1185,7 +1441,15 @@
     "sortRank": 33,
     "groupBucket": "Intake",
     "searchIndex": "pol33 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-28",
+    "dueAt": "2026-08-10",
+    "templateProgress": 62,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 528949,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol34",
@@ -1221,7 +1485,15 @@
     "sortRank": 34,
     "groupBucket": "In progress",
     "searchIndex": "pol34 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-29",
+    "dueAt": "2026-10-14",
+    "templateProgress": 79,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 615925,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol35",
@@ -1257,7 +1529,15 @@
     "sortRank": 35,
     "groupBucket": "Review",
     "searchIndex": "pol35 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-30",
+    "dueAt": "2026-11-18",
+    "templateProgress": 96,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "People",
+    "previousMetricValue": 706557,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol36",
@@ -1293,7 +1573,15 @@
     "sortRank": 36,
     "groupBucket": "Closed",
     "searchIndex": "pol36 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-01",
+    "dueAt": "2027-01-10",
+    "templateProgress": 12,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 668004,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol37",
@@ -1329,7 +1617,15 @@
     "sortRank": 37,
     "groupBucket": "Intake",
     "searchIndex": "pol37 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-02",
+    "dueAt": "2026-08-05",
+    "templateProgress": 29,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 753152,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol38",
@@ -1365,7 +1661,15 @@
     "sortRank": 38,
     "groupBucket": "In progress",
     "searchIndex": "pol38 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-03",
+    "dueAt": "2026-10-09",
+    "templateProgress": 46,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 841956,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol39",
@@ -1401,7 +1705,15 @@
     "sortRank": 39,
     "groupBucket": "Review",
     "searchIndex": "pol39 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-04",
+    "dueAt": "2026-11-13",
+    "templateProgress": 63,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 934416,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol40",
@@ -1437,7 +1749,15 @@
     "sortRank": 40,
     "groupBucket": "Closed",
     "searchIndex": "pol40 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-05",
+    "dueAt": null,
+    "templateProgress": 80,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 1030532,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol41",
@@ -1473,7 +1793,15 @@
     "sortRank": 41,
     "groupBucket": "Intake",
     "searchIndex": "pol41 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-06",
+    "dueAt": "2026-08-09",
+    "templateProgress": 97,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "People",
+    "previousMetricValue": 1130303,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol42",
@@ -1509,7 +1837,15 @@
     "sortRank": 42,
     "groupBucket": "In progress",
     "searchIndex": "pol42 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-07",
+    "dueAt": "2026-10-13",
+    "templateProgress": 13,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 1233731,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol43",
@@ -1545,7 +1881,15 @@
     "sortRank": 43,
     "groupBucket": "Review",
     "searchIndex": "pol43 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-08",
+    "dueAt": "2026-11-17",
+    "templateProgress": 30,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 1118404,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol44",
@@ -1581,7 +1925,15 @@
     "sortRank": 44,
     "groupBucket": "Closed",
     "searchIndex": "pol44 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-09",
+    "dueAt": "2027-01-09",
+    "templateProgress": 47,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1216348,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol45",
@@ -1617,7 +1969,15 @@
     "sortRank": 45,
     "groupBucket": "Intake",
     "searchIndex": "pol45 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-10",
+    "dueAt": "2026-08-13",
+    "templateProgress": 64,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 1317948,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol46",
@@ -1653,7 +2013,15 @@
     "sortRank": 46,
     "groupBucket": "In progress",
     "searchIndex": "pol46 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-11",
+    "dueAt": "2026-10-08",
+    "templateProgress": 81,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 1423203,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol47",
@@ -1689,7 +2057,15 @@
     "sortRank": 47,
     "groupBucket": "Review",
     "searchIndex": "pol47 Insurance policy",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-12",
+    "dueAt": "2026-11-12",
+    "templateProgress": 98,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "People",
+    "previousMetricValue": 1532114,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol48",
@@ -1725,7 +2101,15 @@
     "sortRank": 48,
     "groupBucket": "Closed",
     "searchIndex": "pol48 Insurance policy",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-13",
+    "dueAt": "2027-01-04",
+    "templateProgress": 14,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 1644681,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol49",
@@ -1761,7 +2145,15 @@
     "sortRank": 49,
     "groupBucket": "Intake",
     "searchIndex": "pol49 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-14",
+    "dueAt": "2026-08-08",
+    "templateProgress": 31,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 1760904,
+    "sourceNote": "policy sample record · planning and review metadata"
   },
   {
     "id": "pol50",
@@ -1797,6 +2189,14 @@
     "sortRank": 50,
     "groupBucket": "In progress",
     "searchIndex": "pol50 Insurance policy",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-15",
+    "dueAt": "2026-10-12",
+    "templateProgress": 48,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1568805,
+    "sourceNote": "policy sample record · planning and review metadata"
   }
 ]

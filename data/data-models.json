@@ -58,5 +58,11 @@
     "name": "Manufacturing plant",
     "industry": "Manufacturing",
     "description": "Operational facilities and plants"
+  },
+  {
+    "id": "project",
+    "name": "Project",
+    "industry": "Cross Industry",
+    "description": "Projects, participants, approvals, and delivery tasks"
   }
 ]

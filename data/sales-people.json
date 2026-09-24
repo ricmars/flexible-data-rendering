@@ -32,7 +32,15 @@
     "sortRank": 1,
     "groupBucket": "Intake",
     "searchIndex": "sp01 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-27",
+    "dueAt": null,
+    "templateProgress": 23,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 158400,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp02",
@@ -67,7 +75,15 @@
     "sortRank": 2,
     "groupBucket": "In progress",
     "searchIndex": "sp02 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-28",
+    "dueAt": "2026-10-09",
+    "templateProgress": 40,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 223816,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp03",
@@ -102,7 +118,15 @@
     "sortRank": 3,
     "groupBucket": "Review",
     "searchIndex": "sp03 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-05-29",
+    "dueAt": "2026-11-13",
+    "templateProgress": 57,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 292598,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp04",
@@ -137,7 +161,15 @@
     "sortRank": 4,
     "groupBucket": "Closed",
     "searchIndex": "sp04 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-05-30",
+    "dueAt": "2027-01-05",
+    "templateProgress": 74,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 364746,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp05",
@@ -172,7 +204,15 @@
     "sortRank": 5,
     "groupBucket": "Intake",
     "searchIndex": "sp05 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-31",
+    "dueAt": "2026-08-09",
+    "templateProgress": 91,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "People",
+    "previousMetricValue": 440259,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp06",
@@ -207,7 +247,15 @@
     "sortRank": 6,
     "groupBucket": "In progress",
     "searchIndex": "sp06 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-01",
+    "dueAt": "2026-10-13",
+    "templateProgress": 7,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 519138,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp07",
@@ -242,7 +290,15 @@
     "sortRank": 7,
     "groupBucket": "Review",
     "searchIndex": "sp07 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-02",
+    "dueAt": "2026-11-17",
+    "templateProgress": 24,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 601382,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp08",
@@ -277,7 +333,15 @@
     "sortRank": 8,
     "groupBucket": "Closed",
     "searchIndex": "sp08 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-03",
+    "dueAt": "2027-01-09",
+    "templateProgress": 41,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 573036,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp09",
@@ -312,7 +376,15 @@
     "sortRank": 9,
     "groupBucket": "Intake",
     "searchIndex": "sp09 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-04",
+    "dueAt": "2026-08-13",
+    "templateProgress": 58,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 650232,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp10",
@@ -347,7 +419,15 @@
     "sortRank": 10,
     "groupBucket": "In progress",
     "searchIndex": "sp10 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-05",
+    "dueAt": "2026-10-08",
+    "templateProgress": 75,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 730793,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp11",
@@ -382,7 +462,15 @@
     "sortRank": 11,
     "groupBucket": "Review",
     "searchIndex": "sp11 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-06",
+    "dueAt": "2026-11-12",
+    "templateProgress": 92,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "People",
+    "previousMetricValue": 814720,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp12",
@@ -417,7 +505,15 @@
     "sortRank": 12,
     "groupBucket": "Closed",
     "searchIndex": "sp12 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-07",
+    "dueAt": "2027-01-04",
+    "templateProgress": 8,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 902013,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp13",
@@ -452,7 +548,15 @@
     "sortRank": 13,
     "groupBucket": "Intake",
     "searchIndex": "sp13 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-08",
+    "dueAt": "2026-08-08",
+    "templateProgress": 25,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 992671,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp14",
@@ -487,7 +591,15 @@
     "sortRank": 14,
     "groupBucket": "In progress",
     "searchIndex": "sp14 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-09",
+    "dueAt": null,
+    "templateProgress": 42,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1086694,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp15",
@@ -522,7 +634,15 @@
     "sortRank": 15,
     "groupBucket": "Review",
     "searchIndex": "sp15 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-10",
+    "dueAt": "2026-11-16",
+    "templateProgress": 59,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 987672,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp16",
@@ -557,7 +677,15 @@
     "sortRank": 16,
     "groupBucket": "Closed",
     "searchIndex": "sp16 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-11",
+    "dueAt": "2027-01-08",
+    "templateProgress": 76,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 1076647,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp17",
@@ -592,7 +720,15 @@
     "sortRank": 17,
     "groupBucket": "Intake",
     "searchIndex": "sp17 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-12",
+    "dueAt": "2026-08-12",
+    "templateProgress": 93,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "People",
+    "previousMetricValue": 1168988,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp18",
@@ -627,7 +763,15 @@
     "sortRank": 18,
     "groupBucket": "In progress",
     "searchIndex": "sp18 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-13",
+    "dueAt": "2026-10-16",
+    "templateProgress": 9,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 1264694,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp19",
@@ -662,7 +806,15 @@
     "sortRank": 19,
     "groupBucket": "Review",
     "searchIndex": "sp19 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-14",
+    "dueAt": "2026-11-11",
+    "templateProgress": 26,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 1363766,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp20",
@@ -697,7 +849,15 @@
     "sortRank": 20,
     "groupBucket": "Closed",
     "searchIndex": "sp20 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-15",
+    "dueAt": "2027-01-03",
+    "templateProgress": 43,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1466204,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp21",
@@ -732,7 +892,15 @@
     "sortRank": 21,
     "groupBucket": "Intake",
     "searchIndex": "sp21 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-16",
+    "dueAt": "2026-08-07",
+    "templateProgress": 60,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 1572007,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp22",
@@ -767,7 +935,15 @@
     "sortRank": 22,
     "groupBucket": "In progress",
     "searchIndex": "sp22 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-17",
+    "dueAt": "2026-10-11",
+    "templateProgress": 77,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 1402307,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp23",
@@ -802,7 +978,15 @@
     "sortRank": 23,
     "groupBucket": "Review",
     "searchIndex": "sp23 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-18",
+    "dueAt": "2026-11-15",
+    "templateProgress": 94,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "People",
+    "previousMetricValue": 1503062,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp24",
@@ -837,7 +1021,15 @@
     "sortRank": 24,
     "groupBucket": "Closed",
     "searchIndex": "sp24 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-19",
+    "dueAt": "2027-01-07",
+    "templateProgress": 10,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 1607182,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp25",
@@ -872,7 +1064,15 @@
     "sortRank": 25,
     "groupBucket": "Intake",
     "searchIndex": "sp25 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-20",
+    "dueAt": "2026-08-11",
+    "templateProgress": 27,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 1714668,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp26",
@@ -907,7 +1107,15 @@
     "sortRank": 26,
     "groupBucket": "In progress",
     "searchIndex": "sp26 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-21",
+    "dueAt": "2026-10-15",
+    "templateProgress": 44,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1825520,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp27",
@@ -942,7 +1150,15 @@
     "sortRank": 27,
     "groupBucket": "Review",
     "searchIndex": "sp27 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-22",
+    "dueAt": null,
+    "templateProgress": 61,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 1939736,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp28",
@@ -977,7 +1193,15 @@
     "sortRank": 28,
     "groupBucket": "Closed",
     "searchIndex": "sp28 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-23",
+    "dueAt": "2027-01-02",
+    "templateProgress": 78,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 203319,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp29",
@@ -1012,7 +1236,15 @@
     "sortRank": 29,
     "groupBucket": "Intake",
     "searchIndex": "sp29 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-24",
+    "dueAt": "2026-08-06",
+    "templateProgress": 95,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "People",
+    "previousMetricValue": 232943,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp30",
@@ -1047,7 +1279,15 @@
     "sortRank": 30,
     "groupBucket": "In progress",
     "searchIndex": "sp30 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-25",
+    "dueAt": "2026-10-10",
+    "templateProgress": 11,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 300477,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp31",
@@ -1082,7 +1322,15 @@
     "sortRank": 31,
     "groupBucket": "Review",
     "searchIndex": "sp31 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-26",
+    "dueAt": "2026-11-14",
+    "templateProgress": 28,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 371377,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp32",
@@ -1117,7 +1365,15 @@
     "sortRank": 32,
     "groupBucket": "Closed",
     "searchIndex": "sp32 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-27",
+    "dueAt": "2027-01-06",
+    "templateProgress": 45,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 445642,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp33",
@@ -1152,7 +1408,15 @@
     "sortRank": 33,
     "groupBucket": "Intake",
     "searchIndex": "sp33 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-28",
+    "dueAt": "2026-08-10",
+    "templateProgress": 62,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 523273,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp34",
@@ -1187,7 +1451,15 @@
     "sortRank": 34,
     "groupBucket": "In progress",
     "searchIndex": "sp34 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-29",
+    "dueAt": "2026-10-14",
+    "templateProgress": 79,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 604269,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp35",
@@ -1222,7 +1494,15 @@
     "sortRank": 35,
     "groupBucket": "Review",
     "searchIndex": "sp35 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-30",
+    "dueAt": "2026-11-18",
+    "templateProgress": 96,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "People",
+    "previousMetricValue": 688631,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp36",
@@ -1257,7 +1537,15 @@
     "sortRank": 36,
     "groupBucket": "Closed",
     "searchIndex": "sp36 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-01",
+    "dueAt": "2027-01-10",
+    "templateProgress": 12,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 647579,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp37",
@@ -1292,7 +1580,15 @@
     "sortRank": 37,
     "groupBucket": "Intake",
     "searchIndex": "sp37 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-02",
+    "dueAt": "2026-08-05",
+    "templateProgress": 29,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 726892,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp38",
@@ -1327,7 +1623,15 @@
     "sortRank": 38,
     "groupBucket": "In progress",
     "searchIndex": "sp38 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-03",
+    "dueAt": "2026-10-09",
+    "templateProgress": 46,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 809572,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp39",
@@ -1362,7 +1666,15 @@
     "sortRank": 39,
     "groupBucket": "Review",
     "searchIndex": "sp39 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-04",
+    "dueAt": "2026-11-13",
+    "templateProgress": 63,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 895616,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp40",
@@ -1397,7 +1709,15 @@
     "sortRank": 40,
     "groupBucket": "Closed",
     "searchIndex": "sp40 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-05",
+    "dueAt": null,
+    "templateProgress": 80,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 985026,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp41",
@@ -1432,7 +1752,15 @@
     "sortRank": 41,
     "groupBucket": "Intake",
     "searchIndex": "sp41 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-06",
+    "dueAt": "2026-08-09",
+    "templateProgress": 97,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "People",
+    "previousMetricValue": 1077802,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp42",
@@ -1467,7 +1795,15 @@
     "sortRank": 42,
     "groupBucket": "In progress",
     "searchIndex": "sp42 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-07",
+    "dueAt": "2026-10-13",
+    "templateProgress": 13,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 1173944,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp43",
@@ -1502,7 +1838,15 @@
     "sortRank": 43,
     "groupBucket": "Review",
     "searchIndex": "sp43 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-08",
+    "dueAt": "2026-11-17",
+    "templateProgress": 30,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 1062215,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp44",
@@ -1537,7 +1881,15 @@
     "sortRank": 44,
     "groupBucket": "Closed",
     "searchIndex": "sp44 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-09",
+    "dueAt": "2027-01-09",
+    "templateProgress": 47,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1153308,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp45",
@@ -1572,7 +1924,15 @@
     "sortRank": 45,
     "groupBucket": "Intake",
     "searchIndex": "sp45 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-10",
+    "dueAt": "2026-08-13",
+    "templateProgress": 64,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 1247766,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp46",
@@ -1607,7 +1967,15 @@
     "sortRank": 46,
     "groupBucket": "In progress",
     "searchIndex": "sp46 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-11",
+    "dueAt": "2026-10-08",
+    "templateProgress": 81,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 1345590,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp47",
@@ -1642,7 +2010,15 @@
     "sortRank": 47,
     "groupBucket": "Review",
     "searchIndex": "sp47 Sales person",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-12",
+    "dueAt": "2026-11-12",
+    "templateProgress": 98,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "People",
+    "previousMetricValue": 1446780,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp48",
@@ -1677,7 +2053,15 @@
     "sortRank": 48,
     "groupBucket": "Closed",
     "searchIndex": "sp48 Sales person",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-13",
+    "dueAt": "2027-01-04",
+    "templateProgress": 14,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 1551335,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp49",
@@ -1712,7 +2096,15 @@
     "sortRank": 49,
     "groupBucket": "Intake",
     "searchIndex": "sp49 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-14",
+    "dueAt": "2026-08-08",
+    "templateProgress": 31,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 1659256,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   },
   {
     "id": "sp50",
@@ -1747,6 +2139,14 @@
     "sortRank": 50,
     "groupBucket": "In progress",
     "searchIndex": "sp50 Sales person",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-15",
+    "dueAt": "2026-10-12",
+    "templateProgress": 48,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 1476850,
+    "sourceNote": "sales-person sample record · planning and review metadata"
   }
 ]

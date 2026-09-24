@@ -327,7 +327,7 @@ export default function EditorView({ modelId }: { modelId: string }) {
             key={item.id}
             item={item}
             roleClass={roleClass}
-              hiddenRoles={hiddenRoles}
+            hiddenRoles={hiddenRoles}
             onOpenDetail={setDetail}
             onViewJson={setJsonItem}
             onViewTemplate={setTemplateItem}
@@ -385,305 +385,308 @@ export default function EditorView({ modelId }: { modelId: string }) {
               </p>
             </div>
             <div className="grid min-h-0 flex-1 gap-6 px-4 py-4 xl:grid-cols-[260px_minmax(0,1fr)_350px] xl:px-6 xl:py-6">
-          <TemplatePickerPanel
-            template={template}
-            onSelectTemplate={setTemplate}
-            showTemplateStructure={showTemplateStructure}
-            onToggleTemplateStructure={() =>
-              setShowTemplateStructure((current) => !current)
-            }
-          />
-          <div className="flex h-full min-w-0 flex-col overflow-y-auto">
-            {showTemplateStructure && (
-              <div className="mb-6 rounded-2xl border border-primary/30 shadow-sm">
-                <div className="rounded-t-2xl border-b border-dashed border-primary/20 bg-muted p-3">
-                  <p className="truncate text-xs font-semibold uppercase tracking-wider text-primary">
-                    Template structure
-                  </p>
-                  <p className="mt-0.5 line-clamp-1 text-xs">
-                    <TemplateInspector template={template} inline />
-                  </p>
-                  {(hiddenRoles?.size ?? 0) > 0 ? (
-                    <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-primary">
-                      <EyeOff className="size-3.5 shrink-0" />
-                      {hiddenRoles!.size} field
-                      {hiddenRoles!.size === 1 ? '' : 's'} hidden from the
-                      preview — click a chip to bring it back.
-                    </p>
-                  ) : (
-                    <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-primary">
-                      <Eye className="size-3.5 shrink-0" />
-                      Click a role chip to hide it from the live preview.
-                    </p>
-                  )}
-                </div>
-                <TemplateMockPreview
-                  template={template}
-                  fields={fields}
-                  className="rounded-b-2xl"
-                  hiddenRoles={hiddenRoles}
-                  onToggleRole={handleToggleRole}
-                />
-              </div>
-            )}
-            <section
-              className={
-                isPreviewFullscreen
-                  ? 'fixed inset-0 z-50 overflow-y-auto rounded-none border-0 bg-accent-surface p-4 text-accent-surface-foreground xl:p-6'
-                  : 'min-w-0 rounded-2xl border border-accent-surface-border bg-accent-surface p-4 text-accent-surface-foreground'
-              }
-            >
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
-                  <Sparkles className="size-3.5" />
-                  Live preview
-                </p>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setIsPreviewFullscreen((current) => !current)
-                  }
-                  aria-label={
-                    isPreviewFullscreen
-                      ? 'Exit fullscreen preview'
-                      : 'View live preview fullscreen'
-                  }
-                  title={
-                    isPreviewFullscreen
-                      ? 'Exit fullscreen preview'
-                      : 'View live preview fullscreen'
-                  }
-                  className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-                >
-                  {isPreviewFullscreen ? (
-                    <Minimize2 className="size-4" />
-                  ) : (
-                    <Maximize2 className="size-4" />
-                  )}
-                </button>
-              </div>
-              {renderToolbar(
-                query,
-                setQueryAndReset,
-                filter,
-                setFilterAndReset,
-                sort,
-                setSortAndReset,
-                page,
-                setPage,
-                visible.length,
-              )}
-              {renderItems()}
-            </section>
-          </div>
-          <aside className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-sm">
-            <div className="shrink-0 border-b px-4 py-4">
-              <div className="flex items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">
-                    Edit Semantic Role Mapping
-                    </p>
-                    <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Eye className="size-3.5 shrink-0" />
-                      {presentFieldNames.size} visible / {fields.length} total
-                      fields
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1.5">
-                    {hasUnsavedChanges && (
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          setSavedFields(fields)
-                          setSelectedId('')
-                        }}
-                      >
-                        <Save className="size-3.5" />
-                        Save
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                <div className="mt-3 flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-                    <input
-                      value={panelQuery}
-                      onChange={(event) => setPanelQuery(event.target.value)}
-                      placeholder="Search fields, types, roles…"
-                      aria-label="Search fields"
-                      className="w-full rounded-md border bg-background py-1.5 pl-8 pr-7 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                    />
-                    {panelQuery && (
-                      <button
-                        type="button"
-                        onClick={() => setPanelQuery('')}
-                        aria-label="Clear search"
-                        className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:text-foreground"
-                      >
-                        <X className="size-3.5" />
-                      </button>
-                    )}
-                  </div>
-                  <label
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-md border bg-card px-2 py-1.5 text-xs font-medium text-muted-foreground shadow-sm hover:text-foreground"
-                    title={`When unchecked, only fields rendered by ${activeTemplateDef.label} are listed.`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={!showOnlyVisibleFields}
-                      onChange={(event) =>
-                        setShowOnlyVisibleFields(!event.target.checked)
-                      }
-                      className="size-3.5 shrink-0 accent-primary"
-                    />
-                    Show all fields
-                  </label>
-                </div>
-                <p className="mt-2 text-[11px] text-muted-foreground">
-                  Select a field to edit its semantic role and rank.
-                </p>
-              </div>
-              <div className="flex flex-col p-0 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
-                {panelFields.length === 0 && (
-                  <p className="px-2 py-6 text-center text-xs text-muted-foreground">
-                    No fields match &quot;{panelQuery}&quot;
-                    {showOnlyVisibleFields
-                      ? ' among fields rendered by this template'
-                      : ''}
-                    .
-                  </p>
-                )}
-                {panelFields.map((field) => {
-                  const isOpen = selectedId === field.name
-                  const isPresent = presentFieldNames.has(field.name)
-                  return (
-                    <div
-                      key={field.name}
-                      className={`semantic-region-${field.semanticRole} relative shrink-0 border-b border-border/60 last:border-b-0`}
-                      style={{
-                        borderLeftWidth: '4px',
-                        borderLeftColor: 'oklch(55% 0.16 var(--region-hue))',
-                      }}
-                    >
-                      <div className="flex items-center gap-2 px-2 py-2">
-                        <span className="flex shrink-0 flex-col items-center gap-0.5">
-                          <span className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">
-                            Rank
-                          </span>
-                          <span className="grid size-6 place-items-center rounded-full bg-muted text-[11px] font-bold text-muted-foreground">
-                            {field.rank}
-                          </span>
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span
-                            className={`block truncate text-sm font-semibold ${
-                              isPresent
-                                ? 'text-foreground'
-                                : 'text-muted-foreground'
-                            }`}
-                          >
-                            {field.label}
-                          </span>
-                          <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                            <span
-                              className={`truncate font-mono text-[11px] ${
-                                isPresent
-                                  ? 'text-muted-foreground'
-                                  : 'text-muted-foreground/60'
-                              }`}
-                            >
-                              {field.type}
-                            </span>
-                          </span>
-                        </span>
-                        <span className="flex shrink-0 items-center gap-1.5">
-                          <span
-                            className={
-                              isPresent ? '' : 'opacity-40 grayscale-[0.4]'
-                            }
-                          >
-                            <RoleChipTag role={field.semanticRole} xs />
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setSelectedId(isOpen ? '' : field.name)
-                            }
-                            aria-expanded={isOpen}
-                            aria-haspopup="dialog"
-                            aria-label={`Edit role and rank for ${field.label}`}
-                            title={`Edit role and rank for ${field.label}`}
-                            className={`rounded-md p-1.5 transition ${
-                              isOpen
-                                ? 'bg-primary/15 text-primary'
-                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                            }`}
-                          >
-                            <PencilLine className="size-3.5" />
-                          </button>
-                        </span>
-                      </div>
-                      {isOpen && (
-                        <div
-                          role="dialog"
-                          aria-label={`Edit ${field.label}`}
-                          className="absolute right-2 top-full z-20 mt-1 w-[min(18rem,calc(100vw-2rem))] rounded-xl border bg-popover p-4 text-popover-foreground shadow-lg"
-                        >
-                          <div className="mb-3 flex items-center justify-between gap-3">
-                            <div>
-                              <p className="text-sm font-semibold">
-                                Edit {field.label}
-                              </p>
-                              <p className="mt-0.5 text-xs text-muted-foreground">
-                                Choose its role and display priority.
-                              </p>
-                            </div>
-                            <RoleChipTag role={field.semanticRole} compact />
-                          </div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                            Semantic role
-                            <select
-                              value={field.semanticRole}
-                              onChange={(event) =>
-                                updateSemanticRole(
-                                  field.name,
-                                  event.target.value as SemanticRole,
-                                )
-                              }
-                              className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal normal-case tracking-normal text-foreground"
-                            >
-                              {semanticRoles.map((semanticRole) => (
-                                <option key={semanticRole} value={semanticRole}>
-                                  {semanticRoleLabels[semanticRole]}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                          <label className="mt-3 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                            Rank
-                            <input
-                              type="number"
-                              min={1}
-                              step={1}
-                              value={field.rank}
-                              onChange={(event) =>
-                                updateRank(
-                                  field.name,
-                                  Number(event.target.value),
-                                )
-                              }
-                              className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal tracking-normal text-foreground"
-                            />
-                          </label>
-                        </div>
+              <TemplatePickerPanel
+                template={template}
+                onSelectTemplate={setTemplate}
+                showTemplateStructure={showTemplateStructure}
+                onToggleTemplateStructure={() =>
+                  setShowTemplateStructure((current) => !current)
+                }
+              />
+              <div className="flex h-full min-w-0 flex-col overflow-y-auto">
+                {showTemplateStructure && (
+                  <div className="mb-6 rounded-2xl border border-primary/30 shadow-sm">
+                    <div className="rounded-t-2xl border-b border-dashed border-primary/20 bg-muted p-3">
+                      <p className="truncate text-xs font-semibold uppercase tracking-wider text-primary">
+                        Template structure
+                      </p>
+                      <p className="mt-0.5 line-clamp-1 text-xs">
+                        <TemplateInspector template={template} inline />
+                      </p>
+                      {(hiddenRoles?.size ?? 0) > 0 ? (
+                        <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-primary">
+                          <EyeOff className="size-3.5 shrink-0" />
+                          {hiddenRoles!.size} field
+                          {hiddenRoles!.size === 1 ? '' : 's'} hidden from the
+                          preview — click a chip to bring it back.
+                        </p>
+                      ) : (
+                        <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-primary">
+                          <Eye className="size-3.5 shrink-0" />
+                          Click a role chip to hide it from the live preview.
+                        </p>
                       )}
                     </div>
-                  )
-                })}
+                    <TemplateMockPreview
+                      template={template}
+                      fields={fields}
+                      className="rounded-b-2xl"
+                      hiddenRoles={hiddenRoles}
+                      onToggleRole={handleToggleRole}
+                    />
+                  </div>
+                )}
+                <section
+                  className={
+                    isPreviewFullscreen
+                      ? 'fixed inset-0 z-50 overflow-y-auto rounded-none border-0 bg-accent-surface p-4 text-accent-surface-foreground xl:p-6'
+                      : 'min-w-0 rounded-2xl border border-accent-surface-border bg-accent-surface p-4 text-accent-surface-foreground'
+                  }
+                >
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
+                      <Sparkles className="size-3.5" />
+                      Live preview
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setIsPreviewFullscreen((current) => !current)
+                      }
+                      aria-label={
+                        isPreviewFullscreen
+                          ? 'Exit fullscreen preview'
+                          : 'View live preview fullscreen'
+                      }
+                      title={
+                        isPreviewFullscreen
+                          ? 'Exit fullscreen preview'
+                          : 'View live preview fullscreen'
+                      }
+                      className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                    >
+                      {isPreviewFullscreen ? (
+                        <Minimize2 className="size-4" />
+                      ) : (
+                        <Maximize2 className="size-4" />
+                      )}
+                    </button>
+                  </div>
+                  {renderToolbar(
+                    query,
+                    setQueryAndReset,
+                    filter,
+                    setFilterAndReset,
+                    sort,
+                    setSortAndReset,
+                    page,
+                    setPage,
+                    visible.length,
+                  )}
+                  {renderItems()}
+                </section>
               </div>
-          </aside>
-          </div>
+              <aside className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-sm">
+                <div className="shrink-0 border-b px-4 py-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">
+                        Edit Semantic Role Mapping
+                      </p>
+                      <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Eye className="size-3.5 shrink-0" />
+                        {presentFieldNames.size} visible / {fields.length} total
+                        fields
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      {hasUnsavedChanges && (
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setSavedFields(fields)
+                            setSelectedId('')
+                          }}
+                        >
+                          <Save className="size-3.5" />
+                          Save
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                      <input
+                        value={panelQuery}
+                        onChange={(event) => setPanelQuery(event.target.value)}
+                        placeholder="Search fields, types, roles…"
+                        aria-label="Search fields"
+                        className="w-full rounded-md border bg-background py-1.5 pl-8 pr-7 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                      {panelQuery && (
+                        <button
+                          type="button"
+                          onClick={() => setPanelQuery('')}
+                          aria-label="Clear search"
+                          className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="size-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    <label
+                      className="inline-flex shrink-0 items-center gap-1.5 rounded-md border bg-card px-2 py-1.5 text-xs font-medium text-muted-foreground shadow-sm hover:text-foreground"
+                      title={`When unchecked, only fields rendered by ${activeTemplateDef.label} are listed.`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={!showOnlyVisibleFields}
+                        onChange={(event) =>
+                          setShowOnlyVisibleFields(!event.target.checked)
+                        }
+                        className="size-3.5 shrink-0 accent-primary"
+                      />
+                      Show all fields
+                    </label>
+                  </div>
+                  <p className="mt-2 text-[11px] text-muted-foreground">
+                    Select a field to edit its semantic role and rank.
+                  </p>
+                </div>
+                <div className="flex flex-col p-0 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
+                  {panelFields.length === 0 && (
+                    <p className="px-2 py-6 text-center text-xs text-muted-foreground">
+                      No fields match &quot;{panelQuery}&quot;
+                      {showOnlyVisibleFields
+                        ? ' among fields rendered by this template'
+                        : ''}
+                      .
+                    </p>
+                  )}
+                  {panelFields.map((field) => {
+                    const isOpen = selectedId === field.name
+                    const isPresent = presentFieldNames.has(field.name)
+                    return (
+                      <div
+                        key={field.name}
+                        className={`semantic-region-${field.semanticRole} relative shrink-0 border-b border-border/60 last:border-b-0`}
+                        style={{
+                          borderLeftWidth: '4px',
+                          borderLeftColor: 'oklch(55% 0.16 var(--region-hue))',
+                        }}
+                      >
+                        <div className="flex items-center gap-2 px-2 py-2">
+                          <span className="flex shrink-0 flex-col items-center gap-0.5">
+                            <span className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">
+                              Rank
+                            </span>
+                            <span className="grid size-6 place-items-center rounded-full bg-muted text-[11px] font-bold text-muted-foreground">
+                              {field.rank}
+                            </span>
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span
+                              className={`block truncate text-sm font-semibold ${
+                                isPresent
+                                  ? 'text-foreground'
+                                  : 'text-muted-foreground'
+                              }`}
+                            >
+                              {field.label}
+                            </span>
+                            <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                              <span
+                                className={`truncate font-mono text-[11px] ${
+                                  isPresent
+                                    ? 'text-muted-foreground'
+                                    : 'text-muted-foreground/60'
+                                }`}
+                              >
+                                {field.type}
+                              </span>
+                            </span>
+                          </span>
+                          <span className="flex shrink-0 items-center gap-1.5">
+                            <span
+                              className={
+                                isPresent ? '' : 'opacity-40 grayscale-[0.4]'
+                              }
+                            >
+                              <RoleChipTag role={field.semanticRole} xs />
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setSelectedId(isOpen ? '' : field.name)
+                              }
+                              aria-expanded={isOpen}
+                              aria-haspopup="dialog"
+                              aria-label={`Edit role and rank for ${field.label}`}
+                              title={`Edit role and rank for ${field.label}`}
+                              className={`rounded-md p-1.5 transition ${
+                                isOpen
+                                  ? 'bg-primary/15 text-primary'
+                                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                              }`}
+                            >
+                              <PencilLine className="size-3.5" />
+                            </button>
+                          </span>
+                        </div>
+                        {isOpen && (
+                          <div
+                            role="dialog"
+                            aria-label={`Edit ${field.label}`}
+                            className="absolute right-2 top-full z-20 mt-1 w-[min(18rem,calc(100vw-2rem))] rounded-xl border bg-popover p-4 text-popover-foreground shadow-lg"
+                          >
+                            <div className="mb-3 flex items-center justify-between gap-3">
+                              <div>
+                                <p className="text-sm font-semibold">
+                                  Edit {field.label}
+                                </p>
+                                <p className="mt-0.5 text-xs text-muted-foreground">
+                                  Choose its role and display priority.
+                                </p>
+                              </div>
+                              <RoleChipTag role={field.semanticRole} compact />
+                            </div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                              Semantic role
+                              <select
+                                value={field.semanticRole}
+                                onChange={(event) =>
+                                  updateSemanticRole(
+                                    field.name,
+                                    event.target.value as SemanticRole,
+                                  )
+                                }
+                                className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal normal-case tracking-normal text-foreground"
+                              >
+                                {semanticRoles.map((semanticRole) => (
+                                  <option
+                                    key={semanticRole}
+                                    value={semanticRole}
+                                  >
+                                    {semanticRoleLabels[semanticRole]}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label className="mt-3 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                              Rank
+                              <input
+                                type="number"
+                                min={1}
+                                step={1}
+                                value={field.rank}
+                                onChange={(event) =>
+                                  updateRank(
+                                    field.name,
+                                    Number(event.target.value),
+                                  )
+                                }
+                                className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm font-normal tracking-normal text-foreground"
+                              />
+                            </label>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </aside>
+            </div>
           </div>
         </div>
       </div>

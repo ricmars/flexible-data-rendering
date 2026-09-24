@@ -35,7 +35,15 @@
     "sortRank": 1,
     "groupBucket": "Intake",
     "searchIndex": "v01 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-27",
+    "dueAt": null,
+    "templateProgress": 23,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 35024,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v02",
@@ -73,7 +81,15 @@
     "sortRank": 2,
     "groupBucket": "In progress",
     "searchIndex": "v02 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-28",
+    "dueAt": "2026-10-09",
+    "templateProgress": 40,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 42635,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v03",
@@ -111,7 +127,15 @@
     "sortRank": 3,
     "groupBucket": "Review",
     "searchIndex": "v03 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-05-29",
+    "dueAt": "2026-11-13",
+    "templateProgress": 57,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 50612,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v04",
@@ -149,7 +173,15 @@
     "sortRank": 4,
     "groupBucket": "Closed",
     "searchIndex": "v04 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-05-30",
+    "dueAt": "2027-01-05",
+    "templateProgress": 74,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 58955,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v05",
@@ -187,7 +219,15 @@
     "sortRank": 5,
     "groupBucket": "Intake",
     "searchIndex": "v05 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-05-31",
+    "dueAt": "2026-08-09",
+    "templateProgress": 91,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "People",
+    "previousMetricValue": 67663,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v06",
@@ -225,7 +265,15 @@
     "sortRank": 6,
     "groupBucket": "In progress",
     "searchIndex": "v06 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-01",
+    "dueAt": "2026-10-13",
+    "templateProgress": 7,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 76737,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v07",
@@ -263,7 +311,15 @@
     "sortRank": 7,
     "groupBucket": "Review",
     "searchIndex": "v07 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-02",
+    "dueAt": "2026-11-17",
+    "templateProgress": 24,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 86176,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v08",
@@ -301,7 +357,15 @@
     "sortRank": 8,
     "groupBucket": "Closed",
     "searchIndex": "v08 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-03",
+    "dueAt": "2027-01-09",
+    "templateProgress": 41,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 80060,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v09",
@@ -339,7 +403,15 @@
     "sortRank": 9,
     "groupBucket": "Intake",
     "searchIndex": "v09 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-04",
+    "dueAt": "2026-08-13",
+    "templateProgress": 58,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 88951,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v10",
@@ -377,7 +449,15 @@
     "sortRank": 10,
     "groupBucket": "In progress",
     "searchIndex": "v10 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-05",
+    "dueAt": "2026-10-08",
+    "templateProgress": 75,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 98207,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v11",
@@ -415,7 +495,15 @@
     "sortRank": 11,
     "groupBucket": "Review",
     "searchIndex": "v11 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-06",
+    "dueAt": "2026-11-12",
+    "templateProgress": 92,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "People",
+    "previousMetricValue": 107829,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v12",
@@ -453,7 +541,15 @@
     "sortRank": 12,
     "groupBucket": "Closed",
     "searchIndex": "v12 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-07",
+    "dueAt": "2027-01-04",
+    "templateProgress": 8,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 117817,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v13",
@@ -491,7 +587,15 @@
     "sortRank": 13,
     "groupBucket": "Intake",
     "searchIndex": "v13 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-08",
+    "dueAt": "2026-08-08",
+    "templateProgress": 25,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 128170,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v14",
@@ -529,7 +633,15 @@
     "sortRank": 14,
     "groupBucket": "In progress",
     "searchIndex": "v14 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-09",
+    "dueAt": null,
+    "templateProgress": 42,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 138888,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v15",
@@ -567,7 +679,15 @@
     "sortRank": 15,
     "groupBucket": "Review",
     "searchIndex": "v15 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-10",
+    "dueAt": "2026-11-16",
+    "templateProgress": 59,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 125096,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v16",
@@ -605,7 +725,15 @@
     "sortRank": 16,
     "groupBucket": "Closed",
     "searchIndex": "v16 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-11",
+    "dueAt": "2027-01-08",
+    "templateProgress": 76,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 135266,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v17",
@@ -643,7 +771,15 @@
     "sortRank": 17,
     "groupBucket": "Intake",
     "searchIndex": "v17 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-12",
+    "dueAt": "2026-08-12",
+    "templateProgress": 93,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "People",
+    "previousMetricValue": 145802,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v18",
@@ -681,7 +817,15 @@
     "sortRank": 18,
     "groupBucket": "In progress",
     "searchIndex": "v18 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-13",
+    "dueAt": "2026-10-16",
+    "templateProgress": 9,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 44013,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v19",
@@ -719,7 +863,15 @@
     "sortRank": 19,
     "groupBucket": "Review",
     "searchIndex": "v19 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-14",
+    "dueAt": "2026-11-11",
+    "templateProgress": 26,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 52330,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v20",
@@ -757,7 +909,15 @@
     "sortRank": 20,
     "groupBucket": "Closed",
     "searchIndex": "v20 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-15",
+    "dueAt": "2027-01-03",
+    "templateProgress": 43,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 61013,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v21",
@@ -795,7 +955,15 @@
     "sortRank": 21,
     "groupBucket": "Intake",
     "searchIndex": "v21 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-16",
+    "dueAt": "2026-08-07",
+    "templateProgress": 60,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 70061,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v22",
@@ -833,7 +1001,15 @@
     "sortRank": 22,
     "groupBucket": "In progress",
     "searchIndex": "v22 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-17",
+    "dueAt": "2026-10-11",
+    "templateProgress": 77,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 66291,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v23",
@@ -871,7 +1047,15 @@
     "sortRank": 23,
     "groupBucket": "Review",
     "searchIndex": "v23 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-18",
+    "dueAt": "2026-11-15",
+    "templateProgress": 94,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "People",
+    "previousMetricValue": 74791,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v24",
@@ -909,7 +1093,15 @@
     "sortRank": 24,
     "groupBucket": "Closed",
     "searchIndex": "v24 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-19",
+    "dueAt": "2027-01-07",
+    "templateProgress": 10,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 83656,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v25",
@@ -947,7 +1139,15 @@
     "sortRank": 25,
     "groupBucket": "Intake",
     "searchIndex": "v25 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-20",
+    "dueAt": "2026-08-11",
+    "templateProgress": 27,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 92887,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v26",
@@ -985,7 +1185,15 @@
     "sortRank": 26,
     "groupBucket": "In progress",
     "searchIndex": "v26 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-21",
+    "dueAt": "2026-10-15",
+    "templateProgress": 44,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 102484,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v27",
@@ -1023,7 +1231,15 @@
     "sortRank": 27,
     "groupBucket": "Review",
     "searchIndex": "v27 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-22",
+    "dueAt": null,
+    "templateProgress": 61,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 112445,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v28",
@@ -1061,7 +1277,15 @@
     "sortRank": 28,
     "groupBucket": "Closed",
     "searchIndex": "v28 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-23",
+    "dueAt": "2027-01-02",
+    "templateProgress": 78,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 122773,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v29",
@@ -1099,7 +1323,15 @@
     "sortRank": 29,
     "groupBucket": "Intake",
     "searchIndex": "v29 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-24",
+    "dueAt": "2026-08-06",
+    "templateProgress": 95,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "People",
+    "previousMetricValue": 111327,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v30",
@@ -1137,7 +1369,15 @@
     "sortRank": 30,
     "groupBucket": "In progress",
     "searchIndex": "v30 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-25",
+    "dueAt": "2026-10-10",
+    "templateProgress": 11,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 121106,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v31",
@@ -1175,7 +1415,15 @@
     "sortRank": 31,
     "groupBucket": "Review",
     "searchIndex": "v31 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-26",
+    "dueAt": "2026-11-14",
+    "templateProgress": 28,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 131251,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v32",
@@ -1213,7 +1461,15 @@
     "sortRank": 32,
     "groupBucket": "Closed",
     "searchIndex": "v32 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-06-27",
+    "dueAt": "2027-01-06",
+    "templateProgress": 45,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 141761,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v33",
@@ -1251,7 +1507,15 @@
     "sortRank": 33,
     "groupBucket": "Intake",
     "searchIndex": "v33 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-28",
+    "dueAt": "2026-08-10",
+    "templateProgress": 62,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 152637,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v34",
@@ -1289,7 +1553,15 @@
     "sortRank": 34,
     "groupBucket": "In progress",
     "searchIndex": "v34 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-06-29",
+    "dueAt": "2026-10-14",
+    "templateProgress": 79,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 45288,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v35",
@@ -1327,7 +1599,15 @@
     "sortRank": 35,
     "groupBucket": "Review",
     "searchIndex": "v35 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-06-30",
+    "dueAt": "2026-11-18",
+    "templateProgress": 96,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "People",
+    "previousMetricValue": 53945,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v36",
@@ -1365,7 +1645,15 @@
     "sortRank": 36,
     "groupBucket": "Closed",
     "searchIndex": "v36 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-01",
+    "dueAt": "2027-01-10",
+    "templateProgress": 12,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 52523,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v37",
@@ -1403,7 +1691,15 @@
     "sortRank": 37,
     "groupBucket": "Intake",
     "searchIndex": "v37 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-02",
+    "dueAt": "2026-08-05",
+    "templateProgress": 29,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 60631,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v38",
@@ -1441,7 +1737,15 @@
     "sortRank": 38,
     "groupBucket": "In progress",
     "searchIndex": "v38 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-03",
+    "dueAt": "2026-10-09",
+    "templateProgress": 46,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 69106,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v39",
@@ -1479,7 +1783,15 @@
     "sortRank": 39,
     "groupBucket": "Review",
     "searchIndex": "v39 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-04",
+    "dueAt": "2026-11-13",
+    "templateProgress": 63,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 77945,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v40",
@@ -1517,7 +1829,15 @@
     "sortRank": 40,
     "groupBucket": "Closed",
     "searchIndex": "v40 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-05",
+    "dueAt": null,
+    "templateProgress": 80,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 87150,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v41",
@@ -1555,7 +1875,15 @@
     "sortRank": 41,
     "groupBucket": "Intake",
     "searchIndex": "v41 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-06",
+    "dueAt": "2026-08-09",
+    "templateProgress": 97,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "People",
+    "previousMetricValue": 96721,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v42",
@@ -1593,7 +1921,15 @@
     "sortRank": 42,
     "groupBucket": "In progress",
     "searchIndex": "v42 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-07",
+    "dueAt": "2026-10-13",
+    "templateProgress": 13,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 106658,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v43",
@@ -1631,7 +1967,15 @@
     "sortRank": 43,
     "groupBucket": "Review",
     "searchIndex": "v43 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-08",
+    "dueAt": "2026-11-17",
+    "templateProgress": 30,
+    "requester": "Priya Raman",
+    "approver": "Avery Chen",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 97559,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v44",
@@ -1669,7 +2013,15 @@
     "sortRank": 44,
     "groupBucket": "Closed",
     "searchIndex": "v44 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-09",
+    "dueAt": "2027-01-09",
+    "templateProgress": 47,
+    "requester": "Sam Okafor",
+    "approver": "Alex Morgan",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 106947,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v45",
@@ -1707,7 +2059,15 @@
     "sortRank": 45,
     "groupBucket": "Intake",
     "searchIndex": "v45 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-10",
+    "dueAt": "2026-08-13",
+    "templateProgress": 64,
+    "requester": "Casey Nguyen",
+    "approver": "Jordan Lee",
+    "secondaryGroup": "Finance",
+    "previousMetricValue": 116700,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v46",
@@ -1745,7 +2105,15 @@
     "sortRank": 46,
     "groupBucket": "In progress",
     "searchIndex": "v46 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-11",
+    "dueAt": "2026-10-08",
+    "templateProgress": 81,
+    "requester": "Avery Chen",
+    "approver": "Taylor Brooks",
+    "secondaryGroup": "Technology",
+    "previousMetricValue": 126819,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v47",
@@ -1783,7 +2151,15 @@
     "sortRank": 47,
     "groupBucket": "Review",
     "searchIndex": "v47 Vehicle",
-    "sensitivityLevel": "internal"
+    "sensitivityLevel": "internal",
+    "startedAt": "2026-07-12",
+    "dueAt": "2026-11-12",
+    "templateProgress": 98,
+    "requester": "Alex Morgan",
+    "approver": "Morgan Ellis",
+    "secondaryGroup": "People",
+    "previousMetricValue": 137304,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v48",
@@ -1821,7 +2197,15 @@
     "sortRank": 48,
     "groupBucket": "Closed",
     "searchIndex": "v48 Vehicle",
-    "sensitivityLevel": "confidential"
+    "sensitivityLevel": "confidential",
+    "startedAt": "2026-07-13",
+    "dueAt": "2027-01-04",
+    "templateProgress": 14,
+    "requester": "Jordan Lee",
+    "approver": "Priya Raman",
+    "secondaryGroup": "Facilities",
+    "previousMetricValue": 148154,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v49",
@@ -1859,7 +2243,15 @@
     "sortRank": 49,
     "groupBucket": "Intake",
     "searchIndex": "v49 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-14",
+    "dueAt": "2026-08-08",
+    "templateProgress": 31,
+    "requester": "Taylor Brooks",
+    "approver": "Sam Okafor",
+    "secondaryGroup": "Operations",
+    "previousMetricValue": 159370,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   },
   {
     "id": "v50",
@@ -1897,6 +2289,14 @@
     "sortRank": 50,
     "groupBucket": "In progress",
     "searchIndex": "v50 Vehicle",
-    "sensitivityLevel": "public"
+    "sensitivityLevel": "public",
+    "startedAt": "2026-07-15",
+    "dueAt": "2026-10-12",
+    "templateProgress": 48,
+    "requester": "Morgan Ellis",
+    "approver": "Casey Nguyen",
+    "secondaryGroup": "Customer Experience",
+    "previousMetricValue": 38754,
+    "sourceNote": "vehicle sample record · planning and review metadata"
   }
 ]

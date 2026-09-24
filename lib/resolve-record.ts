@@ -33,6 +33,7 @@ const isPresent = (value: unknown) =>
 
 const isCompatible = (field: Field, value: unknown) => {
   if (!isPresent(value)) return true
+  if (field.type === 'collection') return Array.isArray(value)
   if (field.type === 'number' || field.type === 'currency')
     return typeof value === 'number' || !Number.isNaN(Number(value))
   if (field.type === 'boolean') return typeof value === 'boolean'
@@ -82,6 +83,7 @@ export function resolveRecord(
 ): ResolvedRecord {
   const diagnostics: ResolutionDiagnostic[] = []
   const resolved: ResolvedField[] = []
+  const collections: ResolvedField[] = []
 
   fields.forEach((field, declarationOrder) => {
     const value = record[field.name]
@@ -107,7 +109,7 @@ export function resolveRecord(
         field: field.name,
       })
     }
-    resolved.push({
+    const entry: ResolvedField = {
       field,
       role: field.semanticRole,
       value,
@@ -115,7 +117,27 @@ export function resolveRecord(
       rank: field.rank ?? 0,
       declarationOrder,
       masked,
-    })
+    }
+    if (field.type === 'collection') {
+      entry.children = masked
+        ? []
+        : ((value as unknown[])
+            .filter(
+              (child): child is RawRecord =>
+                typeof child === 'object' && child !== null,
+            )
+            .map((child, index) =>
+              resolveRecord(field.collectionFields ?? [], {
+                ...child,
+                id: String(
+                  child.id ?? `${record.id}-${field.name}-${index + 1}`,
+                ),
+              }),
+            ) ?? [])
+      collections.push(entry)
+      return
+    }
+    resolved.push(entry)
   })
 
   const byRole: Partial<Record<SemanticRole, ResolvedField[]>> = {}
@@ -272,6 +294,7 @@ export function resolveRecord(
   return {
     id: record.id,
     fields: resolved,
+    collections,
     byRole,
     diagnostics,
   }

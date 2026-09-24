@@ -451,6 +451,14 @@ export default function ArchitectureDiagram() {
                   'Policy',
                   'Whether the value is public, masked, searchable, or safe for promotion.',
                 ],
+                [
+                  'Qualifier',
+                  'Distinguishes fields that share a role. For example, temporal fields can use due, updated, or created so a client can select the date that fits its task.',
+                ],
+                [
+                  'Derived-value sources',
+                  'trendSource names a sibling field with a metric’s prior value; stageOfSource names the denominator for a stage-format progress field. The resolver derives the trend delta or progress percentage centrally.',
+                ],
               ].map(([label, text]) => (
                 <div key={label} className="rounded-lg border bg-muted/30 p-3">
                   <p className="text-sm font-semibold">{label}</p>
@@ -480,6 +488,20 @@ export default function ArchitectureDiagram() {
               how to find or reference the record. The <code>code</code> value
               is a default hint, not a hard rule. A template can override the
               hint when its context requires a different presentation.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Qualifiers and source references are optional field metadata. For
+              example, a temporal field can declare{' '}
+              <code>&quot;qualifier&quot;: &quot;due&quot;</code> (rather than{' '}
+              <code>&quot;updated&quot;</code>) to identify its purpose. A
+              metric can declare{' '}
+              <code>
+                &quot;trendSource&quot;: &quot;previousMetricValue&quot;
+              </code>{' '}
+              to reference a sibling field; the resolver uses that prior value
+              to calculate its percentage trend. Stage-based progress can
+              similarly reference its denominator with{' '}
+              <code>stageOfSource</code>.
             </p>
           </div>
         </section>

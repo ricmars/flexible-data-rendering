@@ -1,0 +1,406 @@
+{
+  "name": "Project",
+  "description": "A cross-functional delivery model with participants, milestones, approvals, budget, and nested tasks.",
+  "fields": [
+    {
+      "name": "projectCode",
+      "label": "Project code",
+      "type": "text",
+      "semanticRole": "identifier",
+      "rank": 1
+    },
+    {
+      "name": "name",
+      "label": "Project name",
+      "type": "text",
+      "semanticRole": "title",
+      "rank": 1
+    },
+    {
+      "name": "summary",
+      "label": "Summary",
+      "type": "text",
+      "semanticRole": "description",
+      "rank": 1
+    },
+    {
+      "name": "status",
+      "label": "Status",
+      "type": "text",
+      "semanticRole": "status",
+      "rank": 1
+    },
+    {
+      "name": "health",
+      "label": "Health",
+      "type": "text",
+      "semanticRole": "priority",
+      "rank": 1,
+      "format": "ordinal"
+    },
+    {
+      "name": "progressPercent",
+      "label": "Delivery progress",
+      "type": "number",
+      "semanticRole": "progress",
+      "rank": 1,
+      "format": "percent"
+    },
+    {
+      "name": "startDate",
+      "label": "Start date",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 1,
+      "qualifier": "start"
+    },
+    {
+      "name": "dueDate",
+      "label": "Target date",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 2,
+      "qualifier": "due"
+    },
+    {
+      "name": "updatedAt",
+      "label": "Last updated",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 3,
+      "qualifier": "updated"
+    },
+    {
+      "name": "nextMilestoneDate",
+      "label": "Next milestone",
+      "type": "date",
+      "semanticRole": "temporal",
+      "rank": 4,
+      "qualifier": "milestone"
+    },
+    {
+      "name": "projectManager",
+      "label": "Project manager",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 1,
+      "qualifier": "owner"
+    },
+    {
+      "name": "sponsor",
+      "label": "Executive sponsor",
+      "type": "text",
+      "semanticRole": "people",
+      "rank": 2,
+      "qualifier": "sponsor"
+    },
+    {
+      "name": "budget",
+      "label": "Approved budget",
+      "type": "currency",
+      "semanticRole": "metric",
+      "rank": 1
+    },
+    {
+      "name": "actualSpend",
+      "label": "Actual spend",
+      "type": "currency",
+      "semanticRole": "metric",
+      "rank": 2,
+      "trendSource": "previousSpend"
+    },
+    {
+      "name": "previousSpend",
+      "label": "Previous spend",
+      "type": "currency",
+      "semanticRole": "secondary",
+      "rank": 1
+    },
+    {
+      "name": "portfolio",
+      "label": "Portfolio",
+      "type": "text",
+      "semanticRole": "tags",
+      "rank": 1
+    },
+    {
+      "name": "department",
+      "label": "Department",
+      "type": "text",
+      "semanticRole": "groupKey",
+      "rank": 1,
+      "format": "enumRef"
+    },
+    {
+      "name": "atRisk",
+      "label": "At risk",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 1
+    },
+    {
+      "name": "blocked",
+      "label": "Blocked",
+      "type": "boolean",
+      "semanticRole": "flags",
+      "rank": 2
+    },
+    {
+      "name": "client",
+      "label": "Client",
+      "type": "text",
+      "semanticRole": "relation",
+      "rank": 1
+    },
+    {
+      "name": "nextAction",
+      "label": "Next action",
+      "type": "text",
+      "semanticRole": "action",
+      "rank": 1
+    },
+    {
+      "name": "location",
+      "label": "Location",
+      "type": "text",
+      "semanticRole": "location",
+      "rank": 1,
+      "format": "address"
+    },
+    {
+      "name": "sensitivityLevel",
+      "label": "Sensitivity",
+      "type": "text",
+      "semanticRole": "sensitivity",
+      "rank": 1,
+      "format": "policy"
+    },
+    {
+      "name": "participants",
+      "label": "Participants",
+      "type": "collection",
+      "semanticRole": "people",
+      "rank": 3,
+      "collectionFields": [
+        {
+          "name": "participantCode",
+          "label": "Participant ID",
+          "type": "text",
+          "semanticRole": "identifier",
+          "rank": 1
+        },
+        {
+          "name": "name",
+          "label": "Name",
+          "type": "text",
+          "semanticRole": "title",
+          "rank": 1
+        },
+        {
+          "name": "role",
+          "label": "Project role",
+          "type": "text",
+          "semanticRole": "subtitle",
+          "rank": 1
+        },
+        {
+          "name": "avatar",
+          "label": "Portrait",
+          "type": "image",
+          "semanticRole": "media",
+          "rank": 1,
+          "format": "image"
+        },
+        {
+          "name": "team",
+          "label": "Team",
+          "type": "text",
+          "semanticRole": "tags",
+          "rank": 1
+        },
+        {
+          "name": "email",
+          "label": "Email",
+          "type": "text",
+          "semanticRole": "secondary",
+          "rank": 1,
+          "sensitivity": "confidential"
+        }
+      ]
+    },
+    {
+      "name": "tasks",
+      "label": "Delivery tasks",
+      "type": "collection",
+      "semanticRole": "relation",
+      "rank": 2,
+      "collectionFields": [
+        {
+          "name": "taskCode",
+          "label": "Task ID",
+          "type": "text",
+          "semanticRole": "identifier",
+          "rank": 1
+        },
+        {
+          "name": "title",
+          "label": "Task",
+          "type": "text",
+          "semanticRole": "title",
+          "rank": 1
+        },
+        {
+          "name": "status",
+          "label": "Status",
+          "type": "text",
+          "semanticRole": "status",
+          "rank": 1
+        },
+        {
+          "name": "assignee",
+          "label": "Assignee",
+          "type": "text",
+          "semanticRole": "people",
+          "rank": 1,
+          "qualifier": "assignee"
+        },
+        {
+          "name": "dueDate",
+          "label": "Due",
+          "type": "date",
+          "semanticRole": "temporal",
+          "rank": 1,
+          "qualifier": "due"
+        },
+        {
+          "name": "completedAt",
+          "label": "Completed",
+          "type": "date",
+          "semanticRole": "temporal",
+          "rank": 2,
+          "qualifier": "completed"
+        },
+        {
+          "name": "priority",
+          "label": "Priority",
+          "type": "text",
+          "semanticRole": "priority",
+          "rank": 1,
+          "format": "ordinal"
+        },
+        {
+          "name": "progressPercent",
+          "label": "Progress",
+          "type": "number",
+          "semanticRole": "progress",
+          "rank": 1,
+          "format": "percent"
+        },
+        {
+          "name": "blocked",
+          "label": "Blocked",
+          "type": "boolean",
+          "semanticRole": "flags",
+          "rank": 1
+        },
+        {
+          "name": "description",
+          "label": "Details",
+          "type": "text",
+          "semanticRole": "description",
+          "rank": 1
+        },
+        {
+          "name": "nextAction",
+          "label": "Next action",
+          "type": "text",
+          "semanticRole": "action",
+          "rank": 1
+        },
+        {
+          "name": "checklist",
+          "label": "Checklist",
+          "type": "collection",
+          "semanticRole": "relation",
+          "rank": 1,
+          "collectionFields": [
+            {
+              "name": "itemTitle",
+              "label": "Checklist item",
+              "type": "text",
+              "semanticRole": "title",
+              "rank": 1
+            },
+            {
+              "name": "completed",
+              "label": "Complete",
+              "type": "boolean",
+              "semanticRole": "flags",
+              "rank": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "approvals",
+      "label": "Approvals",
+      "type": "collection",
+      "semanticRole": "relation",
+      "rank": 3,
+      "collectionFields": [
+        {
+          "name": "approverCode",
+          "label": "Approval ID",
+          "type": "text",
+          "semanticRole": "identifier",
+          "rank": 1
+        },
+        {
+          "name": "name",
+          "label": "Approver",
+          "type": "text",
+          "semanticRole": "title",
+          "rank": 1
+        },
+        {
+          "name": "role",
+          "label": "Approval role",
+          "type": "text",
+          "semanticRole": "subtitle",
+          "rank": 1
+        },
+        {
+          "name": "status",
+          "label": "Decision",
+          "type": "text",
+          "semanticRole": "status",
+          "rank": 1
+        },
+        {
+          "name": "dueDate",
+          "label": "Decision due",
+          "type": "date",
+          "semanticRole": "temporal",
+          "rank": 1,
+          "qualifier": "due"
+        },
+        {
+          "name": "progressPercent",
+          "label": "Review progress",
+          "type": "number",
+          "semanticRole": "progress",
+          "rank": 1,
+          "format": "percent"
+        },
+        {
+          "name": "nextAction",
+          "label": "Next action",
+          "type": "text",
+          "semanticRole": "action",
+          "rank": 1
+        }
+      ]
+    }
+  ]
+}
