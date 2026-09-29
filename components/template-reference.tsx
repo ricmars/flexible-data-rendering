@@ -11,9 +11,8 @@ import {
 import {
   semanticRoles,
   roleDefinitions as contractRoleDefinitions,
-  fallbackChains,
 } from '@/lib/rendering-contract'
-import type { Field, RawRecord } from '@/lib/rendering-contract'
+import type { Field, RawRecord, SemanticRole } from '@/lib/rendering-contract'
 import {
   RoleChipTag,
   TemplateMockPreview,
@@ -206,6 +205,15 @@ export function TemplateReference({
           </div>
         </div>
 
+        <p className="text-sm leading-relaxed text-muted-foreground lg:col-span-2">
+          Each model field is mapped to a semantic role, such as{' '}
+          <code>title</code> or <code>status</code>, with an optional rank. The
+          mock uses that mapping to show where supported roles fit; its chips
+          represent structure, not record values. Runtime resolves the mapped
+          roles against each record, applies rank, slot limits, and fallbacks,
+          then renders the selected values.
+        </p>
+
         {templateCatalog.map((entry) => {
           const fieldsShown = fields.filter((field) =>
             entry.supportedRoles.includes(field.semanticRole),
@@ -264,6 +272,291 @@ export function TemplateReference({
 }
 
 export function SemanticRoleReference() {
+  const roleDetails = {
+    media: {
+      purpose: 'Visual or audio assets that directly represent the entity.',
+      dataTypes: 'url, imageURI',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Primary visual representation (product hero image, avatar).',
+        },
+      ],
+    },
+    title: {
+      purpose:
+        'The primary human-readable name or headline used to represent the entity in dialogue.',
+      dataTypes: 'string',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Authoritative name (Patient Full Name, Project Title).',
+        },
+      ],
+    },
+    subtitle: {
+      purpose:
+        'A natural secondary descriptor that immediately clarifies the title.',
+      dataTypes: 'string',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail:
+            'Direct qualifier (Hospital Billing Department, Department Name).',
+        },
+      ],
+    },
+    identifier: {
+      purpose:
+        'A globally or locally unique machine/system key for exact retrieval, hashing, and foreign-key resolution.',
+      dataTypes: 'string, uuid, number',
+      ranking: [
+        { rank: 'Rank 1', detail: 'Primary business key (ClaimNumber).' },
+        { rank: 'Rank 2+', detail: 'System UUIDs, external barcodes.' },
+      ],
+    },
+    objectType: {
+      purpose:
+        'A class or discriminator identifying the business domain concept and enabling polymorphic dispatch.',
+      dataTypes: 'enum, string',
+      ranking: [
+        { rank: 'Rank 1', detail: 'Concrete subtype (InpatientClaim).' },
+        { rank: 'Rank 2', detail: 'Parent class (InsuranceClaim).' },
+      ],
+    },
+    status: {
+      purpose:
+        'A lifecycle state or workflow milestone that determines which actions can be performed.',
+      dataTypes: 'enum, string',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Primary state-machine state (ADJUDICATED, PENDING_REVIEW).',
+        },
+      ],
+    },
+    priority: {
+      purpose:
+        'Urgency, severity, or triage ranking used to order queues and escalate alerts.',
+      dataTypes: 'enum, integer',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Operational severity (CRITICAL, URGENT, P1).',
+        },
+      ],
+    },
+    progress: {
+      purpose:
+        'A quantitative completion ratio or sequential milestone along a known finite path.',
+      dataTypes: 'number (0-100), step',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail:
+            'Overall process percentage (85% Complete) or step (Step 3 of 5).',
+        },
+      ],
+    },
+    flags: {
+      purpose:
+        'Binary indicators that signal special constraints, alerts, or exceptions.',
+      dataTypes: 'boolean',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Safety/compliance blocks (isFraudSuspected, isUnderHold).',
+        },
+      ],
+    },
+    tags: {
+      purpose:
+        'Open-ended categorical taxonomy keywords for classification and filtering.',
+      dataTypes: 'array<string>',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Primary domain tags (Emergency, Cardiology).',
+        },
+      ],
+    },
+    highlight: {
+      purpose:
+        'The single most critical focal attribute the user needs to know now, often financial or risk-related.',
+      dataTypes: 'string, number',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail:
+            'Primary impact figure (Total Disputed Amount, Final Diagnosis Code).',
+        },
+      ],
+    },
+    metric: {
+      purpose:
+        'Numerical measurements, key performance indicators, or operational telemetry.',
+      dataTypes: 'number, decimal',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Primary operational metric (AverageProcessingTimeDays).',
+        },
+      ],
+    },
+    temporal: {
+      purpose: 'Timestamps, dates, schedule periods, or SLA deadlines.',
+      dataTypes: 'date, datetime, iso8601',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail:
+            'Most recent state change or upcoming deadline (dueDate, updatedAt).',
+        },
+      ],
+    },
+    people: {
+      purpose:
+        'Persons, actors, or organizational parties involved, such as assignees, creators, or patients.',
+      dataTypes: 'object, string',
+      ranking: [
+        { rank: 'Rank 1', detail: 'Current owner/assignee (assignedAgent).' },
+        { rank: 'Rank 2', detail: 'Subject/customer.' },
+      ],
+    },
+    location: {
+      purpose: 'Physical, geographic, or logical organizational placement.',
+      dataTypes: 'object, string',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Immediate active site (Room 402, Warehouse Dock B).',
+        },
+      ],
+    },
+    secondary: {
+      purpose:
+        'Low-urgency supplementary details for thoroughness, omitted from concise views.',
+      dataTypes: 'any',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'System audit fields, legacy codes, debug metadata.',
+        },
+      ],
+    },
+    description: {
+      purpose:
+        'Unstructured narrative text that explains the object in human sentences.',
+      dataTypes: 'string (multiline/markdown)',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Primary summary paragraph or clinical note summary.',
+        },
+      ],
+    },
+    annotation: {
+      purpose:
+        'Human notes, running comments, or audit explanations appended over time.',
+      dataTypes: 'array<comment>',
+      ranking: [
+        { rank: 'Rank 1', detail: 'Latest internal investigator note.' },
+      ],
+    },
+    relation: {
+      purpose:
+        'Links or associations to other business entities, including parents, children, peers, and dependencies.',
+      dataTypes: 'object, array, id',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Immediate parent container (MasterOrderId, ParentTicket).',
+        },
+      ],
+    },
+    attachment: {
+      purpose:
+        'References to files, documents, or external evidentiary materials.',
+      dataTypes: 'array<fileRef>',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Primary supporting contract or evidence PDF.',
+        },
+      ],
+    },
+    action: {
+      purpose:
+        'Next recommended or available business operations callable on the object.',
+      dataTypes: 'array<actionDef>',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Primary call to action (ApproveClaim, DispatchTechnician).',
+        },
+      ],
+    },
+    navigation: {
+      purpose:
+        'External deep links, route URLs, or portal references for inspecting the entity.',
+      dataTypes: 'url, route',
+      ranking: [
+        { rank: 'Rank 1', detail: 'Direct web console URI to this record.' },
+      ],
+    },
+    sortKey: {
+      purpose:
+        'The preferred attribute for default sorting in lists and collections.',
+      dataTypes: 'string, number',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Primary sort order (triageRankScore, submissionDate).',
+        },
+      ],
+    },
+    groupKey: {
+      purpose:
+        'A dimension used to cluster or aggregate collections into buckets or accordions.',
+      dataTypes: 'string, enum',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'High-level bucket (Region, Department, ProductLine).',
+        },
+      ],
+    },
+    searchText: {
+      purpose:
+        'A pre-indexed full-text corpus for keyword matching and semantic vector lookups.',
+      dataTypes: 'string',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Aggregated multi-field search-vector string.',
+        },
+      ],
+    },
+    sensitivity: {
+      purpose:
+        'A data-governance tag (PII, HIPAA, GDPR, Confidential, Public) used for AI security redaction.',
+      dataTypes: 'enum, string',
+      ranking: [
+        {
+          rank: 'Rank 1',
+          detail: 'Maximum sensitivity classification level (RESTRICTED_PII).',
+        },
+      ],
+    },
+  } satisfies Record<
+    SemanticRole,
+    {
+      purpose: string
+      dataTypes: string
+      ranking: { rank: string; detail: string }[]
+    }
+  >
+
   return (
     <div>
       <header className="max-w-3xl">
@@ -289,69 +582,68 @@ export function SemanticRoleReference() {
         <span className="rounded-full border bg-card px-2 py-1">
           <strong className="text-foreground">Singleton</strong> · one value
         </span>
-        <span className="rounded-full border bg-card px-2 py-1">
-          <strong className="text-foreground">Format hint</strong> · default
-          presentation
-        </span>
-        <span className="rounded-full border bg-card px-2 py-1">
-          <strong className="text-foreground">Fallback</strong> · used when a
-          role is missing
-        </span>
       </div>
 
       <div className="mt-5 overflow-hidden rounded-2xl border bg-card shadow-sm">
-        <div className="hidden grid-cols-[minmax(150px,0.8fr)_minmax(220px,1.4fr)_minmax(180px,1fr)_minmax(180px,1fr)] gap-4 border-b bg-muted/40 px-4 py-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground md:grid">
-          <span>Role</span>
-          <span>Meaning</span>
-          <span>Format hint</span>
-          <span>Resolution rule</span>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1100px] table-fixed text-left">
+            <colgroup>
+              <col className="w-[220px]" />
+              <col className="w-[32%]" />
+              <col className="w-[19%]" />
+              <col className="w-[35%]" />
+            </colgroup>
+            <thead className="bg-muted/40 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <tr>
+                <th className="px-4 py-3">Semantic role</th>
+                <th className="px-4 py-3">Cognitive purpose</th>
+                <th className="px-4 py-3">Data types</th>
+                <th className="px-4 py-3">Multi-field ranking logic</th>
+              </tr>
+            </thead>
+            <tbody>
+              {semanticRoles.map((role) => {
+                const info = contractRoleDefinitions[role]
+                const details = roleDetails[role]
+                return (
+                  <tr className="border-t align-top" key={role}>
+                    <th
+                      scope="row"
+                      className="whitespace-nowrap px-4 py-4 text-left"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <RoleChipTag role={role} />
+                        {info.singleton && (
+                          <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                            Singleton
+                          </span>
+                        )}
+                      </div>
+                    </th>
+                    <td className="px-4 py-4 text-sm leading-relaxed text-muted-foreground">
+                      {details.purpose}
+                    </td>
+                    <td className="px-4 py-4 text-sm text-muted-foreground">
+                      {details.dataTypes}
+                    </td>
+                    <td className="px-4 py-4 text-sm text-muted-foreground">
+                      <ul className="space-y-2">
+                        {details.ranking.map(({ rank, detail }) => (
+                          <li key={rank}>
+                            <span className="font-semibold text-foreground">
+                              {rank}:
+                            </span>{' '}
+                            {detail}
+                          </li>
+                        ))}
+                      </ul>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
-        {semanticRoles.map((role) => {
-          const info = contractRoleDefinitions[role]
-          const chain = fallbackChains[role]
-          return (
-            <div
-              className="grid gap-3 border-b p-4 last:border-b-0 md:grid-cols-[minmax(150px,0.8fr)_minmax(220px,1.4fr)_minmax(180px,1fr)_minmax(180px,1fr)] md:items-center md:gap-4"
-              key={role}
-            >
-              <div className="flex items-center justify-between gap-2">
-                <RoleChipTag role={role} />
-                {info.singleton && (
-                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Singleton
-                  </span>
-                )}
-              </div>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                {info.definition}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {info.representation}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {chain && chain.length > 0 ? (
-                  <>
-                    <span className="font-medium text-foreground">
-                      Fallback:
-                    </span>{' '}
-                    {chain
-                      .map(
-                        (fallbackRole) =>
-                          contractRoleDefinitions[fallbackRole].label,
-                      )
-                      .join(' then ')}
-                  </>
-                ) : (
-                  'Uses the mapped value directly.'
-                )}
-              </p>
-              <div className="text-xs text-muted-foreground md:hidden">
-                <span className="font-medium text-foreground">Format:</span>{' '}
-                {info.representation}
-              </div>
-            </div>
-          )
-        })}
       </div>
     </div>
   )
